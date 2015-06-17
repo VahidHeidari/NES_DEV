@@ -1,5 +1,5 @@
 /**
- * OpenNES is a cross-platform, portable, and hand-held NES emulator.
+ * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
  * Copyright (C) 2015  Vahid Heidari (DeltaCode)
  * 
