@@ -72,10 +72,11 @@ static uint16_t freq_gen(int freq)
 
 static void fill_audio(void* data, uint8_t* stream, int len)
 {
-	(void)data;
 	int i;
 	uint16_t* buff = (uint16_t*)stream;
 	int square_freq = PULSE_GET_FREQ(&apu.pulse1) + PULSE_GET_FREQ(&apu.pulse2);
+
+	(void)data;
 
 	len /= 2;
 	for (i = 0; i < len; i += 2)
