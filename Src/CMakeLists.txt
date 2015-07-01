@@ -23,7 +23,7 @@ project(NES)
 
 set(CMAKE_USE_RELATIVE_PATHS true)
 
-include_directories(../TestROM NES/Mappers NES)
+include_directories(../TestROM NES/Mappers NES .)
 
 add_executable(NES_DEV
 	main.c
@@ -48,6 +48,16 @@ add_executable(NES_DEV
 if(MSVC)
 	set_property(TARGET NES_DEV APPEND_STRING PROPERTY COMPILE_FLAGS /W3)
 elseif(CMAKE_COMPILER_IS_GNUCC)
-	add_definitions(-Wall -Wextra -pedantic -O3)
+	add_definitions(-Wall -Wextra -pedantic -std=c99)
 	target_link_libraries(NES_DEV SDL2 SDL2main)
+
+	if (CMAKE_SYSTEM_NAME STREQUAL Windows)
+		add_definitions(-mwindows)
+		target_link_libraries(NES_DEV mingw32)
+	endif()
+	
+	if(CMAKE_BUILD_TYPE STREQUAL Release)
+		add_definitions(-O3)
+	endif()
 endif(MSVC)
+

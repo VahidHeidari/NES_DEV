@@ -40,13 +40,6 @@
 
 #define CONSOLE_HEIGHT 40
 
-#ifdef _WIN32
-#define getch _getch
-#elif defined __linux__ || defined NES_ARM_LIB
-#define getch getchar
-#define scanf_s scanf
-#endif
-
 #if defined _WIN32
 HANDLE console_handel = NULL;
 #endif
@@ -121,11 +114,10 @@ void clear_screen()
 int main(int argc, char** argv)
 {
 	int i;
-	int cmd;
-	int val;
-	int addr;
+	unsigned int cmd;
+	unsigned int val;
+	unsigned int addr;
 	char* file_path;
-	int is_dumped_image = 0;
 	
 #if defined _WIN32
 	console_handel = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -154,10 +146,10 @@ int main(int argc, char** argv)
 				if (argc < 3)
 					return 1;
 
-#if defined _WIN32
+#if defined _WIN32 && defined _MSC_VER
 				fopen_s(&rom_image, argv[2], "rb");
 				fopen_s(&chr_image, argv[3], "rb");
-#elif defined __linux__
+#elif defined __linux__ || defined __GNUC__
 				rom_image = fopen(argv[2], "rb");
 				chr_image = fopen(argv[3], "rb");
 #endif
@@ -175,8 +167,6 @@ int main(int argc, char** argv)
 				
 				fclose(rom_image);
 				fclose(chr_image);
-
-				is_dumped_image = 1;
 			}
 			else
 			{
@@ -250,8 +240,8 @@ int main(int argc, char** argv)
 
 			case 'd':
 			case 'D':
-				if (scanf_s("%4x %d", &addr, &val))
-					for (i = 0; i < val; ++i)
+				if (scanf_s("%4x %u", &addr, &val))
+					for (i = 0; i < (int)val; ++i)
 						printf("\n    %04X : %02X\n", addr + i, read(addr + i));
 				break;
 
@@ -295,7 +285,7 @@ int main(int argc, char** argv)
 
 			case 'c':
 			case 'C':
-				if (scanf_s("%d", &val))
+				if (scanf_s("%u", &val))
 				{
 					run_cycles(val);
 					update_regs();

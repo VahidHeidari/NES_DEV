@@ -21,8 +21,10 @@
 #include <iostream>
 #include <iomanip>
 
+#if defined _WIN32
 #include <Windows.h>
 #include <conio.h>
+#endif
 
 #include "M6502\M6502.h"
 #include "p6502\p6502.h"
@@ -110,7 +112,11 @@ void X6502_Test()
 bool read_nes(const char* path)
 {
 	FILE* image;
+#if defined _WIN32 && !defined __GNUC__
 	fopen_s(&image, path, "rb");
+#else
+	image = fopen(path, "rb");
+#endif
 	if (!image)
 		return false;
 	fseek(image, 16, SEEK_SET);			// jump from NES header.
@@ -122,7 +128,12 @@ bool read_nes(const char* path)
 bool read_bin(const char* path)
 {
 	FILE* image;
+#if defined _WIN32 && !defined __GNUC__
 	fopen_s(&image, path, "rb");
+#else
+	image = fopen(path, "rb");
+#endif
+
 	if (!image)
 		return false;
 	fread(ROM, ROM_SIZE, 1, image);

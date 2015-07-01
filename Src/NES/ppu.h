@@ -23,6 +23,7 @@
 #include <stdint.h>
 
 #ifdef _WIN32
+#define SDL_MAIN_HANDLED
 #include "C:\C++\NES_DEV\SDL\include\SDL.h"
 #elif defined __linux__
 #include <SDL2/SDL.h>

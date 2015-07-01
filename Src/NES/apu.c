@@ -23,9 +23,10 @@
 #include <string.h>
 
 #if defined _WIN32
+#define SDL_MAIN_HANDLED
 #include "C:\C++\NES_DEV\SDL\include\SDL.h"
 #elif defined __linux__
-#include <SDL2\SDL.h>
+#include <SDL2/SDL.h>
 #endif
 
 #include "config.h"
@@ -71,6 +72,7 @@ static uint16_t freq_gen(int freq)
 
 static void fill_audio(void* data, uint8_t* stream, int len)
 {
+	(void)data;
 	int i;
 	uint16_t* buff = (uint16_t*)stream;
 	int square_freq = PULSE_GET_FREQ(&apu.pulse1) + PULSE_GET_FREQ(&apu.pulse2);
@@ -85,6 +87,7 @@ static void fill_audio(void* data, uint8_t* stream, int len)
 
 void apu_envelope_triangle_clock(pApu apu)
 {
+	(void)apu;
 }
 
 void apu_length_sweep_clock(pApu apu)

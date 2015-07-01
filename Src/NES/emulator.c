@@ -89,7 +89,7 @@ void emulator_close(void)
 int read_rom_image(char* path)
 {
 	FILE* f;
-#ifdef _WIN32
+#if defined _WIN32 && !defined __GNUC__
 	fopen_s(&f, path, "rb");
 #elif defined __linux__
 	f = fopen(path, "rb");

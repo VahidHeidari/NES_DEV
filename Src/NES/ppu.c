@@ -34,7 +34,7 @@
 #include "graphics.h"
 #endif
 
-#ifdef _WIN32
+#if defined _WIN32 && !defined __GNUC__
 #pragma comment(lib, "C:\\C++\\NES_DEV\\SDL\\lib\\x86\\SDL2.lib")
 #pragma comment(lib, "C:\\C++\\NES_DEV\\SDL\\lib\\x86\\SDL2main.lib")
 #endif
@@ -248,9 +248,9 @@ void ppu_write(pPpuStatus ppu, uint16_t addr, uint8_t value)
 
 		case PPUDATA_REG:		// $2007
 			log_info("writing $2007 (PPU DATA REG) 0x%02X at 0x%04X at cc:%d", value, ppu->v, p.cycle_counter);
-#if defined _WIN32
+#if defined _WIN32 && !defined __GNUC__
 			if (ppu->v >= 0 && ppu->v < 0x2000)
-#elif defined __linux__
+#elif defined __linux__ || defined __GNUC__
 			if ((0 < ppu->v || ppu->v == 0) && ppu->v < 0x2000)
 #else
 			if ((0 < ppu->v || ppu->v == 0) && ppu->v < 0x2000)

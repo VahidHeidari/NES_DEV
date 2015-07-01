@@ -43,6 +43,15 @@ extern "C" {
 /// Joystick options
 #define READ_SDL_JOYPAD 1
 
+#if defined _WIN32 && !defined __GNUC__
+#define getch _getch
+#elif defined __linux__ || defined NES_ARM_LIB || defined __GNUC__
+#define getch getchar
+#define scanf_s scanf
+#define sprintf_s snprintf
+#define strcpy_s strncpy
+#endif
+
 #ifdef __cplusplus
 }
 #endif

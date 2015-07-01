@@ -78,7 +78,7 @@ int state_init(const char* path)
 	{
 		char slot_name[10];
 
-#if defined _WIN32
+#if defined _WIN32 && !defined __GNUC__
 		sprintf_s(slot_name, sizeof(slot_name), "SLOT%d.SVT", i);
 		strcpy_s(&(slot[i][0]), SLOT_PATH_SIZE, path);
 		strcpy_s(&(slot[i][path_len]), SLOT_PATH_SIZE, slot_name);
@@ -106,7 +106,7 @@ int state_load(const char* path)
 	ChunkTag st_tag, cr_tag;
 	StateVersion ver;
 
-#if defined _WIN32
+#if defined _WIN32 && !defined __GNUC__
 	fopen_s(&s, path, "rb");
 #else
 	s = fopen(path, "rb");
@@ -242,7 +242,7 @@ int state_save(const char* path)
 	char* comment;
 	ChunkTag tmp_comment_tag;
 
-#if defined _WIN32
+#if defined _WIN32 && !defined __GNUC__
 	fopen_s(&s, path, "wb");
 #else
 	s = fopen(path, "wb");

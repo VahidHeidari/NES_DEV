@@ -21,14 +21,14 @@
 
 #include <string.h>
 #include <stdio.h>
-#ifdef _WIN32
-#include <varargs.h>
-#elif defined __linux__
-#include <stdarg.h>
 
-#define sprintf_s snprintf
+#if defined _WIN32 && !defined __GNUC__
+#include <varargs.h>
+#elif defined __linux__ || defined __GNUC__
+#include <stdarg.h>
 #endif
 
+#include "config.h"
 #include "test-rom.h"
 #include "nes-hdr.h"
 #include "cycles.h"

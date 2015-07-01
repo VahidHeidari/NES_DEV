@@ -19,6 +19,8 @@
 
 #include "mapper.h"
 
+#include <string.h>
+
 #include "config.h"
 #include "emulator.h"
 #include "bank-switch.h"
@@ -320,8 +322,6 @@ int mapper_save_state(FILE* state)
 
 int mapper_load_state(FILE* state, const ChunkTag* tag)
 {
-	int size_readed = 0;
-
 	switch (tag->Sig.id)
 	{
 		case MAPPER_1_TAG_ID:

@@ -20,6 +20,7 @@
 #include "io.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #include "emulator.h"
 
