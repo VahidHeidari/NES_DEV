@@ -21,7 +21,7 @@
 #ifndef _X6502H
 
 #include "x6502struct.h"
-#include "..\p6502\p6502.h"
+#include "p6502.h"
 extern X6502 X;
 extern uint8_t XRAM[NOT_MIRRORED_RAM_SIZE];
 

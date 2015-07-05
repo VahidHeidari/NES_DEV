@@ -19,8 +19,8 @@
 
 #include <stdio.h>
 
-#include "M6502\M6502.h"
-#include "p6502\p6502.h"
+#include "M6502.h"
+#include "p6502.h"
 
 uint8_t MRAM[NOT_MIRRORED_RAM_SIZE];
 int finished = 0;
@@ -76,11 +76,11 @@ byte Patch6502(register byte Op,register M6502 *R)
 void Print(M6502 *R)
 {
 	printf("PC:%04x A:%02x P:%02x X:%02x Y:%02x S:%02x\n"
-		, R->PC, R->A, R->P, R->X, R->Y, R->S);
+		, R->PC.W, R->A, R->P, R->X, R->Y, R->S);
 }
 
 void print(pP6502 p)
 {
 	printf("pc:%04x a:%02x p:%02x x:%02x y:%02x s:%02x\n"
-		, p->pc, p->a, p->p, p->x, p->y, p->sp);
+		, p->pc.w, p->a, p->p, p->x, p->y, p->sp);
 }

@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include "..\p6502\p6502.h"
+#include "p6502.h"
                                /* Compilation options:       */
 /* #define FAST_RDOP */        /* Separate Op6502()/Rd6502() */
 /* #define DEBUG */            /* Compile debugging version  */

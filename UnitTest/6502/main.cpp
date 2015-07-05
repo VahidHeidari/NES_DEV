@@ -20,20 +20,25 @@
 #include <cstdio>
 #include <iostream>
 #include <iomanip>
+#include <cstring>
 
 #if defined _WIN32
 #include <Windows.h>
 #include <conio.h>
 #endif
 
-#include "M6502\M6502.h"
-#include "p6502\p6502.h"
-#include "X6502\types.h"
-#include "X6502\x6502struct.h"
-#include "X6502\x6502.h"
-#include "X6502\x6502abbrev.h"
+#include "M6502.h"
+#include "p6502.h"
+#include "types.h"
+#include "x6502struct.h"
+#include "x6502.h"
+#include "x6502abbrev.h"
 
 using namespace std;
+
+#if defined __linux__
+#define _getch getchar
+#endif
 
 uint16_t tmp_pc;
 uint8_t tmp_ins;
@@ -185,7 +190,9 @@ int main(int argc, char** argv)
 	if (!res)
 	{
 		cerr << "Could not open file!" << endl;
+#if defined _WIN32
 		system("PAUSE");
+#endif
 		return 1;
 	}
 
@@ -257,6 +264,9 @@ int main(int argc, char** argv)
 		}
 	}
 
+#if defined _WIN32
 	system("PAUSE");
+#endif
+
 	return 0;
 }

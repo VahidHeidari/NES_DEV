@@ -34,7 +34,7 @@ extern int finished;
 extern void m_write_io(uint16_t addr, uint8_t val);
 extern uint8_t m_read_io(uint16_t addr);
 }
-#include "..\p6502\p6502.h"
+#include "p6502.h"
 typedef int8_t int8;
 uint8_t XRAM[NOT_MIRRORED_RAM_SIZE];
 
