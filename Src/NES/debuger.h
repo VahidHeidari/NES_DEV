@@ -45,6 +45,7 @@ void write_rom(uint16_t addr, uint8_t value);
 
 /// TEST ROMs
 void init_test_rom(NesHeader* hdr, uint8_t* rom, uint8_t* chr_rom);
+int dump_test_rom(const char* path);
 
 /// Processor
 void print_regs(pP6502 p);

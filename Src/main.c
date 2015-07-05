@@ -168,6 +168,23 @@ int main(int argc, char** argv)
 				fclose(rom_image);
 				fclose(chr_image);
 			}
+			else if (arg[0] == '-' && (arg[1] == 'r' || arg[1] == 'R'))
+			{
+				if (argc < 3)
+				{
+					debug_message("File name required.");
+					return 1;
+				}
+				
+				if (dump_test_rom(argv[2]) != 1)
+				{
+					debug_message("Could not dump test ROM!");
+					return 1;
+				}
+
+				debug_message("Test ROM dumped!");
+				return 0;
+			}
 			else
 			{
 				debug_message("Invalid command line arguments!");

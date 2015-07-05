@@ -445,6 +445,76 @@ void init_test_rom(NesHeader* hdr, uint8_t* rom, uint8_t* chr_rom)
 	image_path = "Embedded test ROM image!";
 }
 
+int dump_test_rom(const char* path)
+{
+	int i;
+	int blank_space;
+	NesHeader hdr;
+	FILE* dump = NULL;
+
+#if defined _WIN32 && !defined __GNUC__
+	fopen_s(&dump, path, "wb");
+#else
+	dump = fopen(path, "wb");
+#endif
+
+	if (!dump)
+		return 0;
+
+	// Initialize iNES header.
+	memset(&hdr, 0, sizeof(NesHeader));
+
+	// Magic numbers of NES header
+	hdr.nes_str[0] = 'N';
+	hdr.nes_str[1] = 'E';
+	hdr.nes_str[2] = 'S';
+	hdr.magic_number = MAGIC_NUMBER;
+	// ROM banks.
+	hdr.num_of_rom_banks = 1;
+	// CHAR ROMs
+	hdr.num_of_vrom_banks = 1;
+	// Mapper low nibble
+	hdr.rom_control_1 = 0x01;
+	// Mapper high nibble
+	hdr.rom_control_2 = 0x00;
+
+	// Dump iNES header.
+	if (fwrite(&hdr, sizeof(NesHeader), 1, dump) != 1)
+		return 0;
+
+	// Dump ROM image.
+	if (fwrite(TEST_ROM_bin, TEST_ROM_bin_len, 1, dump) != 1)
+		return 0;
+
+	blank_space = hdr.num_of_rom_banks * 16 * 1024 - TEST_ROM_bin_len - vect_bin_len;
+	if (blank_space > 0)
+		for (i = 0; i < blank_space; ++i)
+			fputc(0, dump);
+
+	// Dump vector table.
+	if (fwrite(vect_bin, vect_bin_len, 1, dump) != 1)
+		return 0;
+
+	// Dump pattern image.
+	if (fwrite(sp_bin, sp_bin_len, 1, dump) != 1)
+		return 0;
+
+	blank_space = 4 * 1024 - sp_bin_len;
+	if (blank_space > 0)
+		for (i = 0; i < blank_space; ++i)
+			fputc(0, dump);
+
+	if (fwrite(bg_bin, bg_bin_len, 1, dump) != 1)
+		return 0;
+
+	blank_space = 4 * 1024 - bg_bin_len;
+	if (blank_space > 0)
+		for (i = 0; i < blank_space; ++i)
+			fputc(0, dump);
+
+	return 1;
+}
+
 void log_info(const char* str, ...)
 {
 #ifdef DEBUG_LOGGING
