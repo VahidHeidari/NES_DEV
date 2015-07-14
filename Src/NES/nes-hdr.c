@@ -42,7 +42,7 @@ void nes_hdr_info(pNesHeader hdr)
 	printf("    VROMs               : %2d x 8K" EOL, GET_NUM_OF_VROM_BANKS(hdr));
 	printf("    Mapper              : %2d\t'%s'" EOL, GET_MAPPER(hdr), name_of_mapper(GET_MAPPER(hdr)));
 	printf("    Mirroring           : %s" EOL, ((GET_MIRRORING_TYPE(hdr) == MIRRORING_VERTICAL)? "Vertical" : "Horizontal"));
-	printf("    Battry backed       : %s" EOL, IS_BATTRY_BACKED(hdr) ? "Yes" : "No");
+	printf("    Battery backed      : %s" EOL, IS_BATTRY_BACKED(hdr) ? "Yes" : "No");
 	printf("    Mirroring overriden : %s" EOL, IS_MIRRORING_OVERRIDE(hdr) ? "Yes" : "No");
 	printf("    Trainer             : %s" EOL, IS_TRAINER(hdr) ? "Yes" : "No");
 #endif

@@ -23,7 +23,7 @@ project(NES)
 
 set(CMAKE_USE_RELATIVE_PATHS true)
 
-include_directories(../TestROM NES/Mappers NES .)
+include_directories(../TestROM NES/Mappers NES TUI .)
 
 add_executable(NES_DEV
 	main.c
@@ -41,6 +41,7 @@ add_executable(NES_DEV
 	NES/Mappers/bank-switch.c
 	NES/Mappers/mapper.c
 	NES/Mappers/mappers-name.c
+	TUI/console.c
 	../TestROM/pattern.c
 	../TestROM/test-rom.c
 	../TestROM/vect.c)

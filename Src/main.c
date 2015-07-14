@@ -20,62 +20,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifdef _WIN32
-#include <conio.h>
-#include <Windows.h>
-#endif
-
 #include "config.h"
 #include "p6502.h"
 #include "debuger.h"
 #include "emulator.h"
-
-/// Command line screen coordination
-#define CMD_X 0
-#define CMD_Y 21
-
-/// Processor context screen coordination
-#define REGS_X 0
-#define REGS_Y 14
-
-#define CONSOLE_HEIGHT 40
-
-#if defined _WIN32
-HANDLE console_handel = NULL;
-#endif
-
-/// Moves cursor to (x, y).
-void gotoxy(int x, int y)
-{
-#ifdef _WIN32
-	COORD c;
-
-	c.X = x;
-	c.Y = y;
-	SetConsoleCursorPosition(console_handel, c);
-#elif defined __linux__
-	printf("%c[%d;%df", 0x1B, y, x);
-#elif defined NES_ARM_LIB
-#endif
-}
-
-void set_black_on_white()
-{
-#if defined _WIN32
-	SetConsoleTextAttribute(console_handel, BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
-#else
-	printf("\x1b[0;7mBLACK_ON_WHITE");
-#endif
-}
-
-void set_white_on_black()
-{
-#if defined _WIN32
-	SetConsoleTextAttribute(console_handel, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-#else
-	printf("\x1b[7;0mWHITE_ON_BLACK");
-#endif
-}
+#include "console.h"
 
 /// Update processor context
 void update_regs()
@@ -86,30 +35,6 @@ void update_regs()
 	printf("%s                  \n", asm_m);
 }
 
-void clear_cmd_line()
-{
-#if defined _WIN32 || defined __linux__
-	gotoxy(CMD_X, CMD_Y);
-	printf("                                   ");
-	gotoxy(CMD_X, CMD_Y);
-#endif
-}
-
-void clear_screen()
-{
-#if defined _WIN32 || defined __linux__
-	int i;
-	gotoxy(0, 0);
-	for (i = 0; i < CONSOLE_HEIGHT; ++i)
-		printf("                                                            ");
-	gotoxy(0, 0);
-#elif defined NES_ARM_LIB
-	printf("\r\n");
-	printf("\r\n");
-	printf("\r\n");
-#endif
-}
-
 #if defined _WIN32 || defined __linux__
 int main(int argc, char** argv)
 {
@@ -118,10 +43,7 @@ int main(int argc, char** argv)
 	unsigned int val;
 	unsigned int addr;
 	char* file_path;
-	
-#if defined _WIN32
-	console_handel = GetStdHandle(STD_OUTPUT_HANDLE);
-#endif
+
 	clear_screen();
 
 #ifdef DEBUG_MODE

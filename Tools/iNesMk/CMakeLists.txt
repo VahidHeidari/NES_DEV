@@ -19,9 +19,8 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-project(NES_DEV)
+project(inesmk)
 
-add_subdirectory(Src)
-add_subdirectory(UnitTest/6502)
-add_subdirectory(Tools/iNesInfo)
-add_subdirectory(Tools/iNesMk)
+include_directories(../../Src ../../Src/NES ../../Src/TUI)
+
+add_executable(inesmk ../../Src/TUI/console.c main.c)
