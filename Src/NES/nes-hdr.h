@@ -34,6 +34,9 @@ extern "C" {
 /// Magic number for indicating file format
 #define MAGIC_NUMBER			0x1A
 
+#define NES_HDR_SIG             (((uint32_t)'N') | ((uint32_t)'E' << 8) \
+		| ((uint32_t)'S' << 16) | ((uint32_t)MAGIC_NUMBER << 24))
+
 /// ROM Control Byte 1 offset bits
 #define MIRRORING				0x01		/// Bit 0
 #define BATTERY_BACKED_RAM		0x02		/// Bit 1
@@ -84,6 +87,7 @@ typedef struct nes_hdr
 	uint8_t reserved[5];		/// Reserved for future expantion
 } NesHeader, *pNesHeader;
 
+int nes_hdr_is_valid(pNesHeader hdr);
 void nes_hdr_info(pNesHeader hdr);
 
 #ifdef __cplusplus

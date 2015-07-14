@@ -29,6 +29,11 @@
 #define EOL		"\r\n"
 #endif
 
+int nes_hdr_is_valid(pNesHeader hdr)
+{
+	return (*(uint32_t*)hdr->nes_str == NES_HDR_SIG);
+}
+
 void nes_hdr_info(pNesHeader hdr)
 {
 #ifdef DEBUG_MODE
