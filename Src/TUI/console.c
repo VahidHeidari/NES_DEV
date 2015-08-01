@@ -21,11 +21,6 @@
 
 #include <stdio.h>
 
-#ifdef _WIN32
-#include <conio.h>
-#include <Windows.h>
-#endif
-
 #if defined _WIN32
 HANDLE console_handel = NULL;
 #endif

@@ -18,11 +18,8 @@
 #
 
 cmake_minimum_required(VERSION 2.8)
-
-project(NES_DEV)
-
-add_subdirectory(Src)
-add_subdirectory(UnitTest/6502)
-add_subdirectory(Tools/iNesInfo)
-add_subdirectory(Tools/iNesMk)
-add_subdirectory(Tools/iNesDPT)
+project(ines-dpt)
+set(CMAKE_USE_RELATIVE_PATHS TRUE)
+add_definitions(-g -std=c99 -Wall -Wextra)
+include_directories(../../Src ../../Src/NES ../../Src/NES/Mappers)
+add_executable(ines-dpt main.c ../../Src/NES/nes-hdr.c ../../Src/NES/Mappers/mappers-name.c)

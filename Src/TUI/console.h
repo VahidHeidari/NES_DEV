@@ -20,6 +20,11 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
+#ifdef _WIN32
+#include <conio.h>
+#include <Windows.h>
+#endif
+
 /// Command line screen coordination
 #define CMD_X 0
 #define CMD_Y 21
@@ -44,7 +49,7 @@ extern "C" {
 #define BACK_SPACE_KEY	'\b'
 
 #if defined _WIN32
-extern HANDLE console_handel = NULL;
+extern HANDLE console_handel;
 #endif
 
 void init_console(void);
