@@ -4,7 +4,7 @@
 NES_DEV is an open source NES emulator for educational and experimental purposes.
 
 I want to port this emulator on an STM32F103ZET6 micro controller, and making
-a portable and hand held game console, witch can run on an low cost ARM device.
+a portable and hand held game console, witch can run on a low cost ARM device.
 
 My STM32F103ZET board.
 
