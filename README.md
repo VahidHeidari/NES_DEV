@@ -12,7 +12,7 @@ My STM32F103ZET board.
 
 Supper Mario Bros. on an ILI9325 TFT color LCD.
 
-![Super Mario Bros.](SuperMarioBros.jpg "Super Mario Bros.")
+![Super Mario Bros.](SuperMarioBros.jpg?raw=true "Super Mario Bros.")
 
 
  Known issues:
