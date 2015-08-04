@@ -8,7 +8,7 @@ a portable and hand held game console, witch can run on a low cost ARM device.
 
 My STM32F103ZET board.
 
-![STM32 board](NESonSTM32.jpg?raw=true "NES on an STM32")
+![STM32 board](NESonSTM32.jpg?raw=true "NES on STM32")
 
 Super Mario Bros. on an ILI9325 TFT color LCD.
 
@@ -39,3 +39,16 @@ Super Mario Bros. on an ILI9325 TFT color LCD.
 * Go to bin directory with "cd bin" command.
 * Run cmake with "cmake .." command.
 * Build project with "make" command in linux environments or click on .sln file to open visual studio.
+
+ Key map:
+==========
+* Esc -> Quit emulator
+* Arrow keys -> Directional buttons
+* Key pad 1 or S key -> A button
+* Key pad 2 or A key -> B button
+* Key pad 7 or Enter key -> Start button
+* Key pad 8 or Right Ctrl key -> Select button
+* P key -> Toggle sprites
+* B key -> Toggle background
+* F1 to F4 keys -> Save game state to slot 1 to slot 4
+* F5 to F8 keys -> Load game state from slot 1 to slot 4
