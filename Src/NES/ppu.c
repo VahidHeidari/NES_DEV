@@ -934,6 +934,7 @@ static void put_name_table(pPpuStatus ppu, int nt)
 #if defined DEBUG_PPU_NAMETABLE
 static void plot_vertical_line(pPpuStatus ppu, int x, uint32_t color)
 {
+	(void)ppu;
 #if defined _WIN32 || __linux__
 	int i;
 
@@ -944,7 +945,6 @@ static void plot_vertical_line(pPpuStatus ppu, int x, uint32_t color)
 	for (i = 0; i < WINDOW_NAME_TABLE_HEIGHT; ++i)
 		((uint32_t*)(surface_name_table->pixels))[i * 256 * 2 + x] = color;
 #else
-	(void)ppu;
 	(void)x;
 	(void)color;
 #endif
@@ -953,6 +953,7 @@ static void plot_vertical_line(pPpuStatus ppu, int x, uint32_t color)
 #if defined DEBUG_PPU_NAMETABLE
 static void plot_horizontal_line(pPpuStatus ppu, int y, uint32_t color)
 {
+	(void)ppu;
 #if defined _WIN32 || __linux__
 	int i;
 
@@ -963,7 +964,6 @@ static void plot_horizontal_line(pPpuStatus ppu, int y, uint32_t color)
 	for (i = 0; i < WINDOW_NAME_TABLE_WIDTH; ++i)
 		((uint32_t*)(surface_name_table->pixels))[i + 256 * 2 * y] = color;
 #else
-	(void)ppu;
 	(void)y;
 	(void)color;
 #endif
@@ -998,6 +998,7 @@ void ppu_debug_name_table(pPpuStatus ppu, uint32_t color)
 
 void ppu_debug_pattern_table(pPpuStatus ppu)
 {
+	(void)ppu;
 #if defined _WIN32 || defined __linux__
 #if defined DEBUG_PPU_PATTERNTABLE
 	int i, x, y;
@@ -1047,7 +1048,6 @@ void ppu_debug_pattern_table(pPpuStatus ppu)
 	}
 	SDL_UpdateWindowSurface(window_pattern_table);
 #else
-	(void)ppu;
 #endif
 #endif
 }
