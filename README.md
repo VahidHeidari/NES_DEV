@@ -8,15 +8,15 @@ a portable and hand held game console, witch can run on a low cost ARM device.
 
 NES_DEV on linux.
 
-![Linux](linux.jpg?raw=true "NES_DEV on linux")
+![Linux](Images/linux.jpg?raw=true "NES_DEV on linux")
 
 My STM32F103ZET board.
 
-![STM32 board](NESonSTM32.jpg?raw=true "NES on STM32")
+![STM32 board](Images/NESonSTM32.jpg?raw=true "NES on STM32")
 
 Super Mario Bros. on an ILI9325 TFT color LCD.
 
-![Super Mario Bros.](SuperMarioBros.jpg?raw=true "Super Mario Bros.")
+![Super Mario Bros.](Images/SuperMarioBros.jpg?raw=true "Super Mario Bros.")
 
 
  Known issues:
