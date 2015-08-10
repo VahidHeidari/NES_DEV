@@ -88,10 +88,10 @@ void emulator_close(void)
 /// TODO: Write portable reading ROM image.
 int read_rom_image(char* path)
 {
-	FILE* f;
-#if defined _WIN32 && !defined __GNUC__
+	FILE* f = NULL;
+#if defined _WIN32 && defined _MSC_VER
 	fopen_s(&f, path, "rb");
-#elif defined __linux__
+#else
 	f = fopen(path, "rb");
 #endif
 

@@ -31,7 +31,7 @@ extern "C" {
 #define PALETTE_SIZE	64
 
 #if defined _WIN32 || defined __linux__
-extern const uint32_t colors[PALETTE_SIZE * 3];
+extern const uint32_t colors[PALETTE_SIZE];
 #elif defined NES_ARM_LIB
 extern Point p;
 extern const uint16_t colors[PALETTE_SIZE];

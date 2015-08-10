@@ -811,20 +811,13 @@ void ppu_put_pixel(pPpuStatus ppu)
 		if (ppu->regs.mask & COLOR_OR_MONOCHROME_MODE)
 			color_index &= 0x30;
 
-#if defined _WIN32 || defined __linux__
-		// Make RGB color from color table
-		color_index *= 3;
+		color = colors[color_index];
 
-		// 24 bit RGB
-		color = (colors[color_index] << 16) | (colors[color_index + 1] << 8)
-				| colors[color_index + 2];
+#if defined _WIN32 || defined __linux__
 		// Put color to surface.
 		((uint32_t*)(surface->pixels))[((ppu->scanline - 21) * 256)
 				+ (ppu->clock_cycle - 1)] = color;
 #else
-		// 16 bit RGB
-		color = colors[color_index];
-
 		p.x = ppu->clock_cycle - 1;
 		p.y = ppu->scanline;
 		//printf("p(%3d, %3d)\r\n", p.x, p.y);
@@ -915,10 +908,7 @@ static void put_name_table(pPpuStatus ppu, int nt)
 				//pixel |= 0x04;
 				//pixel |= name_table[ATTRIBUTE_ADDRESS(x)];
 				pixel = palette[pixel];
-				((uint32_t*)(surface_name_table->pixels))[idx++] =
-					  (colors[pixel * 3    ] << 16)
-					| (colors[pixel * 3 + 1] <<  8)
-					| (colors[pixel * 3 + 2]      );
+				((uint32_t*)(surface_name_table->pixels))[idx++] = (colors[pixel];
 			}
 			//idx += 256 * 2 - 8;
 		}
@@ -1020,9 +1010,8 @@ void ppu_debug_pattern_table(pPpuStatus ppu)
 
 				pixel  = pattern_table[i * 16     + y] & (0x80 >> x) ? 0x01 : 0;
 				pixel |= pattern_table[i * 16 + 8 + y] & (0x80 >> x) ? 0x02 : 0;
-				pixel = palette[palette_number * 4 + pixel] * 3;
-				((uint32_t*)(surface_pattern_table->pixels))[idx] = colors[pixel] << 16 |
-						colors[pixel + 1] << 8 | colors[pixel + 2];
+				pixel = palette[palette_number * 4 + pixel];
+				((uint32_t*)(surface_pattern_table->pixels))[idx] = colors[pixel];
 			}
 		}
 	}
@@ -1040,9 +1029,8 @@ void ppu_debug_pattern_table(pPpuStatus ppu)
 
 				pixel  = pattern_table[i * 16     + y + (PPU_PATTERN_TABLE_SIZE / 2)] & (0x80 >> x) ? 0x01 : 0;
 				pixel |= pattern_table[i * 16 + 8 + y + (PPU_PATTERN_TABLE_SIZE / 2)] & (0x80 >> x) ? 0x02 : 0;
-				pixel = palette[palette_number * 4 + pixel] * 3;
-				((uint32_t*)(surface_pattern_table->pixels))[idx] = colors[pixel] << 16 |
-						colors[pixel + 1] << 8 | colors[pixel + 2];
+				pixel = palette[palette_number * 4 + pixel];
+				((uint32_t*)(surface_pattern_table->pixels))[idx] = colors[pixel];
 			}
 		}
 	}
