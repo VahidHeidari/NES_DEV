@@ -31,7 +31,7 @@ extern "C" {
 #define IO_REG_SIZE				0x2020		/// ~8KB
 #define IO_SIZE					0x6000		/// $2000-$8000
 
-extern uint8_t io[];
+extern uint8_t io[IO_SIZE];
 
 void write_io(uint16_t addr, uint8_t val);
 uint8_t read_io(uint16_t addr);
