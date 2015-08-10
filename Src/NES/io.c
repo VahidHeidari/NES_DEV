@@ -30,9 +30,9 @@ uint8_t IO[IO_SIZE];
 #endif
 
 /**
- * TODO: More checking and mirroring, Mirroring dose not handled!
+ * TODO: More checking and mirroring, Mirroring does not handled!
  *
- * But I/O registers in $4000 - $4020 range dose not have any
+ * But I/O registers in $4000 - $4020 range does not have any
  * mirroring.
  */
 void write_io(uint16_t addr, uint8_t val)

@@ -78,10 +78,6 @@ Item items[NUMBER_OF_ITEMS] =
 	{" File name                  : ", STRING, { .string = "Header.bin" } }
 };
 
-void select_item(int i)
-{
-}
-
 void print_items()
 {
 	int i;

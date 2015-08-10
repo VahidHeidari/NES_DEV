@@ -19,7 +19,7 @@
 
 #include "mappers-name.h"
 
-char* mappers_name[256] =
+const char* mappers_name[256] =
 {
 	MAPPER_TO_STRING(NROM),
 	MAPPER_TO_STRING(NINTENDO_MMC1),
@@ -98,7 +98,7 @@ char* mappers_name[256] =
 	"???", "???", "???"														/// 253, 254, 255,
 };
 
-char* name_of_mapper(uint8_t m)
+const char* name_of_mapper(uint8_t m)
 {
 	return mappers_name[m];
 }

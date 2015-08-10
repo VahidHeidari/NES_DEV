@@ -71,9 +71,9 @@ extern "C" {
 
 #define MAPPER_TO_STRING(mpr)		# mpr
 
-extern char* mappers_name[256];
+extern const char* mappers_name[256];
 
-char* name_of_mapper(uint8_t m);
+const char* name_of_mapper(uint8_t m);
 
 #ifdef __cplusplus
 }
