@@ -14,7 +14,7 @@ My STM32F103ZET board.
 
 ![STM32 board](Images/NESonSTM32.jpg?raw=true "NES on STM32")
 
-Super Mario Bros. on an ILI9325 TFT color LCD.
+Super Mario Bros. on ILI9325 TFT color LCD.
 
 ![Super Mario Bros.](Images/SuperMarioBros.jpg?raw=true "Super Mario Bros.")
 
@@ -54,5 +54,5 @@ Super Mario Bros. on an ILI9325 TFT color LCD.
 * Key pad 8 or Right Ctrl key -> Select button
 * P key -> Toggle sprites
 * B key -> Toggle background
-* F1 to F4 keys -> Save game state to slot 1 to slot 4
+* F1 to F4 keys -> Save game state into slot 1 to slot 4
 * F5 to F8 keys -> Load game state from slot 1 to slot 4
