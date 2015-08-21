@@ -1,13 +1,15 @@
  Introduction:
 ===============
 
-NES_DEV is an open source NES emulator for educational and experimental purposes.
+NES_DEV is a open source NES emulator for educational and experimental purposes.
 
-I want to port this emulator on an STM32F103ZET6 micro controller, and making
+I want to port this emulator on a STM32F103ZET6 micro controller, and making
 a portable and hand held game console, witch can run on a low cost ARM device.
 There is may NES emulators in the world, but none of them runs on low cost micro
 controllers, most of them runs on PCs. I want to make a simple and easy to build
 system, witch anyone can make and enjoy it.
+
+This emulator only depends on SDL library. You can get it from www.libsdl.org.
 
 NES_DEV running on linux with enabled debug options.
 
@@ -47,7 +49,7 @@ be enabled from source.
 
  How to make project:
 ======================
-* First install cmake build system.
+* First get and install cmake build system, and get SDL library and install it.
 * Make bin directory in project root directory with "mkdir bin" command.
 * Go to bin directory with "cd bin" command.
 * Run cmake with "cmake .." command.
