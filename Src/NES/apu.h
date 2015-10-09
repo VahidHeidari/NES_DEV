@@ -108,6 +108,13 @@ extern "C" {
 #define APU_NOISE_TABLE_SIZE		16
 #define APU_DMC_TABLE_SIZE			16
 
+#define APU_SAMPLE_RATE_FREQUENCY_HZ	44100
+#define APU_MONO_CHANNEL				1
+#define APU_STERIO_CHANNEL				2
+#define APU_NUMBER_OF_CHANNELS			STERIO_CHANNEL
+// Audio buffer size in samples (power of 2)
+#define APU_AUDIO_BUFFER_SIZE			1024
+
 /// pAPU period tables
 extern const uint8_t apu_length_table[APU_LENGTH_TABLE_SIZE];
 extern const uint16_t apu_nois_table[APU_NOISE_TABLE_SIZE];

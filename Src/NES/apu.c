@@ -58,7 +58,7 @@ static uint16_t freq_gen(int freq)
 {
 	if (freq)
 	{
-		int freq_sample = 44100 / freq;
+		int freq_sample = APU_SAMPLE_RATE_FREQUENCY_HZ / freq;
 		if (++freq_dist >= freq_sample)
 			freq_dist = 0;
 
@@ -122,10 +122,10 @@ int apu_init(pApu apu)
 		return 0;
 	}
 
-	as.freq = 44100;
-	as.format = AUDIO_S16SYS;
-	as.channels = 2;
-	as.samples = 1024;
+	as.freq     = APU_SAMPLE_RATE_FREQUENCY_HZ;
+	as.format   = APU_AUDIO_S16SYS;
+	as.channels = APU_NUMBER_OF_CHANNELS;
+	as.samples  = APU_BUFFER_SIZE;
 	as.callback = fill_audio;
 
 	if (SDL_OpenAudio(&as, NULL) < 0)
