@@ -25,6 +25,10 @@
 #include <Windows.h>
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /// Command line screen coordination
 #define CMD_X 0
 #define CMD_Y 21
@@ -34,10 +38,6 @@
 #define REGS_Y 14
 
 #define CONSOLE_HEIGHT 40
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define ESCAPE_KEY		27
 #define DELETE_KEY		127
