@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 
 #if defined _WIN32
 #define SDL_MAIN_HANDLED
@@ -63,8 +64,8 @@ static uint16_t freq_gen(int freq)
 			freq_dist = 0;
 
 		if (freq_dist < freq_sample / 2)
-			return -32768;
-		return 32767;
+			return SHRT_MIN;
+		return SHRT_MAX;
 	}
 
 	return 0;
@@ -74,9 +75,12 @@ static void fill_audio(void* data, uint8_t* stream, int len)
 {
 	int i;
 	uint16_t* buff = (uint16_t*)stream;
-	int square_freq = PULSE_GET_FREQ(&apu.pulse1) + PULSE_GET_FREQ(&apu.pulse2);
+	int square_freq = 0;
 
-	(void)data;
+	(void)data;		// Unused parameter
+
+	if (APU_IS_MODULE_ENABLED(APU_PULSE1_STATUS) && (apu.pulse1.r1 & APU_PULSE_ENVELOPE_VOLUME))
+		square_freq = PULSE_GET_FREQ(&apu.pulse1);
 
 	len /= 2;
 	for (i = 0; i < len; i += 2)
@@ -114,7 +118,7 @@ int apu_init(pApu apu)
 {
 	SDL_AudioSpec as;
 
-	return 1;
+	//return 1;		// Disable audio.
 
 	if (SDL_Init(SDL_INIT_AUDIO) < 0)
 	{
@@ -123,9 +127,9 @@ int apu_init(pApu apu)
 	}
 
 	as.freq     = APU_SAMPLE_RATE_FREQUENCY_HZ;
-	as.format   = APU_AUDIO_S16SYS;
+	as.format   = AUDIO_S16SYS;
 	as.channels = APU_NUMBER_OF_CHANNELS;
-	as.samples  = APU_BUFFER_SIZE;
+	as.samples  = APU_AUDIO_BUFFER_SIZE;
 	as.callback = fill_audio;
 
 	if (SDL_OpenAudio(&as, NULL) < 0)

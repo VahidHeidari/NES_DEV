@@ -23,7 +23,7 @@ project(NES)
 
 set(CMAKE_USE_RELATIVE_PATHS true)
 
-include_directories(../TestROM NES/Mappers NES TUI .)
+include_directories(../TestROM/Asm NES/Mappers NES TUI .)
 
 add_executable(NES_DEV
 	main.c
@@ -42,9 +42,9 @@ add_executable(NES_DEV
 	NES/Mappers/mapper.c
 	NES/Mappers/mappers-name.c
 	TUI/console.c
-	../TestROM/pattern.c
-	../TestROM/test-rom.c
-	../TestROM/vect.c)
+	../TestROM/Asm/pattern.c
+	../TestROM/Asm/test-rom.c
+	../TestROM/Asm/vect.c)
 
 if(MSVC)
 	set_property(TARGET NES_DEV APPEND_STRING PROPERTY COMPILE_FLAGS /W3)
