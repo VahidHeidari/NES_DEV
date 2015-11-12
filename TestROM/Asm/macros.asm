@@ -21,42 +21,58 @@
 ; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;
 ;-----------------------------------
+	
+	mac DISABLE_INTERRUPT
+	sei
+	endm
+	
+	mac ENABLE_INTERRUPT
+	cli
+	endm
+	
+	mac DISABLE_NMI
+	ldx #$00
+	stx $2000
+	stx $2001
+	endm
+	
+	mac INITIALIZE_STACK_POINTER
+	dex
+	txs
+	endm
+	
+	mac CLEAR_RAM
+	lda #$00
+	ldx #$00
+.CLEAR
+	sta $00,x
+	sta $100,x
+	sta $200,x
+	sta $300,x
+	sta $400,x
+	sta $500,x
+	sta $600,x
+	sta $700,x
+	dex
+	bne .CLEAR
+	endm
 
-PALETTE_TABLE
-IMAGE_PALETTE
-	dc.b $0D
-	dc.b $30
-	dc.b $12
-	dc.b $05
-	dc.b $0D
-	dc.b $15
-	dc.b $09
-	dc.b $19
-	dc.b $0D
-	dc.b $0C
-	dc.b $1C
-	dc.b $0E
-	dc.b $0D
-	dc.b $1F
-	dc.b $20
-	dc.b $30
-
-SPRITE_PALETTE	
-	dc.b $0D		; Background color
-	dc.b $22
-	dc.b $32
-	dc.b $25
-	dc.b $0D
-	dc.b $35
-	dc.b $29
-	dc.b $39
-	dc.b $0D
-	dc.b $2C
-	dc.b $3C
-	dc.b $2D
-	dc.b $0D
-	dc.b $3D
-	dc.b $2F
-	dc.b $3F
-
+	mac SET_DATA_PTR
+	lda <#{0}
+	sta DATA_PTR
+	lda >#{0}
+	sta DATA_PTR+1
+	endm
+	
+	mac INC_DATA_PTR
+	lda #{0}
+	clc
+	adc DATA_PTR
+	sta DATA_PTR
+;	bcc .END
+;	lda #0
+;	adc DATA_PTR+1
+;	adc
+;.END
+	endm
 	

@@ -22,41 +22,47 @@
 ;
 ;-----------------------------------
 
-PALETTE_TABLE
-IMAGE_PALETTE
-	dc.b $0D
-	dc.b $30
-	dc.b $12
-	dc.b $05
-	dc.b $0D
-	dc.b $15
-	dc.b $09
-	dc.b $19
-	dc.b $0D
-	dc.b $0C
-	dc.b $1C
-	dc.b $0E
-	dc.b $0D
-	dc.b $1F
-	dc.b $20
-	dc.b $30
-
-SPRITE_PALETTE	
-	dc.b $0D		; Background color
-	dc.b $22
-	dc.b $32
-	dc.b $25
-	dc.b $0D
-	dc.b $35
-	dc.b $29
-	dc.b $39
-	dc.b $0D
-	dc.b $2C
-	dc.b $3C
-	dc.b $2D
-	dc.b $0D
-	dc.b $3D
-	dc.b $2F
-	dc.b $3F
-
+; Register map
+PPU_CTRL     = $2000
+PPU_MASK     = $2001
+PPU_STATUS   = $2002
+PPU_OAM_ADDR = $2003
+PPU_OAM_DATA = $2004
+PPU_SCROLL   = $2005
+PPU_ADDR     = $2006
+PPU_DATA     = $2007
 	
+	mac PPU_SET_SCROLL_XY
+	lda #{0}
+	sta PPU_SCROLL
+	lda #{1}
+	sta PPU_SCROLL
+	endm
+
+	mac PPU_SET_ADDR
+	lda >#{0}
+	sta PPU_ADDR
+	lda <#{0}
+	sta PPU_ADDR
+	endm
+	
+	mac PPU_SET_ADDR_A
+	pha
+	lda #{0}
+	sta PPU_ADDR
+	pla
+	sta PPU_ADDR
+	endm
+	
+	; Wait for v blank signales
+WAIT_VBLANK SUBROUTINE
+	lda PPU_STATUS
+	bpl WAIT_VBLANK
+	rts
+	
+WAIT_FRAMES SUBROUTINE
+WAIT_FRAMES_LOOP
+	jsr WAIT_VBLANK
+	dex
+	bne WAIT_FRAMES_LOOP
+	rts
