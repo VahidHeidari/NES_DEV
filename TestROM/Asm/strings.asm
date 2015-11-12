@@ -35,6 +35,12 @@ INTRO_STR_2
 	dc.b "(DeltaCode)", 0
 INTRO_STR_3
 	dc.b "Powered by DASM32", 0
+INTRO_STR_4
+	dc.b "You can find source codes at:",0
+INTRO_STR_5
+	dc.b "https://github.com/VahidHeidari/",0
+INTRO_STR_6
+	dc.b "NES_DEV",0
 
 PRINT_STR SUBROUTINE
 	ldy #0

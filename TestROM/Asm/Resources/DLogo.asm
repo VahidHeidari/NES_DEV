@@ -22,10 +22,7 @@
 ;
 ;-----------------------------------
 
-DELTA_LOGO
-	;INCBIN "Resources\DLogo.bin"
-	INCLUDE "Resources\DLogo.asm"
-
-; Width and height of Delta logo in tiles.
-DELTA_LOGO_WIDTH  = 12
-DELTA_LOGO_HEIGHT = 4
+	dc.b	$80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8a, $8b
+	dc.b	$90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $9a, $9b
+	dc.b	$a0, $a1, $a2, $a3, $a4, $a5, $a6, $a7, $a8, $a9, $aa, $ab
+	dc.b	$b0, $b1, $b2, $b3, $b4, $b5, $b6, $b7, $b8, $b9, $ba, $bb
