@@ -23,8 +23,7 @@
 ;-----------------------------------
 
 DELTA_LOGO:
-	;INCBIN "Resources\DLogo.bin"
-	.INCLUDE "Resources\DLogo.asm"
+.INCLUDE "Resources\DLogo.asm"
 
 ; Width and height of Delta logo in tiles.
 DELTA_LOGO_WIDTH  = 12

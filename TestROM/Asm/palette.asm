@@ -24,37 +24,13 @@
 
 PALETTE_TABLE:
 IMAGE_PALETTE:
-	.byte $0D
-	.byte $30
-	.byte $12
-	.byte $05
-	.byte $0D
-	.byte $15
-	.byte $09
-	.byte $19
-	.byte $0D
-	.byte $0C
-	.byte $1C
-	.byte $0E
-	.byte $0D
-	.byte $1F
-	.byte $20
-	.byte $30
+.byte $0D, $30, $12, $05
+.byte $0D, $15, $09, $19
+.byte $0D, $0C, $1C, $0E
+.byte $0D, $1F, $20, $30
 
 SPRITE_PALETTE:	
-	.byte $0D		; Background color
-	.byte $22
-	.byte $32
-	.byte $25
-	.byte $0D
-	.byte $35
-	.byte $29
-	.byte $39
-	.byte $0D
-	.byte $2C
-	.byte $3C
-	.byte $2D
-	.byte $0D
-	.byte $3D
-	.byte $2F
-	.byte $3F
+.byte $0D, $22, $32, $25		; Background color
+.byte $0D, $35, $29, $39
+.byte $0D, $2C, $3C, $2D
+.byte $0D, $3D, $2F, $3F

@@ -35,21 +35,22 @@
 .byte $0			; Reserverd
 
 .segment "CODE"
-NAMETABLESTATE	= $00
-STR_PTR			= $01
-DATA_PTR		= $03
 
-	.INCLUDE "strings.asm"
-	.INCLUDE "dlogo.asm"
-	.INCLUDE "macros.asm"
-	.INCLUDE "palette.asm"
-	.INCLUDE "attrib.asm"
-	.INCLUDE "ppu.asm"
+.INCLUDE "strings.asm"
+.INCLUDE "dlogo.asm"
+.INCLUDE "macros.asm"
+.INCLUDE "palette.asm"
+.INCLUDE "attrib.asm"
+.INCLUDE "ppu.asm"
 
-FAID_FRAME_DELAY = 5
-NUMBER_OF_FAID_COLOR = 5
+NAMETABLESTATE			= $00
+STR_PTR					= $01
+DATA_PTR				= $03
+FAID_FRAME_DELAY		= 5
+NUMBER_OF_FAID_COLOR	= 5
+
 PALETTE_FAID_COLORS:
-	.byte $30, $3D, $2D, $1D, $0D
+.byte $30, $3D, $2D, $1D, $0D
 
 MAIN:
 	DISABLE_INTERRUPT
@@ -186,4 +187,4 @@ FAID_IN_LOOP:
 
 .INCLUDE "interrupt.asm"
 .segment "CHARS"
-	.INCBIN "Resources/ASCII.chr"
+.INCBIN "Resources/ASCII.chr"

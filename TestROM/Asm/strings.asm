@@ -30,17 +30,17 @@
 .endmacro
 	
 INTRO_STR_1:
-	.byte "Copyright ' 2015,Vahid Heidari", 0
+.byte "Copyright ' 2015,Vahid Heidari", 0
 INTRO_STR_2:
-	.byte "(DeltaCode)", 0
+.byte "(DeltaCode)", 0
 INTRO_STR_3:
-	.byte "Powered by CC65 Compiler", 0
+.byte "Powered by CC65 Compiler", 0
 INTRO_STR_4:
-	.byte "You can find source codes at:",0
+.byte "You can find source codes at:",0
 INTRO_STR_5:
-	.byte "https://github.com/VahidHeidari/",0
+.byte "https://github.com/VahidHeidari/",0
 INTRO_STR_6:
-	.byte "NES_DEV",0
+.byte "NES_DEV",0
 
 PRINT_STR:
 	ldy #0

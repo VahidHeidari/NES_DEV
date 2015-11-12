@@ -34,9 +34,9 @@ IRQ_ROUTINE:
 
 	; Vector table
 .segment "VECTORS"
-	.word 0
-	.word 0
-	.word 0
-	.word NMI_ROUTINE		; NMI routine
-	.word MAIN				; Main entry point
-	.word IRQ_ROUTINE		; IRQ routin
+.word 0
+.word 0
+.word 0
+.word NMI_ROUTINE		; NMI routine
+.word MAIN				; Main entry point
+.word IRQ_ROUTINE		; IRQ routin
