@@ -22,41 +22,39 @@
 ;
 ;-----------------------------------
 
-PALETTE_TABLE
-IMAGE_PALETTE
-	dc.b $0D
-	dc.b $30
-	dc.b $12
-	dc.b $05
-	dc.b $0D
-	dc.b $15
-	dc.b $09
-	dc.b $19
-	dc.b $0D
-	dc.b $0C
-	dc.b $1C
-	dc.b $0E
-	dc.b $0D
-	dc.b $1F
-	dc.b $20
-	dc.b $30
+PALETTE_TABLE:
+IMAGE_PALETTE:
+	.byte $0D
+	.byte $30
+	.byte $12
+	.byte $05
+	.byte $0D
+	.byte $15
+	.byte $09
+	.byte $19
+	.byte $0D
+	.byte $0C
+	.byte $1C
+	.byte $0E
+	.byte $0D
+	.byte $1F
+	.byte $20
+	.byte $30
 
-SPRITE_PALETTE	
-	dc.b $0D		; Background color
-	dc.b $22
-	dc.b $32
-	dc.b $25
-	dc.b $0D
-	dc.b $35
-	dc.b $29
-	dc.b $39
-	dc.b $0D
-	dc.b $2C
-	dc.b $3C
-	dc.b $2D
-	dc.b $0D
-	dc.b $3D
-	dc.b $2F
-	dc.b $3F
-
-	
+SPRITE_PALETTE:	
+	.byte $0D		; Background color
+	.byte $22
+	.byte $32
+	.byte $25
+	.byte $0D
+	.byte $35
+	.byte $29
+	.byte $39
+	.byte $0D
+	.byte $2C
+	.byte $3C
+	.byte $2D
+	.byte $0D
+	.byte $3D
+	.byte $2F
+	.byte $3F

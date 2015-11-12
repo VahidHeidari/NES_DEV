@@ -22,21 +22,36 @@
 ;
 ;-----------------------------------
 
-	PROCESSOR 6502
-	ORG $C000
+.segment "HEADER"
+.byte "NES", $1A	; Signiture
+.byte $2			; Number of 16KB ROM banks
+.byte $1			; Number of 8KB CHR ROM banks
+.byte $0			; Contorl byte 1
+.byte $0			; Control byte 2
+.byte $0			; Number of 8K RAM Banks
+.byte $0, $0		; Reserverd
+.byte $0, $0		; Reserverd
+.byte $0, $0		; Reserverd
+.byte $0			; Reserverd
 
-NAMETABLESTATE EQU $00
-STR_PTR EQU $01
-DATA_PTR EQU $03
+.segment "CODE"
+NAMETABLESTATE	= $00
+STR_PTR			= $01
+DATA_PTR		= $03
 
-	INCLUDE "strings.asm"
-	INCLUDE "dlogo.asm"
-	INCLUDE "macros.asm"
-	INCLUDE "palette.asm"
-	INCLUDE "attrib.asm"
-	INCLUDE "ppu.asm"
+	.INCLUDE "strings.asm"
+	.INCLUDE "dlogo.asm"
+	.INCLUDE "macros.asm"
+	.INCLUDE "palette.asm"
+	.INCLUDE "attrib.asm"
+	.INCLUDE "ppu.asm"
 
-MAIN SUBROUTINE
+FAID_FRAME_DELAY = 5
+NUMBER_OF_FAID_COLOR = 5
+PALETTE_FAID_COLORS:
+	.byte $30, $3D, $2D, $1D, $0D
+
+MAIN:
 	DISABLE_INTERRUPT
 	
 	jsr WAIT_VBLANK			; Wait untile VBlank period
@@ -48,7 +63,7 @@ MAIN SUBROUTINE
 	
 	ldx #$00				; Index of palette array
 	ldy #$20				; Number of palette entries
-LOOP_PALETTE
+LOOP_PALETTE:
 	lda PALETTE_TABLE,x		; Get palette table color in Acc
 	sta $2007				; Store Acc in PPU palette memory
 	inx						; Next index
@@ -78,7 +93,7 @@ LOOP_SPRITES_INIT:
 	SET_STR_PTR INTRO_STR_2
 	jsr PRINT_STR
 	
-	PPU_SET_ADDR $20A7
+	PPU_SET_ADDR $20A4
 	SET_STR_PTR INTRO_STR_3
 	jsr PRINT_STR
 
@@ -94,13 +109,13 @@ LOOP_SPRITES_INIT:
 	SET_STR_PTR INTRO_STR_6
 	jsr PRINT_STR
 
-PUT_LOGO
+PUT_LOGO:
 	PPU_SET_ADDR $210A
 	SET_DATA_PTR DELTA_LOGO
 	ldx #DELTA_LOGO_HEIGHT
 	lda #$EA
 	pha
-LOGO_OUTER_LOOP
+LOGO_OUTER_LOOP:
 	pla
 	clc
 	adc #$20				; Next line of logo
@@ -108,7 +123,7 @@ LOGO_OUTER_LOOP
 	pha
 
 	ldy #0
-LOGO_LOOP
+LOGO_LOOP:
 	lda (DATA_PTR),y
 	sta $2007
 	iny
@@ -138,15 +153,10 @@ LOGO_LOOP
 	lda	#%00011110
 	sta $2001
 
-FAID_FRAME_DELAY = 5
-NUMBER_OF_FAID_COLOR = 5
-PALETTE_FAID_COLORS
-	dc.b $30, $3D, $2D, $1D, $0D
-
 	SET_DATA_PTR PALETTE_FAID_COLORS
-LOOP_FOR_EVER
+LOOP_FOR_EVER:
 	ldy #0
-FAID_OUT_LOOP
+FAID_OUT_LOOP:
 	ldx #FAID_FRAME_DELAY
 	jsr WAIT_FRAMES
 	PPU_SET_ADDR $3F01
@@ -158,7 +168,7 @@ FAID_OUT_LOOP
 	bne FAID_OUT_LOOP
 
 	ldy #NUMBER_OF_FAID_COLOR-1
-FAID_IN_LOOP
+FAID_IN_LOOP:
 	ldx #FAID_FRAME_DELAY
 	jsr WAIT_FRAMES
 	PPU_SET_ADDR $3F01
@@ -174,16 +184,6 @@ FAID_IN_LOOP
 
 	jmp LOOP_FOR_EVER
 
-; NMI routines executes every frame.
-NMI_ROUTINE SUBROUTINE
-	rti
-
-; IRQ routione
-; Do nothing just for now!
-IRQ_ROUTINE SUBROUTINE
-	rti
-	; Vector table
-	ORG $FFFA
-	dc.w NMI_ROUTINE		; NMI routine
-	dc.w MAIN				; Main entry point
-	dc.w IRQ_ROUTINE		; IRQ routine
+.INCLUDE "interrupt.asm"
+.segment "CHARS"
+	.INCBIN "Resources/ASCII.chr"

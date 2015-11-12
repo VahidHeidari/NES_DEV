@@ -22,29 +22,29 @@
 ;
 ;-----------------------------------
 	
-	mac DISABLE_INTERRUPT
+.macro DISABLE_INTERRUPT
 	sei
-	endm
+.endmacro
 	
-	mac ENABLE_INTERRUPT
+.macro ENABLE_INTERRUPT
 	cli
-	endm
+.endmacro
 	
-	mac DISABLE_NMI
+.macro DISABLE_NMI
 	ldx #$00
 	stx $2000
 	stx $2001
-	endm
+.endmacro
 	
-	mac INITIALIZE_STACK_POINTER
+.macro INITIALIZE_STACK_POINTER
 	dex
 	txs
-	endm
+.endmacro
 	
-	mac CLEAR_RAM
+.macro CLEAR_RAM
 	lda #$00
 	ldx #$00
-.CLEAR
+CLEAR:
 	sta $00,x
 	sta $100,x
 	sta $200,x
@@ -54,25 +54,20 @@
 	sta $600,x
 	sta $700,x
 	dex
-	bne .CLEAR
-	endm
+	bne CLEAR
+.endmacro
 
-	mac SET_DATA_PTR
-	lda <#{0}
+.macro SET_DATA_PTR addr
+	lda #<addr
 	sta DATA_PTR
-	lda >#{0}
+	lda #>addr
 	sta DATA_PTR+1
-	endm
+.endmacro
 	
-	mac INC_DATA_PTR
-	lda #{0}
+.macro INC_DATA_PTR value
+	lda #value
 	clc
 	adc DATA_PTR
 	sta DATA_PTR
-;	bcc .END
-;	lda #0
-;	adc DATA_PTR+1
-;	adc
-;.END
-	endm
+.endmacro
 	

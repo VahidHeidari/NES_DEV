@@ -32,36 +32,36 @@ PPU_SCROLL   = $2005
 PPU_ADDR     = $2006
 PPU_DATA     = $2007
 	
-	mac PPU_SET_SCROLL_XY
-	lda #{0}
+.macro PPU_SET_SCROLL_XY cX, cY
+	lda #cX
 	sta PPU_SCROLL
-	lda #{1}
+	lda #cY
 	sta PPU_SCROLL
-	endm
+.endmacro
 
-	mac PPU_SET_ADDR
-	lda >#{0}
+.macro PPU_SET_ADDR addr
+	lda #>addr
 	sta PPU_ADDR
-	lda <#{0}
+	lda #<addr
 	sta PPU_ADDR
-	endm
+.endmacro
 	
-	mac PPU_SET_ADDR_A
+.macro PPU_SET_ADDR_A addr_high_byte
 	pha
-	lda #{0}
+	lda #addr_high_byte
 	sta PPU_ADDR
 	pla
 	sta PPU_ADDR
-	endm
+.endmacro
 	
 	; Wait for v blank signales
-WAIT_VBLANK SUBROUTINE
+WAIT_VBLANK:
 	lda PPU_STATUS
 	bpl WAIT_VBLANK
 	rts
 	
-WAIT_FRAMES SUBROUTINE
-WAIT_FRAMES_LOOP
+WAIT_FRAMES:
+WAIT_FRAMES_LOOP:
 	jsr WAIT_VBLANK
 	dex
 	bne WAIT_FRAMES_LOOP

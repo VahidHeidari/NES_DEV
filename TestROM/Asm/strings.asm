@@ -22,33 +22,33 @@
 ;
 ;-----------------------------------
 	
-	mac SET_STR_PTR
-	lda <#{0}
+.macro SET_STR_PTR addr
+	lda #<addr
 	sta STR_PTR
-	lda >#{0}
+	lda #>addr
 	sta STR_PTR+1
-	endm
+.endmacro
 	
-INTRO_STR_1
-	dc.b "Copyright ' 2015,Vahid Heidari", 0
-INTRO_STR_2
-	dc.b "(DeltaCode)", 0
-INTRO_STR_3
-	dc.b "Powered by DASM32", 0
-INTRO_STR_4
-	dc.b "You can find source codes at:",0
-INTRO_STR_5
-	dc.b "https://github.com/VahidHeidari/",0
-INTRO_STR_6
-	dc.b "NES_DEV",0
+INTRO_STR_1:
+	.byte "Copyright ' 2015,Vahid Heidari", 0
+INTRO_STR_2:
+	.byte "(DeltaCode)", 0
+INTRO_STR_3:
+	.byte "Powered by CC65 Compiler", 0
+INTRO_STR_4:
+	.byte "You can find source codes at:",0
+INTRO_STR_5:
+	.byte "https://github.com/VahidHeidari/",0
+INTRO_STR_6:
+	.byte "NES_DEV",0
 
-PRINT_STR SUBROUTINE
+PRINT_STR:
 	ldy #0
-.PRINT_LOOP
+PRINT_LOOP:
 	lda (STR_PTR),y
 	beq PRINT_STR_END
 	iny
 	sta $2007
-	jmp .PRINT_LOOP
-PRINT_STR_END
+	jmp PRINT_LOOP
+PRINT_STR_END:
 	rts
