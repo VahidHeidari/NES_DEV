@@ -1,6 +1,6 @@
 ;-----------------------------------
 ; This is an 'NES' test program.
-; Assembler is DASM.exe
+; Assembler is ca65.exe
 ; Date 2015/11/17 Thursday 11:02
 ;
 ; NES_DEV is a cross-platform, portable, and hand-held NES emulator.
@@ -25,7 +25,7 @@
 PALETTE_TABLE:
 IMAGE_PALETTE:
 .byte $0D, $30, $12, $05
-.byte $0D, $15, $09, $19
+.byte $0D, $28, $09, $19
 .byte $0D, $0C, $1C, $0E
 .byte $0D, $1F, $20, $30
 
