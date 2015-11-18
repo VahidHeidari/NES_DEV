@@ -17,14 +17,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+ASM=cc65/win/bin/ca65.exe
 CC=cc65/win/bin/cl65.exe
+LD=cc65/win/bin/ld65.exe
 C_FLAGS=-t nes -IHardware -Icc65/include --add-source -Oi
-LINK_FLAGS=-Lcc65/win/lib
 
 all: main.o
-	$(CC) $(C_FLAGS) $(LINK_FLAGS) -C cc65-test.cfg main.o -o cc65-test.nes
+	$(LD) -C cc65-test.cfg nes.o ppu.o main.o runtime.lib -o cc65-test.nes
 
-main.o : main.c Hardware/ppu-memory.h
+main.o : main.c Hardware/ppu-memory.h ../Asm/ppu.asm
+	$(ASM) --cpu 6502 nes.asm -o nes.o
+	$(ASM) --cpu 6502 ../Asm/ppu.asm -o ppu.o
 	$(CC) $(C_FLAGS) -c main.c -o main.o
 
 clean:

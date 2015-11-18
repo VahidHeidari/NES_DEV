@@ -1,7 +1,7 @@
 ;-----------------------------------
 ; This is an 'NES' test program.
-; Assembler is DASM.exe
-; Date 2014/02/20 Thursday 21:49
+; Assembler is ca65.exe
+; Date 2015/11/13 Thursday 19:10
 ;
 ; NES_DEV is a cross-platform, portable, and hand-held NES emulator.
 ;
@@ -31,7 +31,15 @@ PPU_OAM_DATA = $2004
 PPU_SCROLL   = $2005
 PPU_ADDR     = $2006
 PPU_DATA     = $2007
-	
+
+.export _wait_vblank
+.export _wait_frames
+
+.macro PPU_SET_OAM_ADDR addr
+	lda #addr
+	sta PPU_OAM_ADDR
+.endmacro
+
 .macro PPU_SET_SCROLL_XY cX, cY
 	lda #cX
 	sta PPU_SCROLL
@@ -55,14 +63,15 @@ PPU_DATA     = $2007
 .endmacro
 	
 	; Wait for v blank signales
-WAIT_VBLANK:
+_wait_vblank:
 	lda PPU_STATUS
-	bpl WAIT_VBLANK
+	bpl _wait_vblank
 	rts
 	
-WAIT_FRAMES:
+_wait_frames:
+	tax
 WAIT_FRAMES_LOOP:
-	jsr WAIT_VBLANK
+	jsr _wait_vblank
 	dex
 	bne WAIT_FRAMES_LOOP
 	rts

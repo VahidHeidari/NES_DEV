@@ -1,7 +1,7 @@
 ;-----------------------------------
 ; This is an 'NES' test program.
-; Assembler is DASM.exe
-; Date 2014/02/20 Thursday 21:49
+; Assembler is ca65.exe
+; Date 2015/11/17 Thursday 11:02
 ;
 ; NES_DEV is a cross-platform, portable, and hand-held NES emulator.
 ;
@@ -70,4 +70,21 @@ CLEAR:
 	adc DATA_PTR
 	sta DATA_PTR
 .endmacro
-	
+
+.macro STORE_CONTEXT
+	plp
+	pha								; Store registers.
+	txa
+	pha
+	tya
+	pha
+.endmacro
+
+.macro RESTORE_CONTEXT
+	pla								; Restore registers.
+	tay
+	pla
+	tax
+	pla
+	php
+.endmacro

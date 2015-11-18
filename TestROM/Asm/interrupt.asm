@@ -1,7 +1,7 @@
 ;-----------------------------------
 ; This is an 'NES' test program.
-; Assembler is DASM.exe
-; Date 2014/02/20 Thursday 21:49
+; Assembler is ca65.exe
+; Date 2015/11/17 Thursday 11:02
 ;
 ; NES_DEV is a cross-platform, portable, and hand-held NES emulator.
 ;
@@ -22,17 +22,60 @@
 ;
 ;-----------------------------------
 
+.segment "ZEROPAGE"
+
+; Animation controler variables
+ANIMATION_DELAY = 6
+FRAME_COUNTER:   .res 1
+ANIMATION_FRAME: .res 1
+
+.segment "CODE"
+
+.INCLUDE "spr.asm"
+
 ; NMI routines executes every frame.
 NMI_ROUTINE:
-	PPU_SET_SCROLL_XY 0,0
-	rti
+	STORE_CONTEXT
+	
+	lda FRAME_COUNTER				; Increment frame counter.
+	clc
+	adc #1
+	sta FRAME_COUNTER
+	cmp #ANIMATION_DELAY
+	bne OAM_EXIT
+	lda #0
+	sta FRAME_COUNTER
+
+	lda ANIMATION_FRAME
+	clc
+	adc #BYTES_PER_MASTER_CHEAF_FRAME
+	cmp #MASTER_CHEAF_FRAMES * BYTES_PER_MASTER_CHEAF_FRAME
+	bne STORE_ANIMATION_FRAME
+	lda #0
+STORE_ANIMATION_FRAME:
+	sta ANIMATION_FRAME
+
+COPY_MASTER_CHEAF_FRAME:
+	tay
+	; Number of bytes to copy
+	ldx #BYTES_PER_MASTER_CHEAF_FRAME
+	PPU_SET_OAM_ADDR 0
+OAM_LOOP:
+	lda SPRITES_TABLE,y
+	sta PPU_OAM_DATA
+	iny
+	dex
+	bne OAM_LOOP	
+OAM_EXIT:
+
+	RESTORE_CONTEXT
 
 ; IRQ routione
 ; Do nothing just for now!
 IRQ_ROUTINE:
 	rti
 
-	; Vector table
+; Vector table
 .segment "VECTORS"
 .word 0
 .word 0

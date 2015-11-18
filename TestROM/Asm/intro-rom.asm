@@ -1,7 +1,7 @@
 ;-----------------------------------
 ; This is an 'NES' test program.
-; Assembler is DASM.exe
-; Date 2014/02/20 Thursday 21:49
+; Assembler is ca65.exe
+; Date 2015/11/17 Thursday 11:02
 ;
 ; NES_DEV is a cross-platform, portable, and hand-held NES emulator.
 ;
@@ -34,18 +34,19 @@
 .byte $0, $0		; Reserverd
 .byte $0			; Reserverd
 
+.segment "ZEROPAGE"
+NAMETABLESTATE:	.res 1
+STR_PTR:		.res 2
+DATA_PTR:		.res 2
+
 .segment "CODE"
 
 .INCLUDE "strings.asm"
 .INCLUDE "dlogo.asm"
 .INCLUDE "macros.asm"
 .INCLUDE "palette.asm"
-.INCLUDE "attrib.asm"
 .INCLUDE "ppu.asm"
 
-NAMETABLESTATE			= $00
-STR_PTR					= $01
-DATA_PTR				= $03
 FAID_FRAME_DELAY		= 5
 NUMBER_OF_FAID_COLOR	= 5
 
@@ -55,7 +56,7 @@ PALETTE_FAID_COLORS:
 MAIN:
 	DISABLE_INTERRUPT
 	
-	jsr WAIT_VBLANK			; Wait untile VBlank period
+	jsr _wait_vblank			; Wait untile VBlank period
 	
 	DISABLE_NMI
 	INITIALIZE_STACK_POINTER
@@ -144,7 +145,7 @@ LOGO_LOOP:
 ; bit 6   : PPU master slave
 ; bit 7   : generate NMI 0 : off     1 : on
 ; Re-enable v blank NMI
-	lda #%10000000
+	lda #%10001000
 	sta $2000
 	sta $00				; Temporary location for storing nametable state
 
@@ -158,8 +159,8 @@ LOGO_LOOP:
 LOOP_FOR_EVER:
 	ldy #0
 FAID_OUT_LOOP:
-	ldx #FAID_FRAME_DELAY
-	jsr WAIT_FRAMES
+	lda #FAID_FRAME_DELAY
+	jsr _wait_frames
 	PPU_SET_ADDR $3F01
 	lda (DATA_PTR),y
 	sta PPU_DATA
@@ -170,8 +171,8 @@ FAID_OUT_LOOP:
 
 	ldy #NUMBER_OF_FAID_COLOR-1
 FAID_IN_LOOP:
-	ldx #FAID_FRAME_DELAY
-	jsr WAIT_FRAMES
+	lda #FAID_FRAME_DELAY
+	jsr _wait_frames
 	PPU_SET_ADDR $3F01
 	lda (DATA_PTR),y
 	sta PPU_DATA
@@ -180,8 +181,8 @@ FAID_IN_LOOP:
 	cpy #$FF
 	bne FAID_IN_LOOP
 
-	ldx #FAID_FRAME_DELAY*4
-	jsr WAIT_FRAMES
+	lda #FAID_FRAME_DELAY*4
+	jsr _wait_frames
 
 	jmp LOOP_FOR_EVER
 

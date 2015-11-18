@@ -91,6 +91,9 @@
 	PPU_SCROLL = SCROLL >> 8;			\
 	PPU_SCROLL = SCROLL;				\
 } while (0)
- 
+
+void wait_vblank(void);
+void wait_frames(unsigned char frames);
+
 #endif
  

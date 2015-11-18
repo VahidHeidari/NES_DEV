@@ -1,7 +1,7 @@
 ;-----------------------------------
 ; This is an 'NES' test program.
 ; Assembler is DASM.exe
-; Date 2014/02/20 Thursday 21:49
+; Date 2015/11/17 Thursday 11:02
 ;
 ; NES_DEV is a cross-platform, portable, and hand-held NES emulator.
 ;
@@ -30,7 +30,7 @@ IMAGE_PALETTE:
 .byte $0D, $1F, $20, $30
 
 SPRITE_PALETTE:	
-.byte $0D, $22, $32, $25		; Background color
+.byte $0D, $1C, $2B, $39		; Background color
 .byte $0D, $35, $29, $39
 .byte $0D, $2C, $3C, $2D
 .byte $0D, $3D, $2F, $3F
