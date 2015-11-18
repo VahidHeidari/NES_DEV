@@ -1,6 +1,6 @@
 ;-----------------------------------
 ; This is an 'NES' test program.
-; Assembler is DASM.exe
+; Assembler is ca65.exe
 ; Date 2015/11/17 Thursday 11:02
 ;
 ; NES_DEV is a cross-platform, portable, and hand-held NES emulator.

@@ -32,3 +32,10 @@ ATTRIBUTE_TABLE_0:
 .byte $00, $00, $00, $00, $00, $00, $00, $00
 .byte $00, $00, $00, $00, $00, $00, $00, $00
 .byte $00, $00, $00, $00, $00, $00, $00, $00
+
+.macro FILL_ATTRIB addr, value
+	lda #>addr
+	shr
+	shr
+	and #$07
+.endmacro
