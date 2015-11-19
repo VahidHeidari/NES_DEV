@@ -88,3 +88,16 @@ CLEAR:
 	pla
 	php
 .endmacro
+
+.macro CLEAR_NAME_TABLE addr
+	PPU_SET_ADDR addr
+	ldx #0
+	lda #0
+	ldy #4
+CLEAR_NAME_TABLE_LOOP:
+	sta PPU_DATA
+	dex
+	bne CLEAR_NAME_TABLE_LOOP
+	dey
+	bne CLEAR_NAME_TABLE_LOOP
+.endmacro

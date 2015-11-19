@@ -61,6 +61,8 @@ MAIN:
 	DISABLE_NMI
 	INITIALIZE_STACK_POINTER
 	CLEAR_RAM
+	CLEAR_NAME_TABLE $2000
+
 	PPU_SET_ADDR $3F00		; Set palette start address $3F00-$3F20
 	
 	ldx #$00				; Index of palette array
