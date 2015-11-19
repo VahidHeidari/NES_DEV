@@ -298,8 +298,10 @@ void ppu_write(pPpuStatus ppu, uint16_t addr, uint8_t value)
 			{
 				int addr = ppu->v & 0x001F;
 				palette[addr] = value;
-				if (addr > 0x0F && ((addr & 0x03) == 0))
+				if (addr > 0x0F && ((addr & 0x03) == 0))		// Background color
 					palette[0] = value;
+					/*palette[0x00] = palette[0x04] = palette[0x08] = palette[0x0C] =
+					palette[0x10] = palette[0x14] = palette[0x18] = palette[0x1C] = value;*/
 			}
 
 			ppu_data_reg_inc(ppu);
@@ -882,17 +884,19 @@ static void put_name_table(pPpuStatus ppu, int nt)
 	
 	for (x = 0; x < 32 * 30; ++x)
 	{
+		const int tile_addr = x + nt * 0x0400;
+
 		for (y = 0; y < 8; ++y)
 		{
 			if (ppu->regs.ctrl & BACKGROUND_PATTERN_TABALE)
 			{
-				  low = pattern_table[name_table[x + nt * 0x0400] * 16     + y + 0x1000];
-				 high = pattern_table[name_table[x + nt * 0x0400] * 16 + 8 + y + 0x1000];
+				  low = pattern_table[name_table[tile_addr] * 16     + y + 0x1000];
+				 high = pattern_table[name_table[tile_addr] * 16 + 8 + y + 0x1000];
 			}
 			else
 			{
-				 low = pattern_table[name_table[x + nt * 0x0400] * 16     + y];
-				high = pattern_table[name_table[x + nt * 0x0400] * 16 + 8 + y];
+				 low = pattern_table[name_table[tile_addr] * 16     + y];
+				high = pattern_table[name_table[tile_addr] * 16 + 8 + y];
 			}
 			
 			idx = (((x / 32) * 8) + y) * WINDOW_NAME_TABLE_WIDTH + (x % 32) * 8;
@@ -903,12 +907,92 @@ static void put_name_table(pPpuStatus ppu, int nt)
 			
 			for (i = 0; i < 8; ++i)
 			{
+				/**
+				 * Extracting Attributes from tile address is calculated from the fallowing calculations:
+				 * (It can be used for fast rendering in low end and slow devices)
+				 *
+				 * For example NameTable_0 addressings is:
+				 *    NameTable_0    ->  $2000 to $23BF : $3C0 = 960 Bytes
+				 *    AttribTable_0  ->  $23C0 to $2400 : $40  = 64  Bytes
+				 *
+				 * NameTable is a 32x30 tiles witch is maped to a 8x8 grid of AttribTable:
+				 *
+				 *    32 x 30         32 x 32     Each   4 bytes in NameTable -> Attrib += 1
+				 *                                Each 128 bytes in NameTable -> Attrib += 8
+				 *       | Map   ~>      | Map
+				 *       v               v
+				 *
+				 *     8 x 8           8 x 8
+				 *
+				 *
+				 * NameTable_0:
+				 *
+				 *           +---+---++---+---+  +---+---++---+---+--
+				 *    $2000  | 0 | 1 || 2 | 3 |  | 4 | 5 || 6 | 7 |
+				 *           +---0---++---1---+  +---+---++---+---+--
+				 *    $2020  | 32| 33|| 34| 35|  | 36| 37|| 38| 39|
+				 *           +===+===++===+===+  +===+===++===+===+--
+				 *    $2040  | 64| 65|| 66| 67|  | 68| 69|| 70| 71|
+				 *           +---2---++---3---+  +---+---++---+---+--
+				 *    $2060  | 96| 97|| 98| 99|  |100|101||102|103|
+				 *           +---+---++---+---+  +---+---++---+---+--
+				 *
+				 *           +---+---++---+---+  +---+---++---+---+--
+				 *    $2080  |128|129||130|131|  |132|133||134|135|
+				 *           +---+---++---+---+  +---+---++---+---+--
+				 *    $20A0  |160|161||162|163|  |164|165||166|167|
+				 *           +---+---++---+---+  +---+---++---+---+--
+				 *    $20B0  |192|193||194|195|  |196|197||198|199|
+				 *           +---+---++---+---+  +---+---++---+---+--
+				 *    $20C0  |224|225||226|227|  |228|229||230|231|
+				 *           +---+---++---+---+  +---+---++---+---+--
+				 *           |   |   ||   |   |  |   |   ||   |   |
+				 *
+				 *
+				 * AttribTable_0:
+				 *
+				 *           3  2  1  0            3  2  1  0
+				 *    $23C0 [|][|][|][|]    $23C1 [|][|][|][|]    . . .
+				 *    $23C8 [|][|][|][|]    $23C9 [|][|][|][|]    . . .
+				 *    $23D0 [|][|][|][|]    $23D1 [|][|][|][|]    . . .
+				 *
+				 * We can extract AttribTable address from NameTable tile address as:
+				 *
+				 *                 +---+---+---+---+---+---+---+---+ +---+---+---+---+---+---+---+---+
+				 * tile_addr $     | F | E | D | C | B | A | 9 | 8 | | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+				 *                 +---+---+---+---+---+---+---+---+ +---+---+---+---+---+---+---+---+
+				 *                                           ^         ^   A       ^        ^  A
+				 *                                           |_________|   |       |________|  |
+				 *                                               Row       |         Column    |
+				 *                                                      Shifting            Shifting
+				 *
+				 * Attribute Address = (Row * 8) + Column = ((tile_addr & 0x0380) >> 4) | ((tile_addr & 0x001C) >> 2)
+				 *    Row    = ((tile_addr & 0x0380) >> 7) << 3) = (tile_addr & 0x038) >> 4
+				 *    Column = ((tile_addr & 0x001C) >> 2)
+				 *
+				 * Shifting = (((tile_addr & 0x0002) >> 1) | ((tile_addr & 0x0040) >> 5)) * 2
+				 *     = (tile_addr & 0x0002) | ((tile_addr & 0x0040) >> 4)
+				 */
+				int attrib;
+				const int attrib_addr = nt * 0x0400 | 0x03C0 |
+					((tile_addr & 0x0380) >> 4) |
+					((tile_addr & 0x001C) >> 2);
+				const int shifting = (tile_addr & 0x02) | ((tile_addr & 0x40) >> 4);
+
 				pixel  = ( low & (0x80 >> i)) ? 0x01 : 0;
 				pixel |= (high & (0x80 >> i)) ? 0x02 : 0;
-				//pixel |= 0x04;
-				//pixel |= name_table[ATTRIBUTE_ADDRESS(x)];
+
+				attrib = name_table[attrib_addr];
+				attrib >>= shifting;
+				attrib &= 0x03;
+				attrib <<= 2;		// High bits of color
+
+				pixel |= attrib;
+
+				if ((pixel & 0x03) == 0)
+					pixel = 0;
 				pixel = palette[pixel];
-				((uint32_t*)(surface_name_table->pixels))[idx++] = (colors[pixel];
+				((uint32_t*)(surface_name_table->pixels))[idx++] = (colors[pixel]);
 			}
 			//idx += 256 * 2 - 8;
 		}
@@ -924,7 +1008,6 @@ static void put_name_table(pPpuStatus ppu, int nt)
 #if defined DEBUG_PPU_NAMETABLE
 static void plot_vertical_line(pPpuStatus ppu, int x, uint32_t color)
 {
-	(void)ppu;
 #if defined _WIN32 || __linux__
 	int i;
 
@@ -937,13 +1020,14 @@ static void plot_vertical_line(pPpuStatus ppu, int x, uint32_t color)
 #else
 	(void)x;
 	(void)color;
+	(void)ppu;
 #endif
+
 }
 
 #if defined DEBUG_PPU_NAMETABLE
 static void plot_horizontal_line(pPpuStatus ppu, int y, uint32_t color)
 {
-	(void)ppu;
 #if defined _WIN32 || __linux__
 	int i;
 
@@ -956,8 +1040,10 @@ static void plot_horizontal_line(pPpuStatus ppu, int y, uint32_t color)
 #else
 	(void)y;
 	(void)color;
+	(void)ppu;
 #endif
 #endif
+
 }
 #endif
 
@@ -988,7 +1074,6 @@ void ppu_debug_name_table(pPpuStatus ppu, uint32_t color)
 
 void ppu_debug_pattern_table(pPpuStatus ppu)
 {
-	(void)ppu;
 #if defined _WIN32 || defined __linux__
 #if defined DEBUG_PPU_PATTERNTABLE
 	int i, x, y;
@@ -1036,7 +1121,9 @@ void ppu_debug_pattern_table(pPpuStatus ppu)
 	}
 	SDL_UpdateWindowSurface(window_pattern_table);
 #else
+	(void)ppu;
 #endif
 #endif
+
 }
 
