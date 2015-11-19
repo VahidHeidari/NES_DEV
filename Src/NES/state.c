@@ -76,16 +76,10 @@ int state_init(const char* path)
 
 	for (i = 0; i < NUM_OF_SLOTS; ++i)
 	{
-		char slot_name[10];
-
 #if defined _WIN32 && !defined __GNUC__
-		sprintf_s(slot_name, sizeof(slot_name), "SLOT%d.SVT", i);
-		strcpy_s(&(slot[i][0]), SLOT_PATH_SIZE, path);
-		strcpy_s(&(slot[i][path_len]), SLOT_PATH_SIZE, slot_name);
+		sprintf_s(&slot[i][0], SLOT_PATH_SIZE, "%s/SLOT%d.SVT", path, i);
 #else
-		sprintf(slot_name, "SLOT%d.SVT", i);
-		strcpy(&(slot[i][0]), path);
-		strcpy(&(slot[i][path_len]), slot_name);
+		sprintf(&slot[i][0], SLOT_PATH_SIZE, "%s/SLOT%d.SVT", path, i);
 #endif
 	}
 
