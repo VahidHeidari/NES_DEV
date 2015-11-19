@@ -967,7 +967,7 @@ static void put_name_table(pPpuStatus ppu, int nt)
 				 *                                                      Shifting            Shifting
 				 *
 				 * Attribute Address = (Row * 8) + Column = ((tile_addr & 0x0380) >> 4) | ((tile_addr & 0x001C) >> 2)
-				 *    Row    = ((tile_addr & 0x0380) >> 7) << 3) = (tile_addr & 0x038) >> 4
+				 *    Row    = ((tile_addr & 0x0380) >> 7) << 3) = (tile_addr & 0x0380) >> 4
 				 *    Column = ((tile_addr & 0x001C) >> 2)
 				 *
 				 * Shifting = (((tile_addr & 0x0002) >> 1) | ((tile_addr & 0x0040) >> 5)) * 2
