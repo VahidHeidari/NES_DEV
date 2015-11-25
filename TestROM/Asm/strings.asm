@@ -42,7 +42,7 @@ INTRO_STR_5:
 INTRO_STR_6:
 .byte "NES_DEV",0
 
-PRINT_STR:
+.proc _print_str
 	ldy #0
 PRINT_LOOP:
 	lda (STR_PTR),y
@@ -52,3 +52,60 @@ PRINT_LOOP:
 	jmp PRINT_LOOP
 PRINT_STR_END:
 	rts
+.endproc
+
+.proc _print_hex_a
+	pha								; Save A reg.
+	ldy #0
+	SHIFT_LEFT 4					; A >>= 4.
+	tax								; X reg. used as index.
+	lda HEX_NUMBERS,x
+	sta (STR_PTR),y					; Store high nibble into string buffer.
+	iny
+	
+	pla								; Restore A reg.
+	and #$0F						; A &= 0x0F.
+	tax								; X reg. used as index.
+	lda HEX_NUMBERS,x
+	sta (STR_PTR),y					; Store low nibble into string buffer.
+	iny
+	
+	lda #0							; Trailing null character
+	sta (STR_PTR),y
+	rts
+HEX_NUMBERS:
+.byte "0123456789ABCDEF"
+.endproc
+
+.proc _str_len
+	ldy #0
+@STR_LEN_LOOP:
+	lda (STR_PTR),y
+	beq @STR_LEN_EXIT
+@STR_LEN_INCREMENT:
+	iny
+	bne @STR_LEN_LOOP
+@STR_LEN_EXIT:
+	rts
+.endproc
+
+.proc _str_rev
+	ldy #0
+@STR_REV_LOOP:
+	lda (STR_PTR),y
+	beq @STR_REV_LOOP_EXIT
+	pha
+	iny
+	bne @STR_REV_LOOP
+@STR_REV_LOOP_EXIT:
+	tya
+	tax
+	ldy #0
+@REV_LOOP:
+	pla
+	sta (STR_PTR),y
+	iny
+	dex
+	bne @REV_LOOP
+	rts
+.endproc

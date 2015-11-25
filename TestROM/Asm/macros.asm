@@ -64,11 +64,8 @@ CLEAR:
 	sta DATA_PTR+1
 .endmacro
 	
-.macro INC_DATA_PTR value
-	lda #value
-	clc
-	adc DATA_PTR
-	sta DATA_PTR
+.macro INC_DATA_PTR value, result
+	INC_INT value, result
 .endmacro
 
 .macro STORE_CONTEXT
@@ -100,4 +97,20 @@ CLEAR_NAME_TABLE_LOOP:
 	bne CLEAR_NAME_TABLE_LOOP
 	dey
 	bne CLEAR_NAME_TABLE_LOOP
+.endmacro
+
+.macro INC_INT addr, result
+	clc							; Clear carry flag
+	lda addr					; Low nible of left value
+	adc	result					; Add with low nible fo result
+	sta result					; Store into low byte of result
+	lda addr+1					; High byte of left value
+	adc result+1				; Add with high byte of result
+	sta result+1				; Store into high byte of result
+.endmacro
+
+.macro SHIFT_LEFT times
+.repeat times
+	lsr
+.endrepeat
 .endmacro

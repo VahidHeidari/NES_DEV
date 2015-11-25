@@ -33,10 +33,16 @@ ANIMATION_FRAME: .res 1
 
 .INCLUDE "spr.asm"
 
+.macro INC_TICK_COUNT
+	INC_INT	ONE_INC, tick_count
+.endmacro
+
 ; NMI routines executes every frame.
 NMI_ROUTINE:
 	STORE_CONTEXT
 	
+	INC_TICK_COUNT
+
 	lda FRAME_COUNTER				; Increment frame counter.
 	clc
 	adc #1

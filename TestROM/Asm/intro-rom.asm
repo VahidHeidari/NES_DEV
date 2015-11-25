@@ -38,17 +38,24 @@
 NAMETABLESTATE:	.res 1
 STR_PTR:		.res 2
 DATA_PTR:		.res 2
+tick_count:		.res 2
+string_buffer:	.res 10
 
 .segment "CODE"
 
+.INCLUDE "macros.asm"
 .INCLUDE "strings.asm"
 .INCLUDE "dlogo.asm"
-.INCLUDE "macros.asm"
 .INCLUDE "palette.asm"
 .INCLUDE "ppu.asm"
 
 FAID_FRAME_DELAY		= 5
 NUMBER_OF_FAID_COLOR	= 5
+
+ONE_INC:
+.word $0001
+DELTA_LOGO_WIDTH_INC:
+.word DELTA_LOGO_WIDTH
 
 PALETTE_FAID_COLORS:
 .byte $30, $3D, $2D, $1D, $0D
@@ -91,27 +98,36 @@ LOOP_SPRITES_INIT:
 	; Print introduction string.
 	PPU_SET_ADDR $2041
 	SET_STR_PTR INTRO_STR_1
-	jsr PRINT_STR
+	jsr _print_str
 	
 	PPU_SET_ADDR $206A
 	SET_STR_PTR INTRO_STR_2
-	jsr PRINT_STR
+	jsr _print_str
 	
 	PPU_SET_ADDR $20A4
 	SET_STR_PTR INTRO_STR_3
-	jsr PRINT_STR
+	jsr _print_str
 
 	PPU_SET_ADDR $22A2
 	SET_STR_PTR INTRO_STR_4
-	jsr PRINT_STR
+	jsr _print_str
 
 	PPU_SET_ADDR $22C0
 	SET_STR_PTR INTRO_STR_5
-	jsr PRINT_STR
+	jsr _print_str
 
 	PPU_SET_ADDR $22E4
 	SET_STR_PTR INTRO_STR_6
-	jsr PRINT_STR
+	jsr _print_str
+	
+	PPU_SET_ADDR $2326
+	lda #'$'
+	sta PPU_DATA
+	SET_STR_PTR string_buffer
+	lda #$1A
+	jsr _print_hex_a
+	jsr _str_rev
+	jsr _print_str
 
 PUT_LOGO:
 	PPU_SET_ADDR $210A
@@ -133,7 +149,7 @@ LOGO_LOOP:
 	iny
 	cpy #DELTA_LOGO_WIDTH
 	bne LOGO_LOOP
-	INC_DATA_PTR DELTA_LOGO_WIDTH
+	INC_DATA_PTR DELTA_LOGO_WIDTH_INC, DATA_PTR
 	dex
 	bne LOGO_OUTER_LOOP
 	
