@@ -1020,9 +1020,8 @@ static void plot_vertical_line(pPpuStatus ppu, int x, uint32_t color)
 #else
 	(void)x;
 	(void)color;
-	(void)ppu;
 #endif
-
+	(void)ppu;
 }
 
 #if defined DEBUG_PPU_NAMETABLE
@@ -1040,10 +1039,9 @@ static void plot_horizontal_line(pPpuStatus ppu, int y, uint32_t color)
 #else
 	(void)y;
 	(void)color;
+#endif
+#endif
 	(void)ppu;
-#endif
-#endif
-
 }
 #endif
 
@@ -1066,10 +1064,10 @@ void ppu_debug_name_table(pPpuStatus ppu, uint32_t color)
 
 	SDL_UpdateWindowSurface(window_name_table);
 #else
-	(void)ppu;
 	(void)color;
 #endif
 #endif
+	(void)ppu;
 }
 
 void ppu_debug_pattern_table(pPpuStatus ppu)
@@ -1120,10 +1118,8 @@ void ppu_debug_pattern_table(pPpuStatus ppu)
 		}
 	}
 	SDL_UpdateWindowSurface(window_pattern_table);
-#else
+#endif
+#endif
 	(void)ppu;
-#endif
-#endif
-
 }
 
