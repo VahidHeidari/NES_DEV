@@ -79,7 +79,7 @@ int state_init(const char* path)
 #if defined _WIN32 && !defined __GNUC__
 		sprintf_s(&slot[i][0], SLOT_PATH_SIZE, "%s/SLOT%d.SVT", path, i);
 #else
-		sprintf(&slot[i][0], SLOT_PATH_SIZE, "%s/SLOT%d.SVT", path, i);
+		snprintf(&slot[i][0], SLOT_PATH_SIZE, "%s/SLOT%d.SVT", path, i);
 #endif
 	}
 
