@@ -79,6 +79,10 @@ static void fill_audio(void* data, uint8_t* stream, int len)
 
 	(void)data;		// Unused parameter
 
+#ifdef __linux__
+	return;		// Disable audio in linux.
+#endif
+
 	if (APU_IS_MODULE_ENABLED(APU_PULSE1_STATUS) && (apu.pulse1.r1 & APU_PULSE_ENVELOPE_VOLUME))
 		square_freq = PULSE_GET_FREQ(&apu.pulse1);
 
@@ -118,7 +122,9 @@ int apu_init(pApu apu)
 {
 	SDL_AudioSpec as;
 
-	//return 1;		// Disable audio.
+#if __linux__
+	return 1;		// Disable audio in linux.
+#endif
 
 	if (SDL_Init(SDL_INIT_AUDIO) < 0)
 	{
