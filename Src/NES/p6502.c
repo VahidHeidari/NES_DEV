@@ -749,7 +749,7 @@ void fetch(pP6502 p)
 		case 0x04:		case 0x14:		case 0x34:		case 0x64:		case 0x74:
 
 		case 0x89:
-			p->pc.w +=1; break;
+			p->pc.w += 1; break;
 
 		// Three byte opcode legnth.
 		case 0x0C:		case 0x1C:		case 0x3C:		case 0x7C:		case 0x9C:
@@ -769,7 +769,7 @@ void fetch(pP6502 p)
 		case 0x5F:		case 0x6F:		case 0x7F:		case 0x8F:		case 0x9F:
 		case 0xAF:		case 0xBF:		case 0xCF:		case 0xDF:		case 0xEF:
 		case 0xFF:
-			p->pc.w +=2; break;
+			p->pc.w += 2; break;
 #endif
 
 		default:
