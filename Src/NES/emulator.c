@@ -227,32 +227,32 @@ void read_joypad(void)
 						finished_emulation = 1;
 						break;
 					case SDLK_UP:
-						joypad.joypad_1 |= UP_BOTTUN;
+						joypad.buttons1.buttons |= UP_BOTTUN;
 						break;
 					case SDLK_DOWN:
-						joypad.joypad_1 |= DOWN_BOTTUN;
+						joypad.buttons1.buttons |= DOWN_BOTTUN;
 						break;
 					case SDLK_LEFT:
-						joypad.joypad_1 |= LEFT_BOTTUN;
+						joypad.buttons1.buttons |= LEFT_BOTTUN;
 						break;
 					case SDLK_RIGHT:
-						joypad.joypad_1 |= RIGHT_BOTTUN;
+						joypad.buttons1.buttons |= RIGHT_BOTTUN;
 						break;
 					case SDLK_KP_1:
 					case SDLK_s:
-						joypad.joypad_1 |= A_BOTTUN;
+						joypad.buttons1.buttons |= A_BOTTUN;
 						break;
 					case SDLK_KP_2:
 					case SDLK_a:
-						joypad.joypad_1 |= B_BOTTUN;
+						joypad.buttons1.buttons |= B_BOTTUN;
 						break;
 					case SDLK_KP_7:
 					case SDLK_RETURN:
-						joypad.joypad_1 |= START_BOTTUN;
+						joypad.buttons1.buttons |= START_BOTTUN;
 						break;
 					case SDLK_KP_8:
 					case SDLK_RCTRL:
-						joypad.joypad_1 |= SELECT_BOTTUN;
+						joypad.buttons1.buttons |= SELECT_BOTTUN;
 						break;
 
 					case SDLK_p:
@@ -280,32 +280,32 @@ void read_joypad(void)
 				switch (evnt.key.keysym.sym)
 				{
 					case SDLK_UP:
-						joypad.joypad_1 &= ~UP_BOTTUN;
+						joypad.buttons1.buttons &= ~UP_BOTTUN;
 						break;
 					case SDLK_DOWN:
-						joypad.joypad_1 &= ~DOWN_BOTTUN;
+						joypad.buttons1.buttons &= ~DOWN_BOTTUN;
 						break;
 					case SDLK_LEFT:
-						joypad.joypad_1 &= ~LEFT_BOTTUN;
+						joypad.buttons1.buttons &= ~LEFT_BOTTUN;
 						break;
 					case SDLK_RIGHT:
-						joypad.joypad_1 &= ~RIGHT_BOTTUN;
+						joypad.buttons1.buttons &= ~RIGHT_BOTTUN;
 						break;
 					case SDLK_KP_1:
 					case SDLK_s:
-						joypad.joypad_1 &= ~A_BOTTUN;
+						joypad.buttons1.buttons &= ~A_BOTTUN;
 						break;
 					case SDLK_KP_2:
 					case SDLK_a:
-						joypad.joypad_1 &= ~B_BOTTUN;
+						joypad.buttons1.buttons &= ~B_BOTTUN;
 						break;
 					case SDLK_KP_7:
 					case SDLK_RETURN:
-						joypad.joypad_1 &= ~START_BOTTUN;
+						joypad.buttons1.buttons &= ~START_BOTTUN;
 						break;
 					case SDLK_KP_8:
 					case SDLK_RCTRL:
-						joypad.joypad_1 &= ~SELECT_BOTTUN;
+						joypad.buttons1.buttons &= ~SELECT_BOTTUN;
 						break;
 				}
 				break;
@@ -316,44 +316,44 @@ void read_joypad(void)
 	int key_state = joystick_get_key_state();
 
 	if (JOYSTICK_IS_LEFT(key_state))
-		joypad.joypad_1 |= LEFT_BOTTON;
+		joypad.buttons1.buttons |= LEFT_BOTTON;
 	else
-		joypad.joypad_1 &= ~LEFT_BOTTON;
+		joypad.buttons1.buttons &= ~LEFT_BOTTON;
 
 	if (JOYSTICK_IS_RIGHT(key_state))
-		joypad.joypad_1 |= RIGHT_BOTTON;
+		joypad.buttons1.buttons |= RIGHT_BOTTON;
 	else
-		joypad.joypad_1 &= ~RIGHT_BOTTON;
+		joypad.buttons1.buttons &= ~RIGHT_BOTTON;
 
 	if (JOYSTICK_IS_UP(key_state))
-		joypad.joypad_1 |= UP_BOTTON;
+		joypad.buttons1.buttons |= UP_BOTTON;
 	else
-		joypad.joypad_1 &= ~UP_BOTTON;
+		joypad.buttons1.buttons &= ~UP_BOTTON;
 
 	if (JOYSTICK_IS_DOWN(key_state))
-		joypad.joypad_1 |= DOWN_BOTTON;
+		joypad.buttons1.buttons |= DOWN_BOTTON;
 	else
-		joypad.joypad_1 &= ~DOWN_BOTTON;
+		joypad.buttons1.buttons &= ~DOWN_BOTTON;
 
 	if (JOYSTICK_IS_A(key_state))
-		joypad.joypad_1 |= A_BOTTON;
+		joypad.buttons1.buttons |= A_BOTTON;
 	else
-		joypad.joypad_1 &= ~A_BOTTON;
+		joypad.buttons1.buttons &= ~A_BOTTON;
 
 	if (JOYSTICK_IS_B(key_state))
-		joypad.joypad_1 |= B_BOTTON;
+		joypad.buttons1.buttons |= B_BOTTON;
 	else
-		joypad.joypad_1 &= ~B_BOTTON;
+		joypad.buttons1.buttons &= ~B_BOTTON;
 
 	if (JOYSTICK_IS_SELECT(key_state))
-		joypad.joypad_1 |= SELECT_BOTTON;
+		joypad.buttons1.buttons |= SELECT_BOTTON;
 	else
-		joypad.joypad_1 &= ~SELECT_BOTTON;
+		joypad.buttons1.buttons &= ~SELECT_BOTTON;
 
 	if (JOYSTICK_IS_START(key_state))
-		joypad.joypad_1 |= START_BOTTON;
+		joypad.buttons1.buttons |= START_BOTTON;
 	else
-		joypad.joypad_1 &= ~START_BOTTON;
+		joypad.buttons1.buttons &= ~START_BOTTON;
 #endif
 }
 

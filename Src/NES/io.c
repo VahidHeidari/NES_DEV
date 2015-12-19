@@ -97,14 +97,14 @@ uint8_t read_io(uint16_t addr)
 	}
 	else if (addr == 0x4016)							// Joypad 1
 	{
-		tmp = !!(joypad.joypad_1 & joypad.read_btn_1);
-		joypad.read_btn_1 <<= 1;
+		tmp = !!(joypad.buttons1.buttons & joypad.buttons1.read_index);
+		joypad.buttons1.read_index <<= 1;
 		return tmp;
 	}
 	else if (addr == 0x4017)							// Joypad 2
 	{
-		tmp = !!(joypad.joypad_2 & joypad.read_btn_2);
-		joypad.read_btn_2 <<= 1;
+		tmp = !!(joypad.buttons2.buttons & joypad.buttons2.read_index);
+		joypad.buttons2.read_index <<= 1;
 		return tmp;
 	}
 #if defined _WIN32 || defined __linux__

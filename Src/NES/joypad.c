@@ -24,8 +24,8 @@
 int joypad_init(pJoypad joypad)
 {
 	memset(joypad, 0, sizeof(Joypad));
-	joypad->read_btn_1 = 1;
-	joypad->read_btn_2 = 1;
+	joypad->buttons1.read_index = 1;
+	joypad->buttons2.read_index = 1;
 	return 1;
 }
 

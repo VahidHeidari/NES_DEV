@@ -33,19 +33,22 @@ extern "C" {
 #define B_BOTTUN			(0x01 << 1)
 #define A_BOTTUN			(0x01 << 0)
 
-#define JOYPAD_RESET(joypad) do {	\
-	(joypad)->read_btn_1 = 1;		\
-	(joypad)->read_btn_2 = 1;		\
-	(joypad)->strobe = 0;			\
+#define JOYPAD_RESET(joypad) do {			\
+	(joypad)->buttons1.read_index = 1;		\
+	(joypad)->buttons2.read_index = 1;		\
+	(joypad)->strobe = 0;					\
 } while (0)
+
+typedef struct JoypadButtons
+{
+	int buttons;
+	int read_index;
+} JoypadButtons, *pJoypadButtons;
 
 typedef struct Joypad
 {
-	int joypad_1;								/// $40 16
-	int read_btn_1;
-
-	int joypad_2;								/// $40 17
-	int read_btn_2;
+	JoypadButtons buttons1;								/// $40 16
+	JoypadButtons buttons2;								/// $40 17
 
 	int strobe;
 } Joypad, *pJoypad;
