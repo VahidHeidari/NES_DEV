@@ -22,7 +22,7 @@
 
 #include "stdint.h"
 
- /// Registers
+/// Registers
 #define PPU_CTRL				(*((uint8_t*)0x2000))
 #define PPU_MASK				(*((uint8_t*)0x2001))
 #define PPU_STATUS				(*((uint8_t*)0x2002))
