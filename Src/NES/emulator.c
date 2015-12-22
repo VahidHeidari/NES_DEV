@@ -50,9 +50,9 @@ int emulator_init(void)
 	finished_emulation = 0;
 	
 #if defined _WIN32
-	if (state_init("C:\\C++\\NES_DEV\\state\\") != 1)
+	if (state_init("C:\\C++\\NES_DEV\\state") != 1)
 #else
-	if (state_init("../state/") != 1)
+	if (state_init("../state") != 1)
 #endif
 		return 0;
 
