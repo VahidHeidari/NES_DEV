@@ -26,7 +26,8 @@ Super Mario Bros. on ILI9325 TFT color LCD.
 
  Known issues:
 ===============
-* Sprite 0 hit flag not working properly in some conditions.
+* Sprite 0 hit flag not working properly in some conditions. I think that it is
+because poor implementation of transparent color of palette.
 * Mapper 4 not working perfectly.
 * When PPU rendering is disabled, emulator doesn't rendering any thing (It must
 render color 0 from palette).
@@ -45,7 +46,7 @@ project and select it as start up project manually.
 * Making a small game for tests.
 * Adding a better build script for making TEST ROM.
 * Make debug viewers flexible and user friendly, it is hardcoded, and needs to 
-be enabled from source.
+be enabled/disabled from source.
 
  How to make project:
 ======================
