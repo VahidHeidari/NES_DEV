@@ -1,7 +1,7 @@
  Introduction:
 ===============
 
-NES_DEV is a open source NES emulator for educational and experimental purposes.
+NES_DEV is an open source NES emulator for educational and experimental purposes.
 
 I want to port this emulator on a STM32F103ZET6 micro controller, and making
 a portable and hand held game console, witch can run on a low cost ARM device.
