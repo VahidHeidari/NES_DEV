@@ -47,6 +47,7 @@ project and select it as start up project manually.
 * Adding a better build script for making TEST ROM.
 * Make debug viewers flexible and user friendly, it is hardcoded, and needs to 
 be enabled/disabled from source.
+* Designing low const, felexible, and extensible PCB for hand-held console.
 
  How to make project:
 ======================
