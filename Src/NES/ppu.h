@@ -53,14 +53,14 @@ extern "C" {
 #define WINDOW_PATTERN_TABLE_HEIGHT		(8 * 16)
 
 /// CPU port address of PPU registers
-#define PPUCTRL_REG						0x2000
-#define PPUMASK_REG						0x2001
-#define PPUSTATUS_REG					0x2002
-#define OAMADDR_REG						0x2003
-#define OAMDATA_REG						0x2004
-#define PPUSCROLL_REG					0x2005
-#define PPUADDR_REG						0x2006
-#define PPUDATA_REG						0x2007
+#define PPU_CTRL_REG					0x2000
+#define PPU_MASK_REG					0x2001
+#define PPU_STATUS_REG					0x2002
+#define OAM_ADDR_REG					0x2003
+#define OAM_DATA_REG					0x2004
+#define PPU_SCROLL_REG					0x2005
+#define PPU_ADDR_REG					0x2006
+#define PPU_DATA_REG					0x2007
 
 #define PPU_PATTERN_TABLE_SIZE			0x2000
 #define PPU_NAME_TABLE_SIZE				0x1000		/// All 4k of name tables.

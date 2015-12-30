@@ -182,29 +182,29 @@ void ppu_write(pPpuStatus ppu, uint16_t addr, uint8_t value)
 {
 	switch (addr & 0x2007)
 	{
-		case PPUCTRL_REG:		// $2000
+		case PPU_CTRL_REG:		// $2000
 			log_info("writing $2000 (PPU CTRL REG)      : 0x%02X at cc:%d", value, p.cycle_counter);
 			ppu->regs.ctrl = value;
 			ppu->t &= ~0x0C00;
 			ppu->t |= (uint16_t)(value & 0x03) << 10;		// Copy nametable select bits to T latch.
 			break;
 
-		case PPUMASK_REG:		// $2001
+		case PPU_MASK_REG:		// $2001
 			log_info("writing $2001 (PPU MASK REG)      : 0x%02X at cc:%d", value, p.cycle_counter);
 			ppu->regs.mask = value;
 			break;
 
-		case OAMADDR_REG:		// $2003
+		case OAM_ADDR_REG:		// $2003
 			log_info("writing $2003 (OAM ADDR REG)      : 0x%02X at cc:%d", value, p.cycle_counter);
 			ppu->regs.oam_address = value;
 			break;
 		
-		case OAMDATA_REG:		// $2004
+		case OAM_DATA_REG:		// $2004
 			log_info("writing $2004 (OAM DATA REG)      : 0x%02X at 0x%02X at cc:%d", value, ppu->regs.oam_address, p.cycle_counter);
 			ppu->OAM.u.memory[ppu->regs.oam_address++] = value;
 			break;
 
-		case PPUSCROLL_REG:		// $2005
+		case PPU_SCROLL_REG:		// $2005
 			log_info("%s writing $2005 (PPU SCROLL REG) : 0x%02X at cc:%d", (ppu->w ? "second" : "first"), value, p.cycle_counter);
 			if (ppu->w == 0)		// First write
 			{
@@ -223,7 +223,7 @@ void ppu_write(pPpuStatus ppu, uint16_t addr, uint8_t value)
 			log_info("                    x : 0x%02X       t : 0x%04X      v : 0x%04X at cc:%d", ppu->x, ppu->t, ppu->v, p.cycle_counter);
 			break;
 
-		case PPUADDR_REG:		// $2006
+		case PPU_ADDR_REG:		// $2006
 			log_info("%s writing $2006 (PPU ADDR REG)   : 0x%02X    v(addr) : 0x%04X          t : 0x%04X at cc:%d", (ppu->w ? "second" : "first "), value, ppu->v, ppu->t, p.cycle_counter);
 			if (ppu->w == 0)		// First write
 			{
@@ -246,7 +246,7 @@ void ppu_write(pPpuStatus ppu, uint16_t addr, uint8_t value)
 			log_info("             after writing addr :       v : 0x%04x          t : 0x%04X at cc:%d", ppu->v, ppu->t, p.cycle_counter);
 			break;
 
-		case PPUDATA_REG:		// $2007
+		case PPU_DATA_REG:		// $2007
 			log_info("writing $2007 (PPU DATA REG) 0x%02X at 0x%04X at cc:%d", value, ppu->v, p.cycle_counter);
 #if defined _WIN32 && !defined __GNUC__
 			if (ppu->v >= 0 && ppu->v < 0x2000)
@@ -307,6 +307,7 @@ void ppu_write(pPpuStatus ppu, uint16_t addr, uint8_t value)
 			ppu_data_reg_inc(ppu);
 			ppu->regs.data = value;
 			break;
+
 		default:
 			log_error("writing 0x%02X at 0x%04X", value, ppu->v);
 			break;
@@ -318,18 +319,18 @@ uint8_t ppu_read(pPpuStatus ppu, uint16_t addr)
 	int tmp;
 	switch (addr)
 	{
-		case PPUSTATUS_REG:		// $2002
+		case PPU_STATUS_REG:		// $2002
 			log_info("reading $2002 (PPU STATUS REG) 0x%02X at cc:%d", ppu->regs.status, p.cycle_counter);
 			ppu->w = 0;							// Clear first/second write toggle flage.
 			tmp = ppu->regs.status;
 			ppu->regs.status &= ~VBLANK_EVENT;	// Clear vblank event flag.
 			return tmp;
 
-		case OAMDATA_REG:		// $2004
+		case OAM_DATA_REG:		// $2004
 			log_info("reading $2004 (OAM DATA REG)   0x%02X from 0x%02X at cc:%d", ppu->OAM.u.memory[ppu->regs.oam_address], ppu->regs.oam_address, p.cycle_counter);
 			return ppu->OAM.u.memory[ppu->regs.oam_address];
 
-		case PPUDATA_REG:		// $2007
+		case PPU_DATA_REG:		// $2007
 			log_info("reading $2007 (PPU DATA REG)   0x%02X at cc:%d", ppu->regs.data, p.cycle_counter);
 			addr = ppu->v & 0x3FFF;		// Current VRAM address
 			if (addr < 0x3EFF)
