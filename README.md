@@ -29,7 +29,7 @@ Super Mario Bros. on ILI9325 TFT color LCD.
 * Sprite 0 hit flag not working properly in some conditions. I think that it is
 because poor implementation of transparent color of palette.
 * Mapper 4 not working perfectly.
-* When PPU rendering is disabled, emulator doesn't rendering any thing (It must
+* When PPU rendering is disabled, emulator doesn't render any thing (It must
 render color 0 from palette).
 * Clipping background and sprites not implemented yet.
 * Generated .sln file for visual studio by cmake, don't understand start up
