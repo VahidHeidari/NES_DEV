@@ -307,6 +307,7 @@ void ppu_write(pPpuStatus ppu, uint16_t addr, uint8_t value)
 			ppu_data_reg_inc(ppu);
 			ppu->regs.data = value;
 			break;
+
 		default:
 			log_error("writing 0x%02X at 0x%04X", value, ppu->v);
 			break;

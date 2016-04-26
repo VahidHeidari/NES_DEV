@@ -27,48 +27,36 @@
 int bank_switch_1k(int bank, uint8_t* rom, FILE* image)
 {
 	fseek(image, sizeof(NesHeader) + (bank * BANK_SIZE_1K) + (IS_TRAINER(&hdr) ? 512 : 0) , SEEK_SET);
-	if (fread(rom, BANK_SIZE_1K, 1, image) != 1)
-		return 0;
-	return 1;
+	return fread(rom, BANK_SIZE_1K, 1, image) == 1;
 }
 
 int bank_switch_2k(int bank, uint8_t* rom, FILE* image)
 {
 	fseek(image, sizeof(NesHeader) + (bank * BANK_SIZE_2K) + (IS_TRAINER(&hdr) ? 512 : 0) , SEEK_SET);
-	if (fread(rom, BANK_SIZE_2K, 1, image) != 1)
-		return 0;
-	return 1;
+	return fread(rom, BANK_SIZE_2K, 1, image) == 1;
 }
 
 int bank_switch_4k(int bank, uint8_t* rom, FILE* image)
 {
 	fseek(image, sizeof(NesHeader) + (bank * BANK_SIZE_4K) + (IS_TRAINER(&hdr) ? 512 : 0) , SEEK_SET);
-	if (fread(rom, BANK_SIZE_4K, 1, image) != 1)
-		return 0;
-	return 1;
+	return fread(rom, BANK_SIZE_4K, 1, image) == 1;
 }
 
 int bank_switch_8k(int bank, uint8_t* rom, FILE* image)
 {
 	fseek(image, sizeof(NesHeader) + (bank * BANK_SIZE_8K) + (IS_TRAINER(&hdr) ? 512 : 0) , SEEK_SET);
-	if (fread(rom, BANK_SIZE_8K, 1, image) != 1)
-		return 0;
-	return 1;
+	return fread(rom, BANK_SIZE_8K, 1, image) == 1;
 }
 
 int bank_switch_16k(int bank, uint8_t* rom, FILE* image)
 {
 	fseek(image, sizeof(NesHeader) + (bank * BANK_SIZE_16K) + (IS_TRAINER(&hdr) ? 512 : 0) , SEEK_SET);
-	if (fread(rom, BANK_SIZE_16K, 1, image) != 1)
-		return 0;
-	return 1;
+	return fread(rom, BANK_SIZE_16K, 1, image) == 1;
 }
 
 int bank_switch_32k(int bank, uint8_t* rom, FILE* image)
 {
 	fseek(image, sizeof(NesHeader) + (bank * BANK_SIZE_32K) + (IS_TRAINER(&hdr) ? 512 : 0) , SEEK_SET);
-	if (fread(rom, BANK_SIZE_32K, 1, image) != 1)
-		return 0;
-	return 1;
+	return fread(rom, BANK_SIZE_32K, 1, image) == 1;
 }
 

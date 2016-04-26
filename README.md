@@ -1,7 +1,7 @@
  Introduction:
 ===============
 
-NES_DEV is a open source NES emulator for educational and experimental purposes.
+NES_DEV is an open source NES emulator for educational and experimental purposes.
 
 I want to port this emulator on a STM32F103ZET6 micro controller, and making
 a portable and hand held game console, witch can run on a low cost ARM device.
@@ -26,9 +26,10 @@ Super Mario Bros. on ILI9325 TFT color LCD.
 
  Known issues:
 ===============
-* Sprite 0 hit flag not working properly in some conditions.
+* Sprite 0 hit flag not working properly in some conditions. I think that it is
+because poor implementation of transparent color of palette.
 * Mapper 4 not working perfectly.
-* When PPU rendering is disabled, emulator doesn't rendering any thing (It must
+* When PPU rendering is disabled, emulator doesn't render any thing (It must
 render color 0 from palette).
 * Clipping background and sprites not implemented yet.
 * Generated .sln file for visual studio by cmake, don't understand start up
@@ -45,7 +46,8 @@ project and select it as start up project manually.
 * Making a small game for tests.
 * Adding a better build script for making TEST ROM.
 * Make debug viewers flexible and user friendly, it is hardcoded, and needs to 
-be enabled from source.
+be enabled/disabled from source.
+* Designing low const, felexible, and extensible PCB for hand-held console.
 
  How to make project:
 ======================
