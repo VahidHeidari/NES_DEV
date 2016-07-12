@@ -118,12 +118,6 @@ void power_on(pP6502 p);
  */
 void fetch(pP6502 p);
 
-/**
- * Clock cycle of CPU. Per each clock cycle of CPU, PPU clocks 3 times,
- * and APU clocks 1 times.
- */
-void cpu_clock_cycle();
-
 #ifdef __cplusplus
 }
 #endif
