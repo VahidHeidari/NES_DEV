@@ -4,10 +4,10 @@
 NES_DEV is an open source NES emulator for educational and experimental purposes.
 
 I want to port this emulator on a STM32F103ZET6 micro controller, and making
-a portable and hand held game console, witch can run on a low cost ARM device.
+a portable and hand held game console, which can run on a low cost ARM device.
 There is may NES emulators in the world, but none of them runs on low cost micro
 controllers, most of them runs on PCs. I want to make a simple and easy to build
-system, witch anyone can make and enjoy it.
+system, which anyone can make and enjoy it.
 
 This emulator only depends on SDL library. You can get it from www.libsdl.org.
 
@@ -15,7 +15,7 @@ NES_DEV running on linux with enabled debug options.
 
 ![Linux](Images/linux.jpg?raw=true "NES_DEV on linux")
 
-My STM32F103ZET board.
+My STM32F103ZET board. I bought it from [ECA](http://eshop.eca.ir).
 
 ![STM32 board](Images/NESonSTM32.jpg?raw=true "NES on STM32")
 
@@ -82,4 +82,4 @@ to open visual studio.
 I used X6502 from FCEUX project, and M6502 from Marat Fayzullin project source
 codes for my p6502 module testing. My test runs all modules and checks all CPU 
 contexts and RAMs with each other. If there is inconsistency, it fails. I found 
-that there is some bugs in M6502 modules.
+that there is some bugs in M6502 module.
