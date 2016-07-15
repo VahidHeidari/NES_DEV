@@ -38,4 +38,4 @@ UnitTest/6502/P6502/*.[c,h]		\
 UnitTest/6502/X6502/*.[c,h]		\
 TestROM/Asm/*.[c,h]				\
 TestROM/Asm/*.asm				\
- | nl -ba
+ | nl -ba | tail
