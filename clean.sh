@@ -19,23 +19,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cat 							\
-Src/*.[c,h]						\
-Src/ARM/*.[c,h]					\
-Src/ARM/Graphics/*.[c,h]		\
-Src/ARM/Joystick/*.[c,h]		\
-Src/ARM/LCDDriver/*.[c,h]		\
-Src/NES/*.[c,h]					\
-Src/NES/Mappers/*.[c,h]			\
-Src/TUI/*.[c,h]					\
-Tools/*.[c,h]					\
-Tools/iNesDPT/*.[c,h]			\
-Tools/iNesInfo/*.[c,h]			\
-Tools/iNesMk/*.[c,h]			\
-UnitTest/6502/*.[c,h]			\
-UnitTest/6502/M6502/*.[c,h]		\
-UnitTest/6502/P6502/*.[c,h]		\
-UnitTest/6502/X6502/*.[c,h]		\
-TestROM/Asm/*.[c,h]				\
-TestROM/Asm/*.asm				\
- | nl -ba
+rm -rf 							\
+*~								\
+Src/*~							\
+Src/ARM/*~						\
+Src/ARM/Graphics/*~				\
+Src/ARM/Joystick/*~				\
+Src/ARM/LCDDriver/*~			\
+Src/NES/*~						\
+Src/NES/Mappers/*~				\
+Src/TUI/*~						\
+Tools/*~						\
+Tools/iNesDPT/*~				\
+Tools/iNesInfo/*~				\
+Tools/iNesMk/*~					\
+UnitTest/6502/*~				\
+UnitTest/6502/M6502/*~			\
+UnitTest/6502/P6502/*~			\
+UnitTest/6502/X6502/*~			\
+TestROM/Asm/*~

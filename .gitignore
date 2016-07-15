@@ -1,0 +1,8 @@
+# File extensions
+*~
+*.o
+*.nes
+
+# Directories
+bin
+msvs
