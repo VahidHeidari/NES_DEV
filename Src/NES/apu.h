@@ -26,87 +26,87 @@
 extern "C" {
 #endif
 
-#define APU_DIVIDER_VALUE		89490
-#define APU_DIVIDER_FREQ		240
+#define APU_DIVIDER_VALUE				89490
+#define APU_DIVIDER_FREQ				240
 
-#define APU_CHUNK_BUFFER_SIZE	(1024 * 4)
+#define APU_CHUNK_BUFFER_SIZE			(1024 * 4)
 
 /// $4000 / $4004	Pulse
-#define APU_PULSE1_R1				0x4000
-#define APU_PULSE2_R1				0x4004
-#define APU_PULSE_DUTY				0xC0
-#define APU_PULSE_LOOP_ENVELOPE		0x20
-#define APU_PULSE_LENGTH_ENABLE		0x20
-#define APU_PULSE_CONSTANT_VOLUME	0x10
-#define APU_PULSE_ENVELOPE_PERIOD	0x0F
-#define APU_PULSE_ENVELOPE_VOLUME	0x0F
+#define APU_PULSE1_R1					0x4000
+#define APU_PULSE2_R1					0x4004
+#define APU_PULSE_DUTY					0xC0
+#define APU_PULSE_LOOP_ENVELOPE			0x20
+#define APU_PULSE_LENGTH_ENABLE			0x20
+#define APU_PULSE_CONSTANT_VOLUME		0x10
+#define APU_PULSE_ENVELOPE_PERIOD		0x0F
+#define APU_PULSE_ENVELOPE_VOLUME		0x0F
 
 /// $4001 / $4005
-#define APU_PULSE1_R2				0x4001
-#define APU_PULSE2_R2				0x4005
-#define APU_PULSE_SWEEP_UNIT_ENABLE	0x80
-#define APU_PULSE_PERIOD			0x70
-#define APU_PULSE_NEGATIVE			0x08
-#define APU_PULSE_SHIFT_COUNT		0x07
+#define APU_PULSE1_R2					0x4001
+#define APU_PULSE2_R2					0x4005
+#define APU_PULSE_SWEEP_UNIT_ENABLE		0x80
+#define APU_PULSE_PERIOD				0x70
+#define APU_PULSE_NEGATIVE				0x08
+#define APU_PULSE_SHIFT_COUNT			0x07
 
 /// $4002 / $4006
-#define APU_PULSE1_R3				0x4002
-#define APU_PULSE2_R3				0x4006
-#define APU_PULSE_TIMER_LOW			0xFF
+#define APU_PULSE1_R3					0x4002
+#define APU_PULSE2_R3					0x4006
+#define APU_PULSE_TIMER_LOW				0xFF
 
 /// $4003 / $4007
-#define APU_PULSE1_R4				0x4003
-#define APU_PULSE2_R4				0x4007
-#define APU_PULSE_LENGTH_COUNTER	0xF8
-#define APU_PULSE_TIMRE_HIGH		0x07
+#define APU_PULSE1_R4					0x4003
+#define APU_PULSE2_R4					0x4007
+#define APU_PULSE_LENGTH_COUNTER		0xF8
+#define APU_PULSE_TIMRE_HIGH			0x07
 
 /// $4008 - $400B	Triangle
-#define APU_TRI_R1				0x4008
-#define APU_TRI_UNUSED			0x4009
-#define APU_TRI_R2				0x400A
-#define APU_TRI_R3				0x400B
-#define APU_TRI_LENGTH_ENABLE	0x80
+#define APU_TRI_R1						0x4008
+#define APU_TRI_UNUSED					0x4009
+#define APU_TRI_R2						0x400A
+#define APU_TRI_R3						0x400B
+#define APU_TRI_LENGTH_ENABLE			0x80
 
 /// $400C - $400F	Noise
-#define APU_NOISE_R1			0x400C
-#define APU_NOISE_UNUSED		0x400D
-#define APU_NOISE_R2			0x400E
-#define APU_NOISE_R3			0x400F
-#define APU_NOISE_LENGTH_ENABLE	0x80
+#define APU_NOISE_R1					0x400C
+#define APU_NOISE_UNUSED				0x400D
+#define APU_NOISE_R2					0x400E
+#define APU_NOISE_R3					0x400F
+#define APU_NOISE_LENGTH_ENABLE			0x80
 
 /// $4010 - $4013	DMC
-#define APU_DMC_R1				0x4010
-#define APU_DMC_R2				0x4011
-#define APU_DMC_R3				0x4012
-#define APU_DMC_R4				0x4013
+#define APU_DMC_R1						0x4010
+#define APU_DMC_R2						0x4011
+#define APU_DMC_R3						0x4012
+#define APU_DMC_R4						0x4013
 
 /// $4015 (write)	Control
-#define APU_CONTROL					0x4015
-#define APU_CTRL_DMC_ENABLE			0x10
-#define APU_CTRL_NOISE_ENABLE		0x08
-#define APU_CTRL_TRIANGLE_ENABLE	0x04
-#define APU_CTRL_PULSE2_ENABLE		0x02
-#define APU_CTRL_PULSE1_ENABLE		0x01
+#define APU_CONTROL						0x4015
+#define APU_CTRL_DMC_ENABLE				0x10
+#define APU_CTRL_NOISE_ENABLE			0x08
+#define APU_CTRL_TRIANGLE_ENABLE		0x04
+#define APU_CTRL_PULSE2_ENABLE			0x02
+#define APU_CTRL_PULSE1_ENABLE			0x01
 
 /// $4015 (read)		Status
-#define APU_STATUS				0x4015
-#define APU_DMC_INTERRUPT		0x80
-#define APU_FRAME_INTERRUPT		0x40
-#define APU_NOISE_STATUS		0x08
-#define APU_TRIANGLE_STATUS		0x04
-#define APU_PULSE2_STATUS		0x02
-#define APU_PULSE1_STATUS		0x01
+#define APU_STATUS						0x4015
+#define APU_DMC_INTERRUPT				0x80
+#define APU_FRAME_INTERRUPT				0x40
+#define APU_NOISE_STATUS				0x08
+#define APU_TRIANGLE_STATUS				0x04
+#define APU_PULSE2_STATUS				0x02
+#define APU_PULSE1_STATUS				0x01
 
 /// $4017 (write)	Frame counter
-#define APU_FRAME					0x4017
-#define APU_FRAME_SEQUENCE_MODE		0x80
-#define APU_FRAME_INTERRUPT_DISABLE	0x40
+#define APU_FRAME						0x4017
+#define APU_FRAME_SEQUENCE_MODE			0x80
+#define APU_FRAME_INTERRUPT_DISABLE		0x40
 
-#define PULSE_GET_FREQ(pulse)		((pulse)->r3 | (((pulse)->r4 & 0xF8) << 5))
+#define PULSE_GET_FREQ(pulse)			((pulse)->r3 | (((pulse)->r4 & 0xF8) << 5))
 
-#define APU_LENGTH_TABLE_SIZE		32
-#define APU_NOISE_TABLE_SIZE		16
-#define APU_DMC_TABLE_SIZE			16
+#define APU_LENGTH_TABLE_SIZE			32
+#define APU_NOISE_TABLE_SIZE			16
+#define APU_DMC_TABLE_SIZE				16
 
 /// SDL_Audio constant definiions
 #define APU_SAMPLE_RATE_FREQUENCY_HZ	44100
@@ -116,7 +116,7 @@ extern "C" {
 /// Audio buffer size in samples (power of 2)
 #define APU_AUDIO_BUFFER_SIZE			1024
 
-#define APU_IS_MODULE_ENABLED(MODULE)		(apu.control & MODULE)
+#define APU_IS_MODULE_ENABLED(MODULE)	(apu.control & MODULE)
 
 /// pAPU period tables
 extern const uint8_t apu_length_table[APU_LENGTH_TABLE_SIZE];
