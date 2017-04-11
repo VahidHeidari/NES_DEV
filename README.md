@@ -32,7 +32,7 @@ because poor implementation of transparent color of palette.
 * When PPU rendering is disabled, emulator doesn't render any thing (It must
 render color 0 from palette).
 * Clipping background and sprites not implemented yet.
-* Generated .sln file for visual studio by cmake, don't understand start up
+* Generated .sln file for visual studio by cmake, doesn't understand start up
 project. After opening project in visual studio, you must right click on NES_DEV
 project and select it as start up project manually.
 
