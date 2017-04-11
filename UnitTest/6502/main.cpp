@@ -167,7 +167,7 @@ int main(int argc, char** argv)
 {
 	bool res;
 
-	// Test ROMs grabed from : http://blargg.8bitalley.com/nes-tests/instr_test-v4.zip
+	// Test ROMs grabbed from : http://blargg.8bitalley.com/nes-tests/instr_test-v4.zip
 	//res = read_rom("TEST\\TEST.bin");
 #define PATH_REASM	(char*)"..\\..\\..\\UnitTest\\6502\\instr_test-v4\\"
 	//res = read_rom(PATH_REASM "RE_01-basics.nes");		// PASSED
