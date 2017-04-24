@@ -33,6 +33,13 @@
 #include "nes-hdr.h"
 #include "cycles.h"
 
+#define LOG_MESSAGE(MSG) do {				\
+	va_list args;							\
+	va_start(args, str);					\
+	log_message(MSG, str, args);			\
+	va_end(args);							\
+} while (0)
+
 char asm_m[256];
 int show_sp = 1;
 int show_bg = 1;
@@ -515,58 +522,34 @@ int dump_test_rom(const char* path)
 	return 1;
 }
 
-void log_info(const char* str, ...)
+static void log_message(const char* msg, const char* str, va_list args)
 {
 #ifdef DEBUG_LOGGING
-	va_list args;
 	FILE* f = fopen("log.txt", "a");
 	if (!f)
 		return;
-	fprintf(f, "INFO    : ");
-	va_start(args, str);
+	fprintf(f, "%s : ", msg);
 	vfprintf(f, str, args);
-	va_end(args);
 	fprintf(f, "\n");
 	fclose(f);
 #else
-	(void)str;
+	(void)msg; (void)str; (void)args;
 #endif
+}
+
+void log_info(const char* str, ...)
+{
+	LOG_MESSAGE("INFO   ");
 }
 
 void log_warning(const char* str, ...)
 {
-#ifdef DEBUG_LOGGING
-	va_list args;
-	FILE* f = fopen("log.txt", "a");
-	if (!f)
-		return;
-	va_start(args, str);
-	fprintf(f, "WARNING : ");
-	vfprintf(f, str, args);
-	fprintf(f, "\n");
-	va_end(args);
-	fclose(f);
-#else
-	(void)str;
-#endif
+	LOG_MESSAGE("WARNING");
 }
 
 void log_error(const char* str, ...)
 {
-#ifdef DEBUG_LOGGING
-	va_list args;
-	FILE* f = fopen("log.txt", "a");
-	if (!f)
-		return;
-	va_start(args, str);
-	fprintf(f, "ERROR   : ");
-	vfprintf(f, str, args);
-	fprintf(f, "\n");
-	va_end(args);
-	fclose(f);
-#else
-	(void)str;
-#endif
+	LOG_MESSAGE("ERROR  ");
 }
 
 void debug_message(const char* str, ...)
