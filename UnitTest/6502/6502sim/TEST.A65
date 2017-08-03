@@ -1,0 +1,55 @@
+;       
+; Assemble with: DASM test.a65 -f3 -otest.bin
+;
+
+	processor 6502
+
+; Program start
+	org $8000
+Start        
+	sei
+	cld
+	lda #$00
+	sta $90         ;IRQ flag
+	sta $91         ;NMI flag
+	cli
+	lda #$00
+	sta $80
+	lda #$10
+	sta $81
+	lda #$00
+	sta $82
+	lda #$20
+	sta $83
+	lda #$00
+	sta $84
+	lda #$30
+	sta $85
+
+	ldx #$00
+loop    lda ($80),x
+	adc ($82),x
+	sta ($84),x
+	inx
+	bne loop
+	jmp Start
+
+; IRQ handler
+	org $8100
+	lda #$ff
+	sta $90
+	rti
+	
+; NMI handler 
+	org $8200
+	lda #$ff
+	sta $91
+	rti
+
+	org     $fffa
+	.byte $00,$82    ;NMI
+	.byte $00,$80    ;Reset
+	.byte $00,$81    ;IRQ
+		
+
+		
