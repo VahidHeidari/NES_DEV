@@ -145,7 +145,7 @@ int main(int argc, char** argv)
 	while (!finished_emulation)
 	{
 		clear_cmd_line();
-		cmd = GETCH();
+		cmd = GET_CHAR();
  		putchar(cmd);
 
 		switch (cmd)

@@ -44,9 +44,9 @@ extern "C" {
 #define READ_SDL_JOYPAD 1
 
 #if defined _WIN32 && !defined __GNUC__
-#define GETCH _getch
+#define GET_CHAR _getch
 #elif defined __linux__ || defined NES_ARM_LIB || defined __GNUC__
-#define GETCH getchar
+#define GET_CHAR getchar
 #define scanf_s scanf
 #define sprintf_s snprintf
 #define strcpy_s strncpy
