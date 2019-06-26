@@ -35,8 +35,8 @@
 #endif
 
 #if defined _WIN32 && !defined __GNUC__
-#pragma comment(lib, "C:\\C++\\NES_DEV\\SDL\\lib\\x86\\SDL2.lib")
-#pragma comment(lib, "C:\\C++\\NES_DEV\\SDL\\lib\\x86\\SDL2main.lib")
+#pragma comment(lib, "..\\3rdParty\\SDL2-2.0.5\\lib\\x86\\SDL2.lib")
+#pragma comment(lib, "..\\3rdParty\\SDL2-2.0.5\\lib\\x86\\SDL2main.lib")
 #endif
 
 #define RED_COLOR		0x00FF0000

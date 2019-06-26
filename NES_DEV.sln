@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NES_DEV", "NES_DEV.vcxproj", "{E8574BA7-DB32-4EDF-B4D7-00237C50D90E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E8574BA7-DB32-4EDF-B4D7-00237C50D90E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E8574BA7-DB32-4EDF-B4D7-00237C50D90E}.Debug|Win32.Build.0 = Debug|Win32
+		{E8574BA7-DB32-4EDF-B4D7-00237C50D90E}.Release|Win32.ActiveCfg = Release|Win32
+		{E8574BA7-DB32-4EDF-B4D7-00237C50D90E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

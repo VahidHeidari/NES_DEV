@@ -1,8 +1,14 @@
 # File extensions
-*~
-*.o
 *.nes
+*.o
+*.opensdf
+*.sdf
+*.suo
+*~
 
 # Directories
+Debug
+Release
 bin
 msvs
+

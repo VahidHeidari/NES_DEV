@@ -25,7 +25,7 @@
 
 #if defined _WIN32
 #define SDL_MAIN_HANDLED
-#include "C:\C++\NES_DEV\SDL\include\SDL.h"
+#include "..\\..\\3rdParty\\SDL2-2.0.5\\include\\SDL.h"
 #elif defined __linux__
 #include <SDL2/SDL.h>
 #endif
