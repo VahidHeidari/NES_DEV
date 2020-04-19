@@ -48,15 +48,18 @@
 #if defined _WIN32 || defined __linux__
 SDL_Window* window;
 SDL_Surface* surface;
-#if defined DEBUG_PPU_NAMETABLE
+
+/// PPU debugging level name table
 SDL_Window* window_name_table;
 SDL_Surface* surface_name_table;
-#endif
-#if defined DEBUG_PPU_PATTERNTABLE
+int is_window_name_table_shown;
+
+/// PPU debugging level pattern table
 SDL_Window* window_pattern_table;
 SDL_Surface* surface_pattern_table;
+int is_window_pattern_table_shown;
+
 int palette_number;
-#endif
 #endif
 
 /// TODO: Replace thise declarations when moved to PPU status struct.
@@ -76,7 +79,7 @@ void (*frame_end)(void) = NULL;
 __inline static void PPU_DataRegInc(pPpuStatus ppu)
 {
 	if (ppu->regs.ctrl & AUTO_INCREMNT)
-		ppu->v += 32;	// Increment 32 by 32
+		ppu->v += 32;		// Increment 32 by 32
 	else
 		ppu->v += 1;		// Increment 1 by 1
 }
@@ -89,14 +92,10 @@ int PPU_Init(pPpuStatus ppu)
 	SDL_Window* w;
 	SDL_Surface* s;
 
-#if defined DEBUG_PPU_NAMETABLE
-	SDL_Window* wn;
-	SDL_Surface* sn;
-#endif
-#if defined DEBUG_PPU_PATTERNTABLE
-	SDL_Window* wp;
-	SDL_Surface* sp;
-#endif
+	SDL_Window* wn;		// Name table window
+	SDL_Surface* sn;	// Name table surface
+	SDL_Window* wp;		// Pattern table window
+	SDL_Surface* sp;	// Pattern table surface
 
 	memset(ppu, 0, sizeof(PpuStatus));
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -128,52 +127,56 @@ int PPU_Init(pPpuStatus ppu)
 	window = w;
 	surface = s;
 
-#if defined DEBUG_PPU_NAMETABLE
+	// Initialize name table debug window.
+	is_window_name_table_shown = 0;
 	wn = SDL_CreateWindow("Name Table View", WINDOW_NAME_TABLE_X_POS, WINDOW_NAME_TABLE_Y_POS,
-			WINDOW_NAME_TABLE_WIDTH, WINDOW_NAME_TABLE_HEIGHT, SDL_WINDOW_SHOWN);
+		WINDOW_NAME_TABLE_WIDTH, WINDOW_NAME_TABLE_HEIGHT, SDL_WINDOW_HIDDEN);
 	SDL_SetWindowDisplayMode(wn, &mode);
 	sn = SDL_GetWindowSurface(wn);
 	// Clear surface.
 	for (i = 0; i < sn->w * sn->h; ++i)
 		((uint32_t*)(sn->pixels))[i] = 0x00FFFFFF;
-	SDL_UpdateWindowSurface(wn);
 	window_name_table = wn;
 	surface_name_table = sn;
-
 //	PPU_DebugNameTable(ppu);
-#endif
-#if defined DEBUG_PPU_PATTERNTABLE
-	wp = SDL_CreateWindow("Pattern Table View", WINDOW_PATTERN_TABLE_X_POS, WINDOW_PATTERN_TABLE_Y_POS, WINDOW_PATTERN_TABLE_WIDTH, WINDOW_PATTERN_TABLE_HEIGHT, SDL_WINDOW_SHOWN);
+
+	// Initialize pattern table debug window.
+	is_window_pattern_table_shown = 0;
+	wp = SDL_CreateWindow("Pattern Table View", WINDOW_PATTERN_TABLE_X_POS, WINDOW_PATTERN_TABLE_Y_POS,
+		WINDOW_PATTERN_TABLE_WIDTH, WINDOW_PATTERN_TABLE_HEIGHT, SDL_WINDOW_HIDDEN);
 	SDL_SetWindowDisplayMode(wp, &mode);
 	sp = SDL_GetWindowSurface(wp);
 	for (i = 0; i < sp->w * sp->h; ++i)
 		((uint32_t*)(sp->pixels))[i] = 0x00FFFFFF;
-	SDL_UpdateWindowSurface(wp);
 	window_pattern_table = wp;
 	surface_pattern_table = sp;
 
 	palette[0] = 0x0E; palette[1] = 0x05; palette[2] = 0x12; palette[3] = 0x1A;
 	PPU_DebugPatternTable(ppu);
 #endif
-
-#endif
-
 	return 1;
 }
 
 void PPU_Close(pPpuStatus ppu)
 {
-	(void)ppu;
 #if defined _WIN32
-	if (window)
+	if (window) {
 		SDL_DestroyWindow(window);
+		window = NULL;
+	}
 
-#if defined DEBUG_PPU_NAMETABLE
-	if (window_name_table)
+	if (window_name_table) {
 		SDL_DestroyWindow(window_name_table);
+		window_name_table = NULL;
+	}
 
-#endif
+	if (window_pattern_table) {
+		SDL_DestroyWindow(window_pattern_table);
+		window_pattern_table = NULL;
+	}
 	SDL_Quit();
+#else
+	(void)ppu;
 #endif
 }
 
@@ -796,11 +799,9 @@ void PPU_PrintStatus(pPpuStatus ppu)
 #undef EOL
 }
 
-#if defined DEBUG_PPU_NAMETABLE
 static void PutNameTable(pPpuStatus ppu, int nt)
 {
 #if defined _WIN32 || __linux__
-#if defined DEBUG_PPU_NAMETABLE
 	int x, y;
 	int i;
 	int idx = 0;
@@ -918,15 +919,11 @@ static void PutNameTable(pPpuStatus ppu, int nt)
 			//idx += 256 * 2 - 8;
 		}
 	}
-#else
+#endif
 	(void)ppu;
 	(void)nt;
-#endif
-#endif
 }
-#endif
 
-#if defined DEBUG_PPU_NAMETABLE
 static void PlotVerticalLine(pPpuStatus ppu, int x, uint32_t color)
 {
 #if defined _WIN32 || __linux__
@@ -941,11 +938,10 @@ static void PlotVerticalLine(pPpuStatus ppu, int x, uint32_t color)
 #else
 	(void)x;
 	(void)color;
-#endif
 	(void)ppu;
+#endif
 }
 
-#if defined DEBUG_PPU_NAMETABLE
 static void PlotHorizontalLine(pPpuStatus ppu, int y, uint32_t color)
 {
 #if defined _WIN32 || __linux__
@@ -960,19 +956,15 @@ static void PlotHorizontalLine(pPpuStatus ppu, int y, uint32_t color)
 #else
 	(void)y;
 	(void)color;
-#endif
-#endif
 	(void)ppu;
-}
 #endif
+}
 
 void PPU_DebugNameTable(pPpuStatus ppu, uint32_t color)
 {
 #if defined _WIN32 || __linux__
-#if defined DEBUG_PPU_NAMETABLE
-
 	// Return if not initialized or closed.
-	if (!window_name_table)
+	if (!window_name_table || !is_window_name_table_shown)
 		return;
 
 	PutNameTable(ppu, 0);
@@ -986,20 +978,18 @@ void PPU_DebugNameTable(pPpuStatus ppu, uint32_t color)
 	SDL_UpdateWindowSurface(window_name_table);
 #else
 	(void)color;
-#endif
-#endif
 	(void)ppu;
+#endif
 }
 
 void PPU_DebugPatternTable(pPpuStatus ppu)
 {
 #if defined _WIN32 || defined __linux__
-#if defined DEBUG_PPU_PATTERNTABLE
 	int i, x, y;
 	uint32_t pixel;
 
 	// Return if not initialized or closed.
-	if (!window_pattern_table)
+	if (!window_pattern_table || !is_window_pattern_table_shown)
 		return;
 
 	// Left pattern table
@@ -1033,8 +1023,7 @@ void PPU_DebugPatternTable(pPpuStatus ppu)
 		}
 	}
 	SDL_UpdateWindowSurface(window_pattern_table);
-#endif
-#endif
+#else
 	(void)ppu;
+#endif
 }
-

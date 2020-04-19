@@ -161,15 +161,17 @@ extern "C" {
 #if defined _WIN32 || defined __linux__
 extern SDL_Window* window;
 extern SDL_Surface* surface;
-#if defined DEBUG_PPU_NAMETABLE
+
+/// PPU debugging level name table
 extern SDL_Window* window_name_table;
 extern SDL_Surface* surface_name_table;
-#endif
-#if defined DEBUG_PPU_PATTERNTABLE
+extern int is_window_name_table_shown;
+
+/// PPU debugging level pattern table
 extern SDL_Window* window_pattern_table;
 extern SDL_Surface* surface_pattern_table;
+extern int is_window_pattern_table_shown;
 extern int palette_number;
-#endif
 #endif
 
 /// TODO: Replace thise declarations when moved to PPU status struct.

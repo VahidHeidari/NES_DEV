@@ -173,6 +173,15 @@ int ReadROMImage(char* path)
 	return 1;
 }
 
+static void ToggleWindow(SDL_Window* window, int* is_window_shown)
+{
+	if (*is_window_shown)
+		SDL_HideWindow(window);
+	else
+		SDL_ShowWindow(window);
+	*is_window_shown ^= 1;
+}
+
 void ReadJoypad(void)
 {
 #if (defined _WIN32 || defined __linux__) && READ_SDL_JOYPAD == 1
@@ -181,12 +190,16 @@ void ReadJoypad(void)
 	while (SDL_PollEvent(&evnt)) {
 		switch (evnt.type) {
 			case SDL_WINDOWEVENT:
-				if (evnt.window.event == SDL_WINDOWEVENT_CLOSE)
-					finished_emulation = 1;
+				if (evnt.window.event == SDL_WINDOWEVENT_CLOSE) {
+					if (evnt.window.windowID == SDL_GetWindowID(window))
+						finished_emulation = 1;
+					else if (evnt.window.windowID == SDL_GetWindowID(window_name_table))
+						ToggleWindow(window_name_table, &is_window_name_table_shown);
+					else if (evnt.window.windowID == SDL_GetWindowID(window_pattern_table))
+						ToggleWindow(window_pattern_table, &is_window_pattern_table_shown);
+				}
 				break;
 
-#if defined _WIN32 || defined __linux__
-#if defined DEBUG_PPU_PATTERNTABLE
 			case SDL_MOUSEBUTTONDOWN:
 				if (evnt.window.windowID == SDL_GetWindowID(window_pattern_table)) {
 					if (evnt.button.button == 1)			// Next palette
@@ -197,8 +210,7 @@ void ReadJoypad(void)
 						palette_number = 0;
 				}
 				break;
-#endif
-#endif
+
 			case SDL_QUIT:
 				finished_emulation = 1;
 				break;
@@ -242,6 +254,13 @@ void ReadJoypad(void)
 						break;
 					case SDLK_b:
 						show_bg ^= 1;
+						break;
+
+					case SDLK_t:
+						ToggleWindow(window_name_table, &is_window_name_table_shown);
+						break;
+					case SDLK_y:
+						ToggleWindow(window_pattern_table, &is_window_pattern_table_shown);
 						break;
 
 					// Save state.

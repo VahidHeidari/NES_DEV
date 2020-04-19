@@ -33,10 +33,6 @@ extern "C" {
 /// Logging level
 //#define DEBUG_LOGGING				1
 
-/// PPU debugging level
-//#define DEBUG_PPU_NAMETABLE		1
-//#define DEBUG_PPU_PATTERNTABLE	1
-
 /// Processor options
 //#define UN_OFFICIALS
 
