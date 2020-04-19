@@ -45,8 +45,6 @@ project and select it as start up project manually.
 * Adding SD card file system for loading ROM images for ARM devices.
 * Making a small game for tests.
 * Adding a better build script for making TEST ROM.
-* Make debug viewers flexible and user friendly, it is hardcoded, and needs to
-be enabled/disabled from source.
 * Designing low const, felexible, and extensible PCB for hand-held console.
 
  How to make project:
@@ -68,6 +66,8 @@ to open visual studio.
 * Key pad 8 or Right Ctrl key -> Select button
 * P key -> Toggle sprites
 * B key -> Toggle background
+* T key -> Toggle name table window
+* Y key -> Toggle pattern table window
 * F1 to F4 keys -> Save game state into slot 1 to slot 4
 * F5 to F8 keys -> Load game state from slot 1 to slot 4
 

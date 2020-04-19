@@ -337,7 +337,6 @@ static int SaveSnapshot(const char* path)
 	bmp.height = SNAPSHOT_HEIGHT;
 	bmp.planes = 1;
 	bmp.bit_count = 24;
-	bmp.image_size = SNAPSHOT_SIZE * 3;
 	// Write header.
 	fwrite(&bmp, sizeof(BitmapHdr), 1, f);
 	// Write pixels.
