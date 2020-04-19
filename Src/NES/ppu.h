@@ -208,7 +208,7 @@ typedef struct PpuRegs
 	uint8_t scroll;			/// $20 05		PPUSCROLL (scroll register X)
 	uint8_t address;		/// $20 06		PPUADDR (scroll address)
 	uint8_t data;			/// $20 07		PPUDATA
-} PpuRegs, * pPpuRegs;
+} PpuRegs, *pPpuRegs;
 
 typedef struct Sprite
 {

@@ -27,7 +27,12 @@
 #include "debuger.h"
 #include "mapper.h"
 
+#define SNAPSHOT_WIDTH		256
+#define SNAPSHOT_HEIGHT		240
+#define SNAPSHOT_SIZE		(SNAPSHOT_WIDTH * SNAPSHOT_HEIGHT)
+
 char slot[NUM_OF_SLOTS][SLOT_PATH_SIZE];
+char bmps[NUM_OF_SLOTS][SLOT_PATH_SIZE];
 
 const StateVersion state_version =
 {
@@ -77,8 +82,10 @@ int State_Init(const char* path)
 	for (i = 0; i < NUM_OF_SLOTS; ++i) {
 #if defined _WIN32 && !defined __GNUC__
 		sprintf_s(&slot[i][0], SLOT_PATH_SIZE, "%s/SLOT%d.SVT", path, i);
+		sprintf_s(&bmps[i][0], SLOT_PATH_SIZE, "%s/SLOT%d.bmp", path, i);
 #else
 		snprintf(&slot[i][0], SLOT_PATH_SIZE, "%s/SLOT%d.SVT", path, i);
+		snprintf(&bmps[i][0], SLOT_PATH_SIZE, "%s/SLOT%d.bmp", path, i);
 #endif
 	}
 	return 1;
@@ -304,6 +311,53 @@ int State_Save(const char* path)
 	return 1;
 }
 
+static int SaveSnapshot(const char* path)
+{
+#if defined _WIN32 || defined __linux__
+	FILE* f;
+	int x, y;
+	BitmapHdr bmp;
+
+#if _WIN32
+	fopen_s(&f, path, "wb");
+#else
+	f = fopen(path, "wb");
+#endif
+	if (!f)
+		return 0;
+
+	// Initialize file header.
+	memset(&bmp, 0, sizeof(BitmapHdr));
+	bmp.sig = 0x4D42;
+	bmp.file_size = sizeof(BitmapHdr) + SNAPSHOT_SIZE;
+	bmp.data_offset = sizeof(BitmapHdr);
+	// Initialize bitmap info header.
+	bmp.info_size = 40;
+	bmp.width = SNAPSHOT_WIDTH;
+	bmp.height = SNAPSHOT_HEIGHT;
+	bmp.planes = 1;
+	bmp.bit_count = 24;
+	bmp.image_size = SNAPSHOT_SIZE * 3;
+	// Write header.
+	fwrite(&bmp, sizeof(BitmapHdr), 1, f);
+	// Write pixels.
+	for (y = SNAPSHOT_HEIGHT - 1; y >= 0; --y) {
+		for (x = 0; x < SNAPSHOT_WIDTH; ++x) {
+			int idx = SNAPSHOT_WIDTH * y + x;
+			uint32_t color = ((uint32_t*)(surface->pixels))[idx];
+			fwrite(&color, 1, 1, f);		// Write red component.
+			color >>= 8;
+			fwrite(&color, 1, 1, f);		// Write green component.
+			color >>= 8;
+			fwrite(&color, 1, 1, f);		// Write blue component.
+		}
+	}
+	fclose(f);
+	DebugMessage("Snapshot saved to -> '%s'", path);
+#endif
+	return 1;
+}
+
 int State_SaveSlot(int i)
 {
 	if (i > NUM_OF_SLOTS || i < 0) {
@@ -312,7 +366,12 @@ int State_SaveSlot(int i)
 	}
 
 	if (State_Save(&(slot[i][0])) != 1) {
-		DebugMessage("Could not save state to slot #%d! Save error.", i);
+		DebugMessage("Could not save state to slot #%d! Context save error.", i);
+		return 0;
+	}
+
+	if (SaveSnapshot(&(bmps[i][0])) != 1) {
+		DebugMessage("Could not save snapshot to slot #%d! Bitmap save error.", i);
 		return 0;
 	}
 
@@ -354,4 +413,3 @@ int State_ReadChunkTag(FILE* state, pChunkTag chunk)
 
 	return chunk->len;
 }
-

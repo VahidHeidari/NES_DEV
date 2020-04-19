@@ -65,12 +65,46 @@ extern "C" {
 #define STATE_NESH_TAG_ID		0x4853454e
 #define STATE_MROR_TAG_ID		0x524f524d
 
+#if defined __GNUC__
+#define ATTRIB_PACKED(STRU) __attribute__((__packed__)) STRU
+#else
+#define ATTRIB_PACKED(STRU)	STRU
+#endif
+
 #define STR_TO_ID(str)			((uint32_t)str[0] << 24	\
 	| (uint32_t)str[1] << 16 | (uint32_t)str[2] << 8 | (uint32_t)str[3])
 #define CHR_TO_ID(a, b, c, d)	((uint32_t)a << 24	\
 	| (uint32_t)b << 16 | (uint32_t)c << 8 | (uint32_t)d)
 
 extern char slot[NUM_OF_SLOTS][SLOT_PATH_SIZE];
+
+#if _WIN32
+#pragma pack(push, 1)
+#endif
+typedef struct BitmapHdr
+{
+	/// Bitmap file header
+	uint16_t sig;
+	uint32_t file_size;
+	uint32_t reserved;
+	uint32_t data_offset;
+
+	/// Bitmap Header Info header
+	uint32_t info_size;
+	uint32_t width;
+	uint32_t height;
+	uint16_t planes;
+	uint16_t bit_count;
+	uint32_t compression;
+	uint32_t image_size;
+	uint32_t x_pels_per_meter;
+	uint32_t y_pels_per_meter;
+	uint32_t clr_used;
+	uint32_t clr_important;
+} ATTRIB_PACKED(BitmapHdr), *pBitmapHdr;
+#if _WIN32
+#pragma pack(pop)
+#endif
 
 typedef struct ChunkTag
 {
