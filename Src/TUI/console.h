@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -45,19 +45,19 @@ extern "C" {
 #define DOWN_KEY		'B'
 #define RIGHT_KEY		'C'
 #define LEFT_KEY		'D'
-#define ENTER_KEY		'\n'	
+#define ENTER_KEY		'\n'
 #define BACK_SPACE_KEY	'\b'
 
 #if defined _WIN32
 extern HANDLE console_handel;
 #endif
 
-void init_console(void);
-void gotoxy(int x, int y);
-void set_black_on_white(void);
-void set_white_on_black(void);
-void clear_cmd_line(void);
-void clear_screen(void);
+void InitConsole(void);
+void GoToXY(int x, int y);
+void SetBlackOnWhite(void);
+void SetWhiteOnBlack(void);
+void ClearCmdLine(void);
+void ClearScreen(void);
 
 #ifdef __cplusplus
 }

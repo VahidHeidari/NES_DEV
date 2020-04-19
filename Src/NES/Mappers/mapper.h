@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -127,18 +127,18 @@ typedef struct Mapper4Regs
 	int irq_enable_reg;
 } Mapper4Regs, *pMapper4Regs;
 
-int mapper_is_supported(int num);
-int mapper_has_chr_ram(int num);
+int Mapper_IsSupported(int num);
+int Mapper_HasChrRAM(int num);
 
-int init_mappers(void);
-int mapper_write(uint16_t addr, uint8_t value);
-int mapper_write_ppu(uint16_t addr, uint8_t value);
-uint8_t mapper_read(uint16_t addr);
-int mapper_save_state(FILE* state);
-int mapper_load_state(FILE* state, const ChunkTag* tag);
+int Mapper_Init(void);
+int Mapper_Write(uint16_t addr, uint8_t value);
+int Mapper_WritePPU(uint16_t addr, uint8_t value);
+uint8_t Mapper_Read(uint16_t addr);
+int Mapper_SaveState(FILE* state);
+int Mapper_LoadState(FILE* state, const ChunkTag* tag);
 
-int init_mapper1(FILE* image);
-int init_mapper4(FILE* image);
+int InitMapper1(FILE* image);
+int InitMapper4(FILE* image);
 
 #ifdef __cplusplus
 }

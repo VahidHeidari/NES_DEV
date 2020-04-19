@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -130,8 +130,7 @@ extern "C" {
 #define INC_VERT(v)		do {			\
 	if ((v & 0x7000) != 0x7000)			\
 		v += 0x1000;					\
-	else								\
-	{									\
+	else {								\
 		v ^= 0x7000;					\
 		if ((v & 0x03E0) == 0x03A0)		\
 			v ^= 0x0BA0;				\
@@ -144,12 +143,10 @@ extern "C" {
 
 /// Coarse X increment
 #define INC_HORI(v)		do {	\
-	if ((v & 0x001F) == 31)		\
-	{							\
+	if ((v & 0x001F) == 31) {	\
 		v &= ~0x001F;			\
 		v ^= 0x0400;			\
-	}							\
-	else						\
+	} else						\
 		++v;					\
 } while (0)
 
@@ -246,7 +243,7 @@ typedef struct PpuStatus
 	int clock_cycle;
 	int odd_even_frame;
 	int vblank_flag;				/// VBlank flag
-	
+
 	/// Background
 	/// TODO: Change v and t types to TwoByteReg for some performance improvemnets.
 	uint16_t v;						/// VRAM address
@@ -264,7 +261,7 @@ typedef struct PpuStatus
 	uint8_t pal_latch2;
 	uint8_t bg_attri;
 	uint16_t tile_addr;
-	
+
 	// Sprites
 	PrimarySpriteMemory OAM;				/// Primary OAM
 	SecondarySpriteMemory OAM_secondary;	/// Secondary OAM
@@ -280,21 +277,21 @@ typedef struct PpuStatus
 	int sp_xpos[8];							/// 8 counters contains the x position of sprites
 } PpuStatus, *pPpuStatus;
 
-int ppu_init(pPpuStatus ppu);
-void ppu_close(pPpuStatus ppu);
-void ppu_write(pPpuStatus ppu, uint16_t addr, uint8_t value);
-uint8_t ppu_read(pPpuStatus ppu, uint16_t addr);
-void ppu_clock(pPpuStatus ppu);
-void ppu_put_pixel(pPpuStatus ppu);
+int PPU_Init(pPpuStatus ppu);
+void PPU_Close(pPpuStatus ppu);
+void PPU_Write(pPpuStatus ppu, uint16_t addr, uint8_t value);
+uint8_t PPU_Read(pPpuStatus ppu, uint16_t addr);
+void PPU_Clock(pPpuStatus ppu);
+void PPU_PutPixel(pPpuStatus ppu);
 
 /// Debuging
-void ppu_print_status(pPpuStatus ppu);
-void ppu_debug_name_table(pPpuStatus ppu, uint32_t color);
-void ppu_debug_pattern_table(pPpuStatus ppu);
+void PPU_PrintStatus(pPpuStatus ppu);
+void PPU_DebugNameTable(pPpuStatus ppu, uint32_t color);
+void PPU_DebugPatternTable(pPpuStatus ppu);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif 
+#endif
 

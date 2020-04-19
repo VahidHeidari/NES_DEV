@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -117,15 +117,15 @@ extern const ChunkTag path_tag;
 extern const ChunkTag nes_hdr_tag;
 extern const ChunkTag mirroring_tag;
 
-int state_init(const char* path);
-int state_close(void);
-int state_load(const char* path);
-int state_save(const char* path);
-int state_save_slot(int i);
-int state_load_slot(int i);
+int State_Init(const char* path);
+int State_Close(void);
+int State_Load(const char* path);
+int State_Save(const char* path);
+int State_SaveSlot(int i);
+int State_LoadSlot(int i);
 
-int state_write_chunk_tag(FILE* state, const ChunkTag* chunk, const void* data);
-int state_read_chunk_tag(FILE* state, pChunkTag chunk);
+int State_WriteChunkTag(FILE* state, const ChunkTag* chunk, const void* data);
+int State_ReadChunkTag(FILE* state, pChunkTag chunk);
 
 #if defined __cplusplus
 }

@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -43,50 +43,46 @@ char* image_path = NULL;	/// ROM image path
 FILE* image = NULL;			/// ROM image
 Mirroring mirroring;
 
-void read_joypad(void);
+void ReadJoypad(void);
 
-int emulator_init(void)
+int Emulator_Init(void)
 {
 	finished_emulation = 0;
-	
+
 #if defined _WIN32
-	if (state_init("C:\\C++\\NES_DEV\\state") != 1)
+	if (State_Init("C:\\C++\\NES_DEV\\state") != 1)
 #else
-	if (state_init("../state") != 1)
+	if (StateInit("../state") != 1)
 #endif
 		return 0;
 
-	if (joypad_init(&joypad) != 1)
+	if (Joypad_Init(&joypad) != 1)
 		return 0;
 
-	if (ppu_init(&ppu) != 1)
+	if (PPU_Init(&ppu) != 1)
 		return 0;
 
-	if (apu_init(&apu) != 1)
+	if (APU_Init(&apu) != 1)
 		return 0;
 
-	power_on(&p);
-
-	frame_end = read_joypad;
-
+	PowerOn(&p);
+	frame_end = ReadJoypad;
 	return 1;
 }
 
-void emulator_close(void)
+void Emulator_Close(void)
 {
-	ppu_close(&ppu);
-	apu_close(&apu);
-	joypad_close(&joypad);
-
-	if (image)
-	{
+	PPU_Close(&ppu);
+	APU_Close(&apu);
+	Joypad_Close(&joypad);
+	if (image) {
 		fclose(image);
 		image = NULL;
 	}
 }
 
 /// TODO: Write portable reading ROM image.
-int read_rom_image(char* path)
+int ReadROMImage(char* path)
 {
 	FILE* f = NULL;
 #if defined _WIN32 && defined _MSC_VER
@@ -95,81 +91,72 @@ int read_rom_image(char* path)
 	f = fopen(path, "rb");
 #endif
 
-	if (!f)
-	{
-		debug_message("Emulation failed because file '%s' could not open.", path);
-		return 0;
-	}
-	memset(&hdr, 0, sizeof(hdr));
-	if (fread(&hdr, sizeof(hdr), 1, f) != 1)		// Read NES header
-	{
-		debug_message("Reading NES header failed!");
+	if (!f) {
+		DebugMessage("Emulation failed because file '%s' could not open.", path);
 		return 0;
 	}
 
-	nes_hdr_info(&hdr);
+	memset(&hdr, 0, sizeof(hdr));
+	if (fread(&hdr, sizeof(hdr), 1, f) != 1) {		// Read NES header
+		DebugMessage("Reading NES header failed!");
+		return 0;
+	}
+
+	NESHdr_Info(&hdr);
 
 	// Check ROM image parameters supported by this emulator.
-	switch (GET_MAPPER(&hdr))
-	{
+	switch (GET_MAPPER(&hdr)) {
 		case 0:
-			if ((GET_NUM_OF_ROM_BANKS(&hdr) > 2) || (GET_NUM_OF_VROM_BANKS(&hdr) != 1))
-			{
-				debug_message("Mapper 0, invalid number of ROMS or CHR ROM");
+			if ((GET_NUM_OF_ROM_BANKS(&hdr) > 2) || (GET_NUM_OF_VROM_BANKS(&hdr) != 1)) {
+				DebugMessage("Mapper 0, invalid number of ROMS or CHR ROM");
 				return 0;
 			}
 			if (IS_TRAINER(&hdr))
 				fseek(f, 512, SEEK_CUR);
 
-			if (GET_NUM_OF_ROM_BANKS((&hdr)) == 1)		// Read only PROG ROM part of image
-			{
-				if (fread(ROM, sizeof(ROM) / 2, 1, f) != 1)
-				{
-					debug_message("Reading ROM part from NES image file failed!");
+			if (GET_NUM_OF_ROM_BANKS((&hdr)) == 1) {		// Read only PROG ROM part of image
+				if (fread(ROM, sizeof(ROM) / 2, 1, f) != 1) {
+					DebugMessage("Reading ROM part from NES image file failed!");
 					return 0;
 				}
-				memcpy(ROM + 0x4000, ROM, 0x4000);		// Copy 1st PRG bank to 2nd bank 
-			}
-			else
-				if (fread(ROM, sizeof(ROM), 1, f) != 1)			// Copy all 2 PRG banks.
-				{
-					debug_message("Reading ROM part from NES image file failed!");
+				memcpy(ROM + 0x4000, ROM, 0x4000);		// Copy 1st PRG bank to 2nd bank
+			} else
+				if (fread(ROM, sizeof(ROM), 1, f) != 1) {			// Copy all 2 PRG banks.
+					DebugMessage("Reading ROM part from NES image file failed!");
 					return 0;
 				}
-			if (fread(pattern_table, sizeof(pattern_table), 1, f) != 1)		// Read 1st 8K pattern table
-			{
-				debug_message("Reading CHR ROM part from NES image file failed!");
+			if (fread(pattern_table, sizeof(pattern_table), 1, f) != 1) {		// Read 1st 8K pattern table
+				DebugMessage("Reading CHR ROM part from NES image file failed!");
 				return 0;
 			}
 			break;
 		case 1:
 			/// TODO: Support trainer ram.
-			if (IS_TRAINER(&hdr))
-			{
-				debug_message("Mapper 1 hase trainer, this type of ROMs not supported yet!");
+			if (IS_TRAINER(&hdr)) {
+				DebugMessage("Mapper 1 hase trainer, this type of ROMs not supported yet!");
 				return 0;
 			}
-			init_mapper1(f);
+			InitMapper1(f);
 			break;
 		case 2:
-			if (bank_switch_16k(0, ROM, f) != 1)
+			if (BankSwitch16K(0, ROM, f) != 1)
 				return 0;
-			if (bank_switch_16k(GET_NUM_OF_ROM_BANKS(&hdr) - 1, ROM + (ROM_SIZE / 2), f) != 1)
+			if (BankSwitch16K(GET_NUM_OF_ROM_BANKS(&hdr) - 1, ROM + (ROM_SIZE / 2), f) != 1)
 				return 0;
 			break;
 		case 3:
-			if (fread(ROM, GET_NUM_OF_ROM_BANKS(&hdr) * (ROM_SIZE / 2), 1, f) != 1)
-			{
-				debug_message("Mapepr 3 reading ROM part from NES image file failed!");
+			if (fread(ROM, GET_NUM_OF_ROM_BANKS(&hdr) * (ROM_SIZE / 2), 1, f) != 1) {
+				DebugMessage("Mapepr 3 reading ROM part from NES image file failed!");
 				return 0;
 			}
-			if (bank_switch_8k(2 * GET_NUM_OF_ROM_BANKS(&hdr), pattern_table, f) != 1)// Skip 16Kb ROM banks.
+			if (BankSwitch8K(2 * GET_NUM_OF_ROM_BANKS(&hdr), pattern_table, f) != 1)// Skip 16Kb ROM banks.
 				return 0;
 			break;
 		case 4:
 			if (IS_TRAINER(&hdr))
 				return 0;
-			init_mapper4(f);
+
+			InitMapper4(f);
 			break;
 
 		default:
@@ -183,19 +170,16 @@ int read_rom_image(char* path)
 	/*f = fopen("C:\\mario.bin", "wb");
 	fwrite(pattern_table, sizeof(pattern_table), 1, f);
 	*/
-
 	return 1;
 }
 
-void read_joypad(void)
+void ReadJoypad(void)
 {
 #if (defined _WIN32 || defined __linux__) && READ_SDL_JOYPAD == 1
 	SDL_Event evnt;
 
-	while (SDL_PollEvent(&evnt))
-	{
-		switch (evnt.type)
-		{
+	while (SDL_PollEvent(&evnt)) {
+		switch (evnt.type) {
 			case SDL_WINDOWEVENT:
 				if (evnt.window.event == SDL_WINDOWEVENT_CLOSE)
 					finished_emulation = 1;
@@ -204,8 +188,7 @@ void read_joypad(void)
 #if defined _WIN32 || defined __linux__
 #if defined DEBUG_PPU_PATTERNTABLE
 			case SDL_MOUSEBUTTONDOWN:
-				if (evnt.window.windowID == SDL_GetWindowID(window_pattern_table))
-				{
+				if (evnt.window.windowID == SDL_GetWindowID(window_pattern_table)) {
 					if (evnt.button.button == 1)			// Next palette
 						palette_number = (palette_number + 1) % 8;
 					else if (evnt.button.button == 3)		// Previouse palette
@@ -221,8 +204,7 @@ void read_joypad(void)
 				break;
 
 			case SDL_KEYDOWN:
-				switch (evnt.key.keysym.sym)
-				{
+				switch (evnt.key.keysym.sym) {
 					case SDLK_ESCAPE:
 						finished_emulation = 1;
 						break;
@@ -263,22 +245,21 @@ void read_joypad(void)
 						break;
 
 					// Save state.
-					case SDLK_F1: state_save_slot(0); break;
-					case SDLK_F2: state_save_slot(1); break;
-					case SDLK_F3: state_save_slot(2); break;
-					case SDLK_F4: state_save_slot(3); break;
+					case SDLK_F1: State_SaveSlot(0); break;
+					case SDLK_F2: State_SaveSlot(1); break;
+					case SDLK_F3: State_SaveSlot(2); break;
+					case SDLK_F4: State_SaveSlot(3); break;
 
 					// Load state.
-					case SDLK_F5: state_load_slot(0); break;
-					case SDLK_F6: state_load_slot(1); break;
-					case SDLK_F7: state_load_slot(2); break;
-					case SDLK_F8: state_load_slot(3); break;
+					case SDLK_F5: State_LoadSlot(0); break;
+					case SDLK_F6: State_LoadSlot(1); break;
+					case SDLK_F7: State_LoadSlot(2); break;
+					case SDLK_F8: State_LoadSlot(3); break;
 				}
 				break;
 
 			case SDL_KEYUP:
-				switch (evnt.key.keysym.sym)
-				{
+				switch (evnt.key.keysym.sym) {
 					case SDLK_UP:
 						joypad.buttons1.buttons &= ~UP_BOTTUN;
 						break;
@@ -357,42 +338,37 @@ void read_joypad(void)
 #endif
 }
 
-void step(void)
+void Step(void)
 {
 	int i;
-	
-	if (ppu.vblank_flag && (ppu.regs.status & VBLANK_EVENT) && (ppu.regs.ctrl & NMI_ENABLE))
-	{
+
+	if (ppu.vblank_flag && (ppu.regs.status & VBLANK_EVENT) && (ppu.regs.ctrl & NMI_ENABLE)) {
 		p.interrupts = INTR_NMI;
 		ppu.vblank_flag = 0;
 	}
 
-	fetch(&p);
-
-	for (i = 0; i < p.ins_cycles; ++i)
-	{
+	Fetch(&p);
+	for (i = 0; i < p.ins_cycles; ++i) {
 		// PPU is 3 times faster.
-		ppu_clock(&ppu);
-		ppu_clock(&ppu);
-		ppu_clock(&ppu);
+		PPU_Clock(&ppu);
+		PPU_Clock(&ppu);
+		PPU_Clock(&ppu);
 
-		apu_clock(&apu);
+		APU_Clock(&apu);
 	}
 
-	//read_joypad();
+	//ReadJoypad();
 }
 
-void run(void)
+void Run(void)
 {
 	while (!finished_emulation)
-		step();
+		Step();
 }
 
-void run_cycles(int cycles)
+void RunCycles(int cycles)
 {
 	long long start_cycles = p.cycle_counter;
-
 	while (p.cycle_counter - start_cycles < cycles && !finished_emulation)
-		step();
+		Step();
 }
-

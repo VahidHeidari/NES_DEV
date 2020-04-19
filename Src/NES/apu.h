@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -282,14 +282,14 @@ typedef struct Apu
 	int irq_flag;
 } Apu, *pApu;
 
-int apu_init(pApu apu);
-void apu_write(pApu apu, uint16_t addr, uint8_t value);
-uint8_t apu_read(pApu apu, uint16_t addr);
-void apu_close(pApu apu);
-void apu_clock(pApu apu);
+int APU_Init(pApu apu);
+void APU_Write(pApu apu, uint16_t addr, uint8_t value);
+uint8_t APU_Read(pApu apu, uint16_t addr);
+void APU_Close(pApu apu);
+void APU_Clock(pApu apu);
 
-void apu_envelope_triangle_clock(pApu apu);
-void apu_length_sweep_clock(pApu apu);
+void APU_EnvelopeTriangleClock(pApu apu);
+void APU_LengthSweepClock(pApu apu);
 
 #ifdef __cplusplus
 }

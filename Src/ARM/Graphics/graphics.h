@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -80,7 +80,7 @@ typedef struct Rectangle
  * @param b The right point to add.
  * @return The result of addition of a and b.
  */
-Point add_point(pPoint a, pPoint b);
+Point AddPoint(pPoint a, pPoint b);
 
 /**
  * Set the pixel by the given point.
@@ -88,7 +88,7 @@ Point add_point(pPoint a, pPoint b);
  * @param p The point to set color.
  * @param c The color of pixel to set.
  */
-void set_pixel(Point p, Color c);
+void SetPixel(Point p, Color c);
 
 /**
  * Drow a vertical line.
@@ -97,7 +97,7 @@ void set_pixel(Point p, Color c);
  * @param p2 Ending point ot the line.
  * @param c Color to draw.
  */
-void draw_vertical_line(Point p1, Point p2, Color c);
+void DrawVerticalLine(Point p1, Point p2, Color c);
 
 /**
  * Draw a horizontal line.
@@ -106,7 +106,7 @@ void draw_vertical_line(Point p1, Point p2, Color c);
  * @param p2 End point of the line.
  * @parma c Color to draw.
  */
-void draw_horizontal_line(Point p1, Point p2, Color c);
+void DrawHorizontalLine(Point p1, Point p2, Color c);
 
 /**
  * Draw a line.
@@ -114,7 +114,7 @@ void draw_horizontal_line(Point p1, Point p2, Color c);
  * @param p1 Starting point of the line.
  * @param p2 Ending point of the line.
  */
-void draw_line(Point p1, Point p2, Color c);
+void DrawLine(Point p1, Point p2, Color c);
 
 /**
  * Draw a rectangle.
@@ -122,11 +122,11 @@ void draw_line(Point p1, Point p2, Color c);
  * @param rect The rectangle you want to draw.
  * @param c Color to draw.
  */
-void draw_rectangle(Rectangle rect, Color c);
+void DrawRectangle(Rectangle rect, Color c);
 
-void fill_rectangle(Rectangle rect, Color c);
+void FillRectangle(Rectangle rect, Color c);
 
-void plot_8_circle_point(pPoint center, Point p, Color c);
+void Plot8CirclePoint(pPoint center, Point p, Color c);
 
 /**
  * Draw a circle.
@@ -135,22 +135,22 @@ void plot_8_circle_point(pPoint center, Point p, Color c);
  * @param radius The radius of circle.
  * @param c Color to draw.
  */
-void draw_circle(Point center, unsigned int radius, Color c);
+void DrawCircle(Point center, unsigned int radius, Color c);
 
-void fill_circle(Point center, unsigned int radius, Color c);
+void FillCircle(Point center, unsigned int radius, Color c);
 
 /**
  * Fill screen by given color.
  *
  * @param c The color of screen.
  */
-void clear_screen(Color c);
+void ClearScreen(Color c);
 
-void draw_char(char ch, const pPoint p, const pPoint s, Color c);
+void DrawChar(char ch, const pPoint p, const pPoint s, Color c);
 
-void draw_string(char* str, Point p, Point scale, Color c);
+void DrawString(char* str, Point p, Point scale, Color c);
 
-void draw_stringf(flash char* str, Point p, Point scale, Color c);
+void DrawStringF(flash char* str, Point p, Point scale, Color c);
 
 #if defined TFT_ILI9325_AVR_LIB
 #pragma used-

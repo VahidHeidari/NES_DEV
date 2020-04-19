@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -22,26 +22,24 @@
 #include "config.h"
 #include "font.h"
 
-Point add_point(pPoint a, pPoint b)
+Point AddPoint(pPoint a, pPoint b)
 {
 	Point result;
-
 	result.x = a->x + b->x;
 	result.y = a->y + b->y;
-
 	return result;
 }
 
-void set_pixel(Point p, Color c)
+void SetPixel(Point p, Color c)
 {
 	if (p.x < 0 || p.x >= SCREEN_WIDTH
 			|| p.y < 0 || p.y >= SCREEN_HEIGHT)
-	return;
+	return;		// Input point is out of screen boundary.
 
-	tft_ili9325_wr_cmd(0x20, p.x);	// X
-	tft_ili9325_wr_cmd(0x21, p.y);	// Y
-	tft_ili9325_wr_reg(0x22);
-	tft_ili9325_wr_data(c);
+	TFTili9325WrCmd(0x20, p.x);	// X
+	TFTili9325WrCmd(0x21, p.y);	// Y
+	TFTili9325WrReg(0x22);
+	TFTili9325WrData(c);
 }
 
 /**
@@ -52,13 +50,12 @@ void set_pixel(Point p, Color c)
  *			|
  *			|	p2 (x2, y2)
  */
-void draw_vertical_line(Point p1, Point p2, Color c)
+void DrawVerticalLine(Point p1, Point p2, Color c)
 {
 	if (p1.x != p2.x)
 		return;
 
-	if (p1.y > p2.y)
-	{
+	if (p1.y > p2.y) {
 		Point tmp;
 		SWAP(p1, p2, tmp);
 	}
@@ -81,130 +78,108 @@ void draw_horizontal_line(Point p1, Point p2, Color c)
 	if (p1.y != p2.y)
 		return;
 
-	if (p1.x > p2.x)
-	{
+	if (p1.x > p2.x) {
 		Point tmp;
 		SWAP(p1, p2, tmp);
 	}
 
-	do
-	{
-		set_pixel(p1, c);
+	do {
+		SetPixel(p1, c);
 		p1.x++;
 	} while (p1.x <= p2.x);
 }
 
-void draw_line(Point p1, Point p2, Color c)
+void DrawLine(Point p1, Point p2, Color c)
 {
-    int err = 0;
-    int dx;
-    int dy;
+	int err = 0;
+	int dx;
+	int dy;
 
-		if (p1.x == p2.x)
-		{
-			draw_vertical_line(p1, p2, c);
-			return;
-		}
+	if (p1.x == p2.x) {
+		DrawVertical_line(p1, p2, c);
+		return;
+	}
 
-		if (p1.y == p2.y)
-		{
-			draw_horizontal_line(p1, p2, c);
-			return;
-		}
+	if (p1.y == p2.y) {
+		DrawHorizontalLine(p1, p2, c);
+		return;
+	}
 
-		// Reverse line where x1 > x2
-		if (p1.x > p2.x)
-		{
-			Point tmp;
-			SWAP(p1, p2, tmp);
-		}
+	// Reverse line where x1 > x2
+	if (p1.x > p2.x) {
+		Point tmp;
+		SWAP(p1, p2, tmp);
+	}
 
-    dx = p2.x - p1.x;
-    dy = p2.y - p1.y;
+	dx = p2.x - p1.x;
+	dy = p2.y - p1.y;
 
-		if (dy > 0)
-		{
-			if (dy < dx)
-			{
-				do
-				{
-					set_pixel(p1, c);
-					err += dy;
-					if ((2 * err) >= dx)
-					{
-						++p1.y;
-						err -= dx;
-					}
-				} while (++p1.x <= p2.x);
-			}
-			else
-			{
-				do
-				{
-					set_pixel(p1, c);
-					err += dx;
-					if ((2 * err) >= dy)
-					{
-						++p1.x;
-						err -= dy;
-					}
-				} while (++p1.y <= p2.y);
-			}
-		}
-    else
-    {
-			dy = -dy;
-			if (dy < dx)
-			{
-				do
-				{
-					set_pixel(p1, c);
-					err -= dy;
-					if ((2 * err) <= -dx)
-					{
-						--p1.y;
-						err += dx;
-					}
-				} while (++p1.x <= p2.x);
-			}
-			else
-			{
-				do
-				{
-					set_pixel(p1, c);
+	if (dy > 0) {
+		if (dy < dx) {
+			do {
+				SetPixel(p1, c);
+				err += dy;
+				if ((2 * err) >= dx) {
+					++p1.y;
 					err -= dx;
-					if ((2 * err) <= -dy)
-					{
-						++p1.x;
-						err += dy;
-					}
-				} while (--p1.y >= p2.y);
-			}
+				}
+			} while (++p1.x <= p2.x);
+		} else {
+			do {
+				SetPixel(p1, c);
+				err += dx;
+				if ((2 * err) >= dy) {
+					++p1.x;
+					err -= dy;
+				}
+			} while (++p1.y <= p2.y);
+		}
+	} else {
+		dy = -dy;
+		if (dy < dx) {
+			do {
+				SetPixel(p1, c);
+				err -= dy;
+				if ((2 * err) <= -dx) {
+					--p1.y;
+					err += dx;
+				}
+			} while (++p1.x <= p2.x);
+		} else {
+			do {
+				SetPixel(p1, c);
+				err -= dx;
+				if ((2 * err) <= -dy) {
+					++p1.x;
+					err += dy;
+				}
+			} while (--p1.y >= p2.y);
+		}
 	}
 }
 
-void draw_rectangle(Rectangle rect, Color c)
+void DrawRectangle(Rectangle rect, Color c)
 {
 	Point end;
 
 	end = rect.p;
 	end.x += rect.width;
-	draw_horizontal_line(rect.p, end, c);
+	DrawHorizontalLine(rect.p, end, c);
 
 	end.x = rect.p.x;
 	end.y += rect.height;
-	draw_vertical_line(rect.p, end, c);
+	DrawVerticalLine(rect.p, end, c);
 
 	end.x += rect.width;
 	rect.p.x += rect.width;
-	draw_vertical_line(rect.p, end, c);
+	DrawVerticalLine(rect.p, end, c);
 
 	rect.p = end;
 	end.x -= rect.width;
-	draw_horizontal_line(end, rect.p, c);
+	DrawHorizontalLine(end, rect.p, c);
 }
 
-void fill_rectangle(Rectangle rect, Color c)
+void FillRectangle(Rectangle rect, Color c)
 {
 	int x, y;
 
@@ -226,19 +201,17 @@ void fill_rectangle(Rectangle rect, Color c)
 	if (y >= SCREEN_HEIGHT)
 		rect.height = SCREEN_HEIGHT - rect.p.y;
 
-	for (y = rect.p.y; y <= rect.p.y + rect.height; ++y)
-	{
-		tft_ili9325_wr_cmd(0x20, rect.p.x);	// X
-		tft_ili9325_wr_cmd(0x21, y);	// Y
-		tft_ili9325_wr_reg(0x22);
+	for (y = rect.p.y; y <= rect.p.y + rect.height; ++y) {
+		TFTili9325WrCmd(0x20, rect.p.x);	// X
+		TFTili9325WrCmd(0x21, y);	// Y
+		TFTili9325WrReg(0x22);
 
 #if defined TFT_ILI9325_AVR_LIB
 		TFT_ILI9325_WR_DATA = (unsigned char)(c >> 8);
 		TFT_ILI9325_WR_DATA_LOW = (unsigned char)c;
 
 		TFT_ILI9325_CS_0;
-		for (x = rect.p.x; x <= rect.p.x + rect.width; ++x)
-		{
+		for (x = rect.p.x; x <= rect.p.x + rect.width; ++x) {
 			TFT_ILI9325_WR_0;
 			TFT_ILI9325_WR_1;
 		}
@@ -250,35 +223,35 @@ void fill_rectangle(Rectangle rect, Color c)
 	}
 }
 
-void plot_8_circle_point(pPoint center, Point p, Color c)
+void Plot8CirclePoint(pPoint center, Point p, Color c)
 {
 	int tmp;
 
-	set_pixel(add_point(center, &p), c);		// (X, Y)
+	SetPixel(AddPoint(center, &p), c);		// (X, Y)
 
 	p.x = -p.x;
-	set_pixel(add_point(center, &p), c);		// (-X, Y)
+	SetPixel(AddPoint(center, &p), c);		// (-X, Y)
 
 	p.y = -p.y;
-	set_pixel(add_point(center, &p), c);		// (-X, -Y)
+	SetPixel(AddPoint(center, &p), c);		// (-X, -Y)
 
 	p.x = -p.x;
-	set_pixel(add_point(center, &p), c);		// (X, -Y)
+	SetPixel(AddPoint(center, &p), c);		// (X, -Y)
 
 	SWAP(p.x, p.y, tmp);
-	set_pixel(add_point(center, &p), c);		// (-Y, X)
+	SetPixel(AddPoint(center, &p), c);		// (-Y, X)
 
 	p.x = -p.x;
-	set_pixel(add_point(center, &p), c);		// (-Y, -X)
+	SetPixel(AddPoint(center, &p), c);		// (-Y, -X)
 
 	p.y = -p.y;
-	set_pixel(add_point(center, &p), c);		// (Y, -X)
+	SetPixel(AddPoint(center, &p), c);		// (Y, -X)
 
 	p.x = -p.x;
-	set_pixel(add_point(center, &p), c);		// (Y, X)
+	SetPixel(AddPoint(center, &p), c);		// (Y, X)
 }
 
-void draw_circle(Point center, unsigned int radius, Color c)
+void DrawCircle(Point center, unsigned int radius, Color c)
 {
 	Point p;
 	int radius_error;
@@ -287,44 +260,41 @@ void draw_circle(Point center, unsigned int radius, Color c)
 	p.y = 0;
 	radius_error = 1 - p.x;
 
-	while (p.x >= p.y)
-	{
-		plot_8_circle_point(&center, p, c);
+	while (p.x >= p.y) {
+		Plot8CirclePoint(&center, p, c);
 		++p.y;
 		if (radius_error < 0)
 			radius_error += 2 * p.y + 1;
-		else
-		{
+		else {
 			--p.x;
 			radius_error += 2 * (p.y - p.x + 1);
 		}
 	}
 }
 
-void fill_circle(Point center, unsigned int radius, Color c)
+void FillCircle(Point center, unsigned int radius, Color c)
 {
 	Point p;
 
 	for (p.y = 0; p.y <= radius; ++p.y)
 		for (p.x = 0; p.x <= radius; ++p.x)
-			if (p.x * p.x + p.y * p.y <= radius * radius)
-			{
-				set_pixel(add_point(&p, &center), c);		// (X, Y)
+			if (p.x * p.x + p.y * p.y <= radius * radius) {
+				SetPixel(AddPoint(&p, &center), c);		// (X, Y)
 
 				p.x = -p.x;
-				set_pixel(add_point(&p, &center), c);		// (-X, Y)
+				SetPixel(AddPoint(&p, &center), c);		// (-X, Y)
 
 				p.y = -p.y;
-				set_pixel(add_point(&p, &center), c);		// (-X, -Y)
+				SetPixel(AddPoint(&p, &center), c);		// (-X, -Y)
 
 				p.x = -p.x;
-				set_pixel(add_point(&p, &center), c);		// (X, -Y)
+				SetPixel(AddPoint(&p, &center), c);		// (X, -Y)
 
 				p.y = -p.y;		// (X, Y)
 			}
 }
 
-void clear_screen(Color c)
+void ClearScreen(Color c)
 {
 #if defined TFT_ILI9325_AVR_LIB
 	int x, y;
@@ -332,18 +302,16 @@ void clear_screen(Color c)
 	int i;
 #endif
 
-	tft_ili9325_wr_cmd(0x20, 0);	// X
-	tft_ili9325_wr_cmd(0x21, 0);	// Y
-	tft_ili9325_wr_reg(0x22);
+	TFTili9325WrCmd(0x20, 0);	// X
+	TFTili9325WrCmd(0x21, 0);	// Y
+	TFTili9325WrReg(0x22);
 
 #if defined TFT_ILI9325_AVR_LIB
 	TFT_ILI9325_WR_DATA = (unsigned char)(c >> 8);
 	TFT_ILI9325_WR_DATA_LOW = (unsigned char)c;
 	TFT_ILI9325_CS_0;
-	for (y = 0; y < SCREEN_HEIGHT; ++y)
-	{
-		for (x = 0; x < SCREEN_WIDTH; ++x)
-		{
+	for (y = 0; y < SCREEN_HEIGHT; ++y) {
+		for (x = 0; x < SCREEN_WIDTH; ++x) {
 			TFT_ILI9325_WR_0;
 			TFT_ILI9325_WR_1;
 		}
@@ -355,25 +323,20 @@ void clear_screen(Color c)
 #endif
 }
 
-void draw_char(char ch, const pPoint p, const pPoint s, Color c)
+void DrawChar(char ch, const pPoint p, const pPoint s, Color c)
 {
 	char x, y;
 	char i, j;
 	Point pixel;
 
-	for (x = 0; x < FONT_WIDTH; ++x)
-	{
-		for (y = 0; y <= FONT_HEIGTH; ++y)
-		{
-			if (font[((int)ch - ' ') * FONT_WIDTH + x] & (0x01 << y))
-			{
+	for (x = 0; x < FONT_WIDTH; ++x) {
+		for (y = 0; y <= FONT_HEIGTH; ++y) {
+			if (font[((int)ch - ' ') * FONT_WIDTH + x] & (0x01 << y)) {
 				pixel.x = p->x + x * s->x;
 				pixel.y = p->y + y * s->y;
-				for (i = 0; i < s->y; ++i)
-				{
-					for (j = 0; j < s->x; ++j)
-					{
-						set_pixel(pixel, c);
+				for (i = 0; i < s->y; ++i) {
+					for (j = 0; j < s->x; ++j) {
+						SetPixel(pixel, c);
 						++pixel.x;
 					}
 
@@ -385,21 +348,19 @@ void draw_char(char ch, const pPoint p, const pPoint s, Color c)
 	}
 }
 
-void draw_string(char* str, Point p, Point scale, Color c)
+void DrawString(char* str, Point p, Point scale, Color c)
 {
-	while (*str)
-	{
-		draw_char(*str, &p, &scale, c);
+	while (*str) {
+		DrawChar(*str, &p, &scale, c);
 		p.x += (FONT_WIDTH + 1) * scale.x;
 		++str;
 	}
 }
 
-void draw_stringf(flash char* str, Point p, Point scale, Color c)
+void DrawStringF(flash char* str, Point p, Point scale, Color c)
 {
-	while (*str)
-	{
-		draw_char(*str, &p, &scale, c);
+	while (*str) {
+		DrawChar(*str, &p, &scale, c);
 		p.x += (FONT_WIDTH + 1) * scale.x;
 		++str;
 	}

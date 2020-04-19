@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -85,12 +85,12 @@ typedef struct
 #define TFT_ILI9325_LCD					((LCD_TypeDef*)TFT_ILI9325_BASE)
 #endif
 
-void tft_ili9325_init(void);
-void tft_ili9325_reset(void);
-void tft_ili9325_wr_cmd(uint8_t index, uint16_t val);
-void tft_ili9325_wr_reg(uint8_t index);
-void tft_ili9325_wr_data(uint16_t val);
-unsigned int tft_ili9325_read_data(void);
+void TFTili9325Init(void);
+void TFTili9325Reset(void);
+void TFTili9325WrCmd(uint8_t index, uint16_t val);
+void TFTili9325WrReg(uint8_t index);
+void TFTili9325WrData(uint16_t val);
+unsigned int TFTili9325ReadData(void);
 
 #if defined TFT_ILI9325_AVR_LIB
 #pragma used-

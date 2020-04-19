@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -76,7 +76,7 @@ typedef struct nes_hdr
 	uint8_t magic_number;		/// NES constant header
 
 	uint8_t num_of_rom_banks;	/// Size of PROG ROM in 16KB
-	uint8_t num_of_vrom_banks;	/// Size of CHR ROM in 8KB (0 = CHAE RAM) 
+	uint8_t num_of_vrom_banks;	/// Size of CHR ROM in 8KB (0 = CHAE RAM)
 
 	uint8_t rom_control_1;		/// Low byte of mapper and some flags
 	uint8_t rom_control_2;		/// High byte of mapper
@@ -87,8 +87,8 @@ typedef struct nes_hdr
 	uint8_t reserved[5];		/// Reserved for future expantion
 } NesHeader, *pNesHeader;
 
-int nes_hdr_is_valid(pNesHeader hdr);
-void nes_hdr_info(pNesHeader hdr);
+int NESHdr_IsValid(pNesHeader hdr);
+void NESHdr_Info(pNesHeader hdr);
 
 #ifdef __cplusplus
 }

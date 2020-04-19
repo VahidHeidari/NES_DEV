@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,11 +27,11 @@
 #include "console.h"
 
 /// Update processor context
-void update_regs()
+void UpdateRegs()
 {
-	gotoxy(REGS_X, REGS_Y);
-	print_regs(&p);
-	dissassemble(&p);
+	GoToXY(REGS_X, REGS_Y);
+	PrintRegs(&p);
+	Dissassemble(&p);
 	printf("%s                  \n", asm_m);
 }
 
@@ -44,24 +44,21 @@ int main(int argc, char** argv)
 	unsigned int addr;
 	char* file_path;
 
-	clear_screen();
+	ClearScreen();
 
 #ifdef DEBUG_MODE
 	for (i = 0; i < argc; ++i)
-		debug_message("argv[%2d] : '%s'", i, argv[i]);
+		DebugMessage("argv[%2d] : '%s'", i, argv[i]);
 #endif
 	printf("This is NES emulator.\n");
 
-	if (argc >= 2)
-	{
+	if (argc >= 2) {
 		char* arg = argv[1];
 		int arg_len = strlen(arg);
-		if (arg_len == 2)
-		{
+		if (arg_len == 2) {
 			if (arg[0] == '-' && (arg[1] == 't' || arg[1] == 'T'))			// TEST ROM
-				init_test_rom(&hdr, ROM, pattern_table);
-			else if (arg[0] == '-' && (arg[1] == 'd' || arg[1] == 'D'))		// Dumped image
-			{
+				InitTestROM(&hdr, ROM, pattern_table);
+			else if (arg[0] == '-' && (arg[1] == 'd' || arg[1] == 'D')) {	// Dumped image
 				FILE* rom_image;
 				FILE* chr_image;
 
@@ -75,9 +72,8 @@ int main(int argc, char** argv)
 				rom_image = fopen(argv[2], "rb");
 				chr_image = fopen(argv[3], "rb");
 #endif
-				if (!rom_image || !chr_image)
-				{
-					debug_message("Could not open dumped ROM image!");
+				if (!rom_image || !chr_image) {
+					DebugMessage("Could not open dumped ROM image!");
 					return 1;
 				}
 
@@ -86,74 +82,60 @@ int main(int argc, char** argv)
 
 				if (fread(pattern_table, PPU_PATTERN_TABLE_SIZE, 1, chr_image) != 1)
 					return 1;
-				
+
 				fclose(rom_image);
 				fclose(chr_image);
-			}
-			else if (arg[0] == '-' && (arg[1] == 'r' || arg[1] == 'R'))
-			{
-				if (argc < 3)
-				{
-					debug_message("File name required.");
-					return 1;
-				}
-				
-				if (dump_test_rom(argv[2]) != 1)
-				{
-					debug_message("Could not dump test ROM!");
+			} else if (arg[0] == '-' && (arg[1] == 'r' || arg[1] == 'R')) {
+				if (argc < 3) {
+					DebugMessage("File name required.");
 					return 1;
 				}
 
-				debug_message("Test ROM dumped!");
+				if (DumpTestROM(argv[2]) != 1) {
+					DebugMessage("Could not dump test ROM!");
+					return 1;
+				}
+
+				DebugMessage("Test ROM dumped!");
 				return 0;
-			}
-			else
-			{
-				debug_message("Invalid command line arguments!");
+			} else {
+				DebugMessage("Invalid command line arguments!");
 				return 1;
 			}
-		}
-		else
-		{
+		} else {
 			file_path = argv[1];
-			if (read_rom_image(file_path) != 1)
-			{
+			if (ReadROMImage(file_path) != 1) {
 				printf("Reading ROM image failed!\n");
 				return 1;
 			}
 		}
-	}
-	else if (argc < 2)
-	{
+	} else if (argc < 2) {
 		printf("Emulation failed! No ROM image supplied!\n");
 		return 1;
 	}
 
-	if (emulator_init() != 1)
-	{
+	if (Emulator_Init() != 1) {
 		printf("Emulator initialization failed!\n");
 		return 1;
 	}
-	
-	run();		// Comment this line for debuging.
+
+	Run();		// Comment this line for debuging.
 
 	//clear_screen();
-	gotoxy(REGS_X, REGS_Y);
-	update_regs();
-	gotoxy(CMD_X, CMD_Y);
+	GoToXY(REGS_X, REGS_Y);
+	UpdateRegs();
+	GoToXY(CMD_X, CMD_Y);
 
-	while (!finished_emulation)
-	{
-		clear_cmd_line();
+	while (!finished_emulation) {
+		ClearCmdLine();
 		cmd = GET_CHAR();
  		putchar(cmd);
 
-		switch (cmd)
-		{
+		switch (cmd) {
 			case 's':
 			case 'S':
-				step();
-				update_regs();
+				Step();
+				UpdateRegs();
 				break;
 
 			// Finish emulation
@@ -165,14 +147,13 @@ int main(int argc, char** argv)
 			case 'w':
 			case 'W':
 				if (scanf_s("%4x %2x", &addr, &val))
-					write(addr, val);
+					Write(addr, val);
 				break;
 
 			case 'r':
 			case 'R':
-				if (scanf_s("%4x", &addr))
-				{
-					val = read(addr);
+				if (scanf_s("%4x", &addr)) {
+					val = Read(addr);
 					printf("    $%04x : %02X", addr, val);
 				}
 				break;
@@ -181,7 +162,7 @@ int main(int argc, char** argv)
 			case 'D':
 				if (scanf_s("%4x %u", &addr, &val))
 					for (i = 0; i < (int)val; ++i)
-						printf("\n    %04X : %02X\n", addr + i, read(addr + i));
+						printf("\n    %04X : %02X\n", addr + i, Read(addr + i));
 				break;
 
 			case 'h':
@@ -201,43 +182,41 @@ int main(int argc, char** argv)
 			case 'a':
 			case 'A':
 				if (scanf_s("%2x", &val))
-					write_a(&p, val);
+					WriteA(&p, val);
 				break;
 
 			case 'x':
 			case 'X':
 				if (scanf_s("%2x", &val))
-					write_x(&p, val);
+					WriteX(&p, val);
 				break;
 
 			case 'y':
 			case 'Y':
 				if (scanf_s("%2x", &val))
-					write_y(&p, val);
+					WriteY(&p, val);
 				break;
 
 			case 'p':
 			case 'P':
 				if (scanf_s("%2x", &val))
-					write_p(&p, val | FLAG_1);
+					WriteP(&p, val | FLAG_1);
 				break;
 
 			case 'c':
 			case 'C':
-				if (scanf_s("%u", &val))
-				{
-					run_cycles(val);
-					update_regs();
+				if (scanf_s("%u", &val)) {
+					RunCycles(val);
+					UpdateRegs();
 				}
 				break;
 
 			case 'e':
 			case 'E':
-				if (scanf_s("%4x", &val))
-				{
+				if (scanf_s("%4x", &val)) {
 					while (p.pc.w != val)
-						step();
-					update_regs();
+						Step();
+					UpdateRegs();
 				}
 				break;
 
@@ -246,8 +225,7 @@ int main(int argc, char** argv)
 		}
 	}
 
-	emulator_close();
-
+	Emulator_Close();
 	return 0;
 }
 #elif defined NES_ARM_LIB
@@ -262,15 +240,17 @@ int SendChar (int ch)  {
 	return (ch);
 }
 
-int GetKey (void)  {
-	while (!(USART1->SR & USART_FLAG_RXNE));
+int GetKey (void)
+{
+	while (!(USART1->SR & USART_FLAG_RXNE))
+		continue;
 
 	return ((int)(USART1->DR & 0x1FF));
 }
 
-__inline static void init_clock()
+__inline static void InitClock()
 {
-	// Initialize clock source and PLL		
+	// Initialize clock source and PLL
 	RCC->CFGR = RCC_CFGR_PLLMULL9		// Mulipliction factor
 		| RCC_CFGR_PLLSRC_HSE			// PLL soruce clock is external high speed crystal
 		| RCC_CFGR_SW_PLL;				// Switch to PLL
@@ -286,7 +266,7 @@ __inline static void init_clock()
 		continue;
 }
 
-__inline static void init_port()
+__inline static void InitPort()
 {
 	// Initialize PORTA
 	RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN | RCC_APB2ENR_IOPEEN
@@ -307,7 +287,7 @@ __inline static void init_port()
 	GPIOG->CRL |= 0x30000000;
 }
 
-__inline static void init_lcd()
+__inline static void InitLCD()
 {
 	// Initial control lines alternate function.
 	// AHB clock enable
@@ -336,42 +316,41 @@ __inline static void init_lcd()
 void SystemInit()
 {
 	FLASH->ACR = 0x00000012;
-	init_clock();
-	init_lcd();
-	init_port();
-	init_usart();
+	InitClock();
+	InitLCD();
+	InitPort();
+	InitUSART();
 }
 
 int main()
 {
 	printf("This is NES emulator on STM32F103\r\n");
 	//init_test_rom(&hdr, ROM, pattern_table);
-	init_test_rom(&hdr, ROM, pattern_table);
-	clear_screen(WHITE);
-	//clear_screen(BLACK);
+	InitTestROM(&hdr, ROM, pattern_table);
+	ClearScreen(WHITE);
+	//ClearScreen(BLACK);
 
 	// Set LCD window for fast drawing
 	// Direction
-	tft_ili9325_wr_cmd(0x03, 0x1028); // set GRAM write direction and BGR = 1.
+	TFTili9325WrCmd(0x03, 0x1028); // set GRAM write direction and BGR = 1.
 	// Window
-	tft_ili9325_wr_cmd(0x50, 0);
-	tft_ili9325_wr_cmd(0x51, 239);
-	tft_ili9325_wr_cmd(0x52, 0);
-	tft_ili9325_wr_cmd(0x53, 255);
+	TFTili9325WrCmd(0x50, 0);
+	TFTili9325WrCmd(0x51, 239);
+	TFTili9325WrCmd(0x52, 0);
+	TFTili9325WrCmd(0x53, 255);
 	// VRAM start
-	tft_ili9325_wr_cmd(0x20, 0);
-	tft_ili9325_wr_cmd(0x21, 0);
+	TFTili9325WrCmd(0x20, 0);
+	TFTili9325WrCmd(0x21, 0);
 	// GRAM register ready to write
-	tft_ili9325_wr_reg(0x22);
+	TFTili9325WrReg(0x22);
 
-	emulator_init();
-	//update_regs();
-	//ppu_print_status(&ppu);
-	while (1)
-	{
-		step();
-		//update_regs();
-		//delay(9999);
+	EmulatoInit();
+	//UpdateRegs();
+	//PPU_PrintStatus(&ppu);
+	while (1) {
+		Step();
+		//UpdateRegs();
+		//Delay(9999);
 	}
 	return 0;
 }

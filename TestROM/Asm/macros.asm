@@ -6,41 +6,41 @@
 ; NES_DEV is a cross-platform, portable, and hand-held NES emulator.
 ;
 ; Copyright (C) 2015  Vahid Heidari (DeltaCode)
-; 
+;
 ; This program is free software: you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
 ; the Free Software Foundation, either version 3 of the License, or
 ; (at your option) any later version.
-; 
+;
 ; This program is distributed in the hope that it will be useful,
 ; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ; GNU General Public License for more details.
-; 
+;
 ; You should have received a copy of the GNU General Public License
 ; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;
 ;-----------------------------------
-	
+
 .macro DISABLE_INTERRUPT
 	sei
 .endmacro
-	
+
 .macro ENABLE_INTERRUPT
 	cli
 .endmacro
-	
+
 .macro DISABLE_NMI
 	ldx #$00
 	stx $2000
 	stx $2001
 .endmacro
-	
+
 .macro INITIALIZE_STACK_POINTER
 	dex
 	txs
 .endmacro
-	
+
 .macro CLEAR_RAM
 	lda #$00
 	ldx #$00
@@ -63,7 +63,7 @@ CLEAR:
 	lda #>addr
 	sta DATA_PTR+1
 .endmacro
-	
+
 .macro INC_DATA_PTR value, result
 	INC_INT value, result
 .endmacro

@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -57,14 +57,14 @@ extern char* image_path;
 extern FILE* image;
 extern Mirroring mirroring;
 
-int emulator_init(void);
-void emulator_close(void);
-void emulator_save_state(const char* path);
-int emulator_load_state(const char* path);
-int read_rom_image(char* path);
-void step(void);
-void run(void);
-void run_cycles(int cycles);
+int Emulator_Init(void);
+void Emulator_Close(void);
+void Emulator_SaveState(const char* path);
+int Emulator_Load_state(const char* path);
+int ReadROMImage(char* path);
+void Step(void);
+void Run(void);
+void RunCycles(int cycles);
 
 #ifdef __cplusplus
 }

@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,23 +55,23 @@ uint16_t const apu_dmc_table[APU_DMC_TABLE_SIZE] =
 };
 
 static int freq_dist = 0;
-static uint16_t freq_gen(int freq)
+static uint16_t FreqGen(int freq)
 {
-	if (freq)
-	{
+	if (freq) {
 		int freq_sample = APU_SAMPLE_RATE_FREQUENCY_HZ / freq;
 		if (++freq_dist >= freq_sample)
 			freq_dist = 0;
 
 		if (freq_dist < freq_sample / 2)
 			return SHRT_MIN;
+
 		return SHRT_MAX;
 	}
 
 	return 0;
 }
 
-static void fill_audio(void* data, uint8_t* stream, int len)
+static void FillAudio(void* data, uint8_t* stream, int len)
 {
 	int i;
 	uint16_t* buff = (uint16_t*)stream;
@@ -87,19 +87,18 @@ static void fill_audio(void* data, uint8_t* stream, int len)
 		square_freq = PULSE_GET_FREQ(&apu.pulse1);
 
 	len /= 2;
-	for (i = 0; i < len; i += 2)
-	{
-		buff[i] = freq_gen(square_freq);
-		buff[i + 1] = freq_gen(square_freq);
+	for (i = 0; i < len; i += 2) {
+		buff[i] = FreqGen(square_freq);
+		buff[i + 1] = FreqGen(square_freq);
 	}
 }
 
-void apu_envelope_triangle_clock(pApu apu)
+void APU_EnvelopeTriangleClock(pApu apu)
 {
 	(void)apu;
 }
 
-void apu_length_sweep_clock(pApu apu)
+void APU_LengthSweepClock(pApu apu)
 {
 	if (apu->pulse1.r1 & ~APU_PULSE_LENGTH_ENABLE)
 		if (apu->pulse1.length_counter != 0)
@@ -118,7 +117,7 @@ void apu_length_sweep_clock(pApu apu)
 			--apu->noise.length_counter;
 }
 
-int apu_init(pApu apu)
+int APU_Init(pApu apu)
 {
 	SDL_AudioSpec as;
 
@@ -126,9 +125,8 @@ int apu_init(pApu apu)
 	return 1;		// Disable audio in linux.
 #endif
 
-	if (SDL_Init(SDL_INIT_AUDIO) < 0)
-	{
-		debug_message("Could not initialize audio!");
+	if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+		DebugMessage("Could not initialize audio!");
 		return 0;
 	}
 
@@ -136,20 +134,19 @@ int apu_init(pApu apu)
 	as.format   = AUDIO_S16SYS;
 	as.channels = APU_NUMBER_OF_CHANNELS;
 	as.samples  = APU_AUDIO_BUFFER_SIZE;
-	as.callback = fill_audio;
+	as.callback = FillAudio;
 
 	if (SDL_OpenAudio(&as, NULL) < 0)
 		return 0;
-	SDL_PauseAudio(0);
 
+	SDL_PauseAudio(0);
 	memset(apu, 0, sizeof(Apu));
 	return 1;
 }
 
-void apu_write(pApu apu, uint16_t addr, uint8_t value)
+void APU_Write(pApu apu, uint16_t addr, uint8_t value)
 {
-	switch (addr)
-	{
+	switch (addr) {
 		// Pulse 1
 		case APU_PULSE1_R1: apu->pulse1.r1 = value; break;
 		case APU_PULSE1_R2: apu->pulse1.r2 = value; break;
@@ -195,9 +192,9 @@ void apu_write(pApu apu, uint16_t addr, uint8_t value)
 		// Contorl
 		case APU_CONTROL:
 			apu->control = value;
-			
+
 			//if (value & APU_CTRL_DMC_ENABLE) apu->dmc.r1 |= APU_DMC_
-			
+
 			if (value & APU_CTRL_PULSE1_ENABLE)
 				apu->pulse1.r1 |= APU_PULSE_LENGTH_ENABLE;
 			else
@@ -229,17 +226,16 @@ void apu_write(pApu apu, uint16_t addr, uint8_t value)
 			break;
 
 		default:
-			debug_message("Unknown pAPU register! addr:$%04x     value:$%02x\n", addr, value);
-			log_error("Unknown pAPU register! addr:$%04x     value:$%02x\n", addr, value);
+			DebugMessage("Unknown pAPU register! addr:$%04x     value:$%02x\n", addr, value);
+			LogError("Unknown pAPU register! addr:$%04x     value:$%02x\n", addr, value);
 			break;
 	}
 }
 
-uint8_t apu_read(pApu apu, uint16_t addr)
+uint8_t APU_Read(pApu apu, uint16_t addr)
 {
 	// TODO: Change APU status to evnet diriven.
-	if (addr == APU_STATUS)
-	{
+	if (addr == APU_STATUS) {
 		// IRQ sources
 		if (apu->dmc.irq_flag)
 			apu->status = 0x80;
@@ -255,19 +251,18 @@ uint8_t apu_read(pApu apu, uint16_t addr)
 			apu->status |= APU_TRIANGLE_STATUS;
 		if (apu->noise.length_counter)
 			apu->status |= APU_NOISE_STATUS;
-		
+
 		// Clear IRQ flag.
 		apu->irq_flag = 0;
-		
 		return apu->status;
 	}
 
-	debug_message("APU reading invalide address:%d", addr);
-	log_error("APU reading invalid address:%d", addr);
+	DebugMessage("APU reading invalide address:%d", addr);
+	LogError("APU reading invalid address:%d", addr);
 	return 0;
 }
 
-void apu_close(pApu apu)
+void APU_Close(pApu apu)
 {
 	(void)apu;
 	return;
@@ -275,42 +270,35 @@ void apu_close(pApu apu)
 	SDL_CloseAudio();
 }
 
-void apu_clock(pApu apu)
+void APU_Clock(pApu apu)
 {
-	if (apu->frame_counter == APU_DIVIDER_VALUE)
-	{
-		apu->frame_counter = 0;		// Reset divider.
-		++apu->sequencer;			// Clock sequencer.
+	if (apu->frame_counter == APU_DIVIDER_VALUE) {
+		apu->frame_counter = 0;					// Reset divider.
+		++apu->sequencer;						// Clock sequencer.
 
 		// Clock sub-systems.
-		if (apu->frame_counter_ctrl & APU_FRAME_SEQUENCE_MODE)		// 5 step mode
-		{
+		if (apu->frame_counter_ctrl & APU_FRAME_SEQUENCE_MODE) {	// 5 step mode
 			if (apu->sequencer == 5)
-				apu->sequencer = 0;			// Reset sequencer.
-			else
-			{
-				apu_envelope_triangle_clock(apu);
+				apu->sequencer = 0;				// Reset sequencer.
+			else {
+				APU_EnvelopeTriangleClock(apu);
 
 				if (apu->sequencer == 1 || apu->sequencer == 3)
-					apu_length_sweep_clock(apu);
+					APU_LengthSweepClock(apu);
 			}
-		}
-		else														// 4 step mode
-		{
-			apu_envelope_triangle_clock(apu);	// Clock envelopes and triangle's linear conter
+		} else {								// 4 step mode
+			APU_EnvelopeTriangleClock(apu);		// Clock envelopes and triangle's linear conter
 
 			if (apu->sequencer == 2)
-				apu_length_sweep_clock(apu);	// Clock length counters and sweep units
-			else if (apu->sequencer == 4)
-			{
-				apu_length_sweep_clock(apu);	// Clock length counters and sweep units
+				APU_LengthSweepClock(apu);		// Clock length counters and sweep units
+			else if (apu->sequencer == 4) {
+				APU_LengthSweepClock(apu);		// Clock length counters and sweep units
 				p.interrupts |= INTR_IRQ;		// Assert IRQ flag.
 				apu->irq_flag = 1;
 				apu->sequencer = 0;				// Reset sequencer.
 			}
 		}
-	}
-	else
+	} else
 		++apu->frame_counter;
 }
 

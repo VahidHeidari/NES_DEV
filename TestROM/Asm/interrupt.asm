@@ -5,7 +5,7 @@
 ;
 ; NES_DEV is a cross-platform, portable, and hand-held NES emulator.
 ;
-; Copyright (C) 2015  Vahid Heidari (DeltaCode)
+; Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
 ;
 ; This program is free software: you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 ; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ; GNU General Public License for more details.
-; 
+;
 ; You should have received a copy of the GNU General Public License
 ; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;
@@ -40,7 +40,7 @@ ANIMATION_FRAME: .res 1
 ; NMI routines executes every frame.
 NMI_ROUTINE:
 	STORE_CONTEXT
-	
+
 	INC_TICK_COUNT
 
 	lda FRAME_COUNTER				; Increment frame counter.
@@ -71,7 +71,7 @@ OAM_LOOP:
 	sta PPU_OAM_DATA
 	iny
 	dex
-	bne OAM_LOOP	
+	bne OAM_LOOP
 OAM_EXIT:
 
 	RESTORE_CONTEXT

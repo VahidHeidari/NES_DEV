@@ -45,7 +45,7 @@ project and select it as start up project manually.
 * Adding SD card file system for loading ROM images for ARM devices.
 * Making a small game for tests.
 * Adding a better build script for making TEST ROM.
-* Make debug viewers flexible and user friendly, it is hardcoded, and needs to 
+* Make debug viewers flexible and user friendly, it is hardcoded, and needs to
 be enabled/disabled from source.
 * Designing low const, felexible, and extensible PCB for hand-held console.
 
@@ -80,6 +80,6 @@ to open visual studio.
  Unit test:
 ============
 I used X6502 from FCEUX project, and M6502 from Marat Fayzullin project source
-codes for my p6502 module testing. My test runs all modules and checks all CPU 
-contexts and RAMs with each other. If there is inconsistency, it fails. I found 
+codes for my p6502 module testing. My test runs all modules and checks all CPU
+contexts and RAMs with each other. If there is inconsistency, it fails. I found
 that there is some bugs in M6502 module.

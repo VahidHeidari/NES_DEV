@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,12 +29,12 @@
 #define EOL		"\r\n"
 #endif
 
-int nes_hdr_is_valid(pNesHeader hdr)
+int NESHdr_IsValid(pNesHeader hdr)
 {
 	return (*(uint32_t*)hdr->nes_str == NES_HDR_SIG);
 }
 
-void nes_hdr_info(pNesHeader hdr)
+void NESHdr_Info(pNesHeader hdr)
 {
 #ifdef DEBUG_MODE
 	printf("NES header infos:\n");

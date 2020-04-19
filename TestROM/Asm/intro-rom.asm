@@ -5,18 +5,18 @@
 ;
 ; NES_DEV is a cross-platform, portable, and hand-held NES emulator.
 ;
-; Copyright (C) 2015  Vahid Heidari (DeltaCode)
-; 
+; Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+;
 ; This program is free software: you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
 ; the Free Software Foundation, either version 3 of the License, or
 ; (at your option) any later version.
-; 
+;
 ; This program is distributed in the hope that it will be useful,
 ; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ; GNU General Public License for more details.
-; 
+;
 ; You should have received a copy of the GNU General Public License
 ; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;
@@ -62,16 +62,16 @@ PALETTE_FAID_COLORS:
 
 MAIN:
 	DISABLE_INTERRUPT
-	
+
 	jsr _wait_vblank			; Wait untile VBlank period
-	
+
 	DISABLE_NMI
 	INITIALIZE_STACK_POINTER
 	CLEAR_RAM
 	CLEAR_NAME_TABLE $2000
 
 	PPU_SET_ADDR $3F00		; Set palette start address $3F00-$3F20
-	
+
 	ldx #$00				; Index of palette array
 	ldy #$20				; Number of palette entries
 LOOP_PALETTE:
@@ -99,11 +99,11 @@ LOOP_SPRITES_INIT:
 	PPU_SET_ADDR $2041
 	SET_STR_PTR INTRO_STR_1
 	jsr _print_str
-	
+
 	PPU_SET_ADDR $206A
 	SET_STR_PTR INTRO_STR_2
 	jsr _print_str
-	
+
 	PPU_SET_ADDR $20A4
 	SET_STR_PTR INTRO_STR_3
 	jsr _print_str
@@ -119,7 +119,7 @@ LOOP_SPRITES_INIT:
 	PPU_SET_ADDR $22E4
 	SET_STR_PTR INTRO_STR_6
 	jsr _print_str
-	
+
 	PPU_SET_ADDR $2326
 	lda #'$'
 	sta PPU_DATA
@@ -152,7 +152,7 @@ LOGO_LOOP:
 	INC_DATA_PTR DELTA_LOGO_WIDTH_INC, DATA_PTR
 	dex
 	bne LOGO_OUTER_LOOP
-	
+
 	PPU_SET_ADDR $23D2
 	lda #$55
 	sta PPU_DATA
@@ -161,7 +161,7 @@ LOGO_LOOP:
 	sta PPU_DATA
 
 	PPU_SET_SCROLL_XY 0,0
-	
+
 ; bit 0-1 : base name table
 ; bit 2   : address increment 0 : add 1       1 : add 32
 ; bit 3   : sprite pattern table address

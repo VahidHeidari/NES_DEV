@@ -1,18 +1,18 @@
 /**
  * NES_DEV is a cross-platform, portable, and hand-held NES emulator.
  *
- * Copyright (C) 2015  Vahid Heidari (DeltaCode)
- * 
+ * Copyright (C) 2015-2020 Vahid Heidari (DeltaCode)
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,7 +36,7 @@
 #define LOG_MESSAGE(MSG) do {				\
 	va_list args;							\
 	va_start(args, str);					\
-	log_message(MSG, str, args);			\
+	LogMessage(MSG, str, args);				\
 	va_end(args);							\
 } while (0)
 
@@ -44,7 +44,7 @@ char asm_m[256];
 int show_sp = 1;
 int show_bg = 1;
 
-void print_regs(pP6502 p)
+void PrintRegs(pP6502 p)
 {
 	printf("    A  : %02X            PC : %04X\n", p->a, p->pc.w);
 	printf("    X  : %02X            P  : %02X\n", p->x, p->p);
@@ -62,154 +62,153 @@ void print_regs(pP6502 p)
 	printf("    cc : %d\n\n", p->cycle_counter);
 }
 
-uint8_t read_ram(uint16_t addr)
+uint8_t ReadRAM(uint16_t addr)
 {
 	return RAM[addr];
 }
 
-void write_ram(uint16_t addr, uint8_t value)
+void WriteRAM(uint16_t addr, uint8_t value)
 {
 	RAM[addr] = value;
 }
 
-uint8_t read_rom(uint16_t addr)
+uint8_t ReadROM(uint16_t addr)
 {
 	return ROM[addr - 0x8000];
 }
 
-void write_rom(uint16_t addr, uint8_t value)
+void WriteROM(uint16_t addr, uint8_t value)
 {
 	ROM[addr - 0x8000] = value;
 }
 
-void fill(uint16_t addr, size_t size, uint8_t value)
+void Fill(uint16_t addr, size_t size, uint8_t value)
 {
 	memset(RAM + addr, value, size);
 }
 
-void write_p(pP6502 p, uint8_t value)
+void WriteP(pP6502 p, uint8_t value)
 {
 	p->p = value;
 }
 
-void write_a(pP6502 p, uint8_t value)
+void WriteA(pP6502 p, uint8_t value)
 {
 	p->a = value;
 }
 
-void write_x(pP6502 p, uint8_t value)
+void WriteX(pP6502 p, uint8_t value)
 {
 	p->x = value;
 }
 
-void write_y(pP6502 p, uint8_t value)
+void WriteY(pP6502 p, uint8_t value)
 {
 	p->y = value;
 }
 
-void write_sp(pP6502 p, uint8_t value)
+void WriteSP(pP6502 p, uint8_t value)
 {
 	p->sp = value;
 }
 
-void write_pc(pP6502 p, uint16_t value)
+void WritePC(pP6502 p, uint16_t value)
 {
 	p->pc.w = value;
 }
 
-void write_cycle_counter(pP6502 p, int value)
+void WriteCycleCounter(pP6502 p, int value)
 {
 	p->cycle_counter = value;
 }
 
-void irq_signal(pP6502 p)
+void IRQSignal(pP6502 p)
 {
 	p->interrupts |= INTR_IRQ;
 }
 
-void reset_signal(pP6502 p)
+void ResetSignal(pP6502 p)
 {
 	//p->interrupts |= RESET;
-	reset(p);
+	Reset(p);
 }
 
-void nmi_signal(pP6502 p)
+void NMISignal(pP6502 p)
 {
 	p->interrupts |= INTR_NMI;
 }
 
-int dissassemble(pP6502 p)
+int Dissassemble(pP6502 p)
 {
 	int pc = p->pc.w;
-	int instruction = read(p->pc.w);
+	int instruction = Read(p->pc.w);
 
-	switch (instruction)
-	{
+	switch (instruction) {
 		/* ADC */
-		case 0x69: sprintf_s(asm_m, sizeof(asm_m), "ADC #$%02X", read(pc + 1)); break;
-		case 0x65: sprintf_s(asm_m, sizeof(asm_m), "ADC $%02X", read(pc + 1)); break;
-		case 0x75: sprintf_s(asm_m, sizeof(asm_m), "ADC $%02X,X", read(pc + 1)); break;
-		case 0x6D: sprintf_s(asm_m, sizeof(asm_m), "ADC $%02X%02x", read(pc + 2), read(pc + 1)); break;
-		case 0x7D: sprintf_s(asm_m, sizeof(asm_m), "ADC $%02X%02X,X", read(pc + 2), read(pc + 1));break;
-		case 0x79: sprintf_s(asm_m, sizeof(asm_m), "ADC $%02X%02X,Y", read(pc + 2), read(pc + 1));break;
-		case 0x61: sprintf_s(asm_m, sizeof(asm_m), "ADC ($%02X,X)", read(pc + 1)); break;
-		case 0x71: sprintf_s(asm_m, sizeof(asm_m), "ADC ($%02X),Y", read(pc + 1)); break;
+		case 0x69: sprintf_s(asm_m, sizeof(asm_m), "ADC #$%02X", Read(pc + 1)); break;
+		case 0x65: sprintf_s(asm_m, sizeof(asm_m), "ADC $%02X", Read(pc + 1)); break;
+		case 0x75: sprintf_s(asm_m, sizeof(asm_m), "ADC $%02X,X", Read(pc + 1)); break;
+		case 0x6D: sprintf_s(asm_m, sizeof(asm_m), "ADC $%02X%02x", Read(pc + 2), Read(pc + 1)); break;
+		case 0x7D: sprintf_s(asm_m, sizeof(asm_m), "ADC $%02X%02X,X", Read(pc + 2), Read(pc + 1));break;
+		case 0x79: sprintf_s(asm_m, sizeof(asm_m), "ADC $%02X%02X,Y", Read(pc + 2), Read(pc + 1));break;
+		case 0x61: sprintf_s(asm_m, sizeof(asm_m), "ADC ($%02X,X)", Read(pc + 1)); break;
+		case 0x71: sprintf_s(asm_m, sizeof(asm_m), "ADC ($%02X),Y", Read(pc + 1)); break;
 
 		/* AND */
-		case 0x29: sprintf_s(asm_m, sizeof(asm_m), "AND #$%02X", read(pc + 1)); break;
-		case 0x25: sprintf_s(asm_m, sizeof(asm_m), "AND $%02X", read(pc + 1)); break;
-		case 0x35: sprintf_s(asm_m, sizeof(asm_m), "AND $%02X,X", read(pc + 1)); break;
-		case 0x2D: sprintf_s(asm_m, sizeof(asm_m), "AND $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0x3D: sprintf_s(asm_m, sizeof(asm_m), "AND $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
-		case 0x39: sprintf_s(asm_m, sizeof(asm_m), "AND $%02X%02X,Y", read(pc + 2), read(pc + 1)); break;
-		case 0x21: sprintf_s(asm_m, sizeof(asm_m), "AND ($%02X,X)", read(pc + 1)); break;
-		case 0x31: sprintf_s(asm_m, sizeof(asm_m), "AND ($%02X),Y", read(pc + 1)); break;
+		case 0x29: sprintf_s(asm_m, sizeof(asm_m), "AND #$%02X", Read(pc + 1)); break;
+		case 0x25: sprintf_s(asm_m, sizeof(asm_m), "AND $%02X", Read(pc + 1)); break;
+		case 0x35: sprintf_s(asm_m, sizeof(asm_m), "AND $%02X,X", Read(pc + 1)); break;
+		case 0x2D: sprintf_s(asm_m, sizeof(asm_m), "AND $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x3D: sprintf_s(asm_m, sizeof(asm_m), "AND $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x39: sprintf_s(asm_m, sizeof(asm_m), "AND $%02X%02X,Y", Read(pc + 2), Read(pc + 1)); break;
+		case 0x21: sprintf_s(asm_m, sizeof(asm_m), "AND ($%02X,X)", Read(pc + 1)); break;
+		case 0x31: sprintf_s(asm_m, sizeof(asm_m), "AND ($%02X),Y", Read(pc + 1)); break;
 
 		/* ASL */
 		case 0x0A: sprintf_s(asm_m, sizeof(asm_m), "ASL A"); break;
-		case 0x06: sprintf_s(asm_m, sizeof(asm_m), "ASL $%02X", read(pc + 1)); break;
-		case 0x16: sprintf_s(asm_m, sizeof(asm_m), "ASL $%02X,X", read(pc + 1)); break;
-		case 0x0E: sprintf_s(asm_m, sizeof(asm_m), "ASL $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0x1E: sprintf_s(asm_m, sizeof(asm_m), "ASL $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
+		case 0x06: sprintf_s(asm_m, sizeof(asm_m), "ASL $%02X", Read(pc + 1)); break;
+		case 0x16: sprintf_s(asm_m, sizeof(asm_m), "ASL $%02X,X", Read(pc + 1)); break;
+		case 0x0E: sprintf_s(asm_m, sizeof(asm_m), "ASL $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x1E: sprintf_s(asm_m, sizeof(asm_m), "ASL $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
 
 		/* BCC */
 		case 0x90: sprintf_s(asm_m, sizeof(asm_m), "BCC $%02X -> 0x%04X"
-						   , read(pc + 1), pc + (int8_t)read(pc + 1) + 2); break;
+						   , Read(pc + 1), pc + (int8_t)Read(pc + 1) + 2); break;
 
 		/* BCS */
 		case 0xB0: sprintf_s(asm_m, sizeof(asm_m), "BCS $%02X -> 0x%04X"
-						   , read(pc + 1), pc + (int8_t)read(pc + 1) + 2); break;
-		
+						   , Read(pc + 1), pc + (int8_t)Read(pc + 1) + 2); break;
+
 		/* BEQ */
 		case 0xF0: sprintf_s(asm_m, sizeof(asm_m), "BEQ $%02X -> 0x%04X"
-						   , read(pc + 1), pc + (int8_t)read(pc + 1) + 2); break;
-		
+						   , Read(pc + 1), pc + (int8_t)Read(pc + 1) + 2); break;
+
 		/* BIT */
-		case 0x24: sprintf_s(asm_m, sizeof(asm_m), "BIT $%02X", read(pc + 1)); break;
-		case 0x2C: sprintf_s(asm_m, sizeof(asm_m), "BIT $%02X%02X", read(pc + 2), read(pc + 1)); break;
+		case 0x24: sprintf_s(asm_m, sizeof(asm_m), "BIT $%02X", Read(pc + 1)); break;
+		case 0x2C: sprintf_s(asm_m, sizeof(asm_m), "BIT $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
 
 		/* BMI */
 		case 0x30: sprintf_s(asm_m, sizeof(asm_m), "BMI $%02X -> 0x%04X"
-						   , read(pc + 1), pc + (int8_t)read(pc + 1) + 2); break;
+						   , Read(pc + 1), pc + (int8_t)Read(pc + 1) + 2); break;
 
 		/* BNE */
 		case 0xD0: sprintf_s(asm_m, sizeof(asm_m), "BNE $%02X -> 0x%04X"
-						   , read(pc + 1), pc + (int8_t)read(pc + 1) + 2); break;
+						   , Read(pc + 1), pc + (int8_t)Read(pc + 1) + 2); break;
 
 		/* BPL */
 		case 0x10: sprintf_s(asm_m, sizeof(asm_m), "BPL $%02X -> 0x%04X"
-						   , read(pc + 1), pc + (int8_t)read(pc + 1) + 2); break;
+						   , Read(pc + 1), pc + (int8_t)Read(pc + 1) + 2); break;
 
 		/* BRK */
 		case 0x00: sprintf_s(asm_m, sizeof(asm_m), "BRK"); break;
 
 		/* BVC */
 		case 0x50: sprintf_s(asm_m, sizeof(asm_m), "BVC $%02X -> 0x%04X"
-						   , read(pc + 1), pc + (int8_t)read(pc + 1) + 2); break;
+						   , Read(pc + 1), pc + (int8_t)Read(pc + 1) + 2); break;
 
 		/* BVS */
 		case 0x70: sprintf_s(asm_m, sizeof(asm_m), "BVS $%02X -> 0x%04X"
-						   , read(pc + 1), pc + read(pc + 1)); break;
+						   , Read(pc + 1), pc + Read(pc + 1)); break;
 
 		/* CLC */
 		case 0x18: sprintf_s(asm_m, sizeof(asm_m), "CLC"); break;
@@ -224,30 +223,30 @@ int dissassemble(pP6502 p)
 		case 0xB8: sprintf_s(asm_m, sizeof(asm_m), "CLV"); break;
 
 		/* CMP */
-		case 0xC9: sprintf_s(asm_m, sizeof(asm_m), "CMP #$%02X", read(pc + 1)); break;
-		case 0xC5: sprintf_s(asm_m, sizeof(asm_m), "CMP $%02X", read(pc + 1)); break;
-		case 0xD5: sprintf_s(asm_m, sizeof(asm_m), "CMP $%02X,X", read(pc + 1)); break;
-		case 0xCD: sprintf_s(asm_m, sizeof(asm_m), "CMP $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0xDD: sprintf_s(asm_m, sizeof(asm_m), "CMP $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
-		case 0xD9: sprintf_s(asm_m, sizeof(asm_m), "CMP $%02X%02X,Y", read(pc + 2), read(pc + 1)); break;
-		case 0xC1: sprintf_s(asm_m, sizeof(asm_m), "CMP (%02X,X)", read(pc + 1)); break;
-		case 0xD1: sprintf_s(asm_m, sizeof(asm_m), "CMP (%02X),Y", read(pc + 1)); break;
+		case 0xC9: sprintf_s(asm_m, sizeof(asm_m), "CMP #$%02X", Read(pc + 1)); break;
+		case 0xC5: sprintf_s(asm_m, sizeof(asm_m), "CMP $%02X", Read(pc + 1)); break;
+		case 0xD5: sprintf_s(asm_m, sizeof(asm_m), "CMP $%02X,X", Read(pc + 1)); break;
+		case 0xCD: sprintf_s(asm_m, sizeof(asm_m), "CMP $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0xDD: sprintf_s(asm_m, sizeof(asm_m), "CMP $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
+		case 0xD9: sprintf_s(asm_m, sizeof(asm_m), "CMP $%02X%02X,Y", Read(pc + 2), Read(pc + 1)); break;
+		case 0xC1: sprintf_s(asm_m, sizeof(asm_m), "CMP (%02X,X)", Read(pc + 1)); break;
+		case 0xD1: sprintf_s(asm_m, sizeof(asm_m), "CMP (%02X),Y", Read(pc + 1)); break;
 
 		/* CPX */
-		case 0xE0: sprintf_s(asm_m, sizeof(asm_m), "CPX #$%02X", read(pc + 1)); break;
-		case 0xE4: sprintf_s(asm_m, sizeof(asm_m), "CPX $%02X", read(pc + 1)); break;
-		case 0xEC: sprintf_s(asm_m, sizeof(asm_m), "CPX $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		
+		case 0xE0: sprintf_s(asm_m, sizeof(asm_m), "CPX #$%02X", Read(pc + 1)); break;
+		case 0xE4: sprintf_s(asm_m, sizeof(asm_m), "CPX $%02X", Read(pc + 1)); break;
+		case 0xEC: sprintf_s(asm_m, sizeof(asm_m), "CPX $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+
 		/* CPY */
-		case 0xC0: sprintf_s(asm_m, sizeof(asm_m), "CPY #$%02X", read(pc + 1)); break;
-		case 0xC4: sprintf_s(asm_m, sizeof(asm_m), "CPY $%02X", read(pc + 1)); break;
-		case 0xCC: sprintf_s(asm_m, sizeof(asm_m), "CPY $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		
+		case 0xC0: sprintf_s(asm_m, sizeof(asm_m), "CPY #$%02X", Read(pc + 1)); break;
+		case 0xC4: sprintf_s(asm_m, sizeof(asm_m), "CPY $%02X", Read(pc + 1)); break;
+		case 0xCC: sprintf_s(asm_m, sizeof(asm_m), "CPY $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+
 		/* DEC */
-		case 0xC6: sprintf_s(asm_m, sizeof(asm_m), "DEC $%02X", read(pc + 1)); break;
-		case 0xD6: sprintf_s(asm_m, sizeof(asm_m), "DEC $%02X,X", read(pc + 1)); break;
-		case 0xCE: sprintf_s(asm_m, sizeof(asm_m), "DEC $%02X%02x", read(pc + 2), read(pc + 1)); break;
-		case 0xDE: sprintf_s(asm_m, sizeof(asm_m), "DEC $%02X%02x,X", read(pc + 2), read(pc + 1)); break;
+		case 0xC6: sprintf_s(asm_m, sizeof(asm_m), "DEC $%02X", Read(pc + 1)); break;
+		case 0xD6: sprintf_s(asm_m, sizeof(asm_m), "DEC $%02X,X", Read(pc + 1)); break;
+		case 0xCE: sprintf_s(asm_m, sizeof(asm_m), "DEC $%02X%02x", Read(pc + 2), Read(pc + 1)); break;
+		case 0xDE: sprintf_s(asm_m, sizeof(asm_m), "DEC $%02X%02x,X", Read(pc + 2), Read(pc + 1)); break;
 
 		/* DEX */
 		case 0xCA: sprintf_s(asm_m, sizeof(asm_m), "DEX"); break;
@@ -256,103 +255,103 @@ int dissassemble(pP6502 p)
 		case 0x88: sprintf_s(asm_m, sizeof(asm_m), "DEY"); break;
 
 		/* EOR */
-		case 0x49: sprintf_s(asm_m, sizeof(asm_m), "EOR #$%02X", read(pc + 1)); break;
-		case 0x45: sprintf_s(asm_m, sizeof(asm_m), "EOR $%02X", read(pc + 1)); break;
-		case 0x55: sprintf_s(asm_m, sizeof(asm_m), "EOR $%02X,X", read(pc + 1)); break;
-		case 0x4D: sprintf_s(asm_m, sizeof(asm_m), "EOR $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0x5D: sprintf_s(asm_m, sizeof(asm_m), "EOR $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
-		case 0x59: sprintf_s(asm_m, sizeof(asm_m), "EOR $%02X%02X,Y", read(pc + 2), read(pc + 1)); break;
-		case 0x41: sprintf_s(asm_m, sizeof(asm_m), "EOR ($%02X,X)", read(pc + 1)); break;
-		case 0x51: sprintf_s(asm_m, sizeof(asm_m), "EOR ($%02X),Y", read(pc + 1)); break;
+		case 0x49: sprintf_s(asm_m, sizeof(asm_m), "EOR #$%02X", Read(pc + 1)); break;
+		case 0x45: sprintf_s(asm_m, sizeof(asm_m), "EOR $%02X", Read(pc + 1)); break;
+		case 0x55: sprintf_s(asm_m, sizeof(asm_m), "EOR $%02X,X", Read(pc + 1)); break;
+		case 0x4D: sprintf_s(asm_m, sizeof(asm_m), "EOR $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x5D: sprintf_s(asm_m, sizeof(asm_m), "EOR $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x59: sprintf_s(asm_m, sizeof(asm_m), "EOR $%02X%02X,Y", Read(pc + 2), Read(pc + 1)); break;
+		case 0x41: sprintf_s(asm_m, sizeof(asm_m), "EOR ($%02X,X)", Read(pc + 1)); break;
+		case 0x51: sprintf_s(asm_m, sizeof(asm_m), "EOR ($%02X),Y", Read(pc + 1)); break;
 
 		/* INC */
-		case 0xE6: sprintf_s(asm_m, sizeof(asm_m), "INC $%02X", read(pc + 1)); break;
-		case 0xF6: sprintf_s(asm_m, sizeof(asm_m), "INC $%02X,X", read(pc + 1)); break;
-		case 0xEE: sprintf_s(asm_m, sizeof(asm_m), "INC $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0xFE: sprintf_s(asm_m, sizeof(asm_m), "INC $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
-		
+		case 0xE6: sprintf_s(asm_m, sizeof(asm_m), "INC $%02X", Read(pc + 1)); break;
+		case 0xF6: sprintf_s(asm_m, sizeof(asm_m), "INC $%02X,X", Read(pc + 1)); break;
+		case 0xEE: sprintf_s(asm_m, sizeof(asm_m), "INC $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0xFE: sprintf_s(asm_m, sizeof(asm_m), "INC $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
+
 		/* INX */
 		case 0xE8: sprintf_s(asm_m, sizeof(asm_m), "INX"); break;
-		
+
 		/* INY */
 		case 0xC8: sprintf_s(asm_m, sizeof(asm_m), "INY"); break;
 
 		/* JMP */
-		case 0x4C: sprintf_s(asm_m, sizeof(asm_m), "JMP $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0x6C: sprintf_s(asm_m, sizeof(asm_m), "JMP ($%02X%02X)", read(pc + 2), read(pc + 1)); break;
+		case 0x4C: sprintf_s(asm_m, sizeof(asm_m), "JMP $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x6C: sprintf_s(asm_m, sizeof(asm_m), "JMP ($%02X%02X)", Read(pc + 2), Read(pc + 1)); break;
 
 		/* JSR */
-		case 0x20: sprintf_s(asm_m, sizeof(asm_m), "JSR $%02X%02X", read(pc + 2), read(pc + 1)); break;
+		case 0x20: sprintf_s(asm_m, sizeof(asm_m), "JSR $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
 
 		/* LDA */
-		case 0xA9: sprintf_s(asm_m, sizeof(asm_m), "LDA #$%02X", read(pc + 1)); break;
-		case 0xA5: sprintf_s(asm_m, sizeof(asm_m), "LDA $%02X", read(pc + 1)); break;
-		case 0xB5: sprintf_s(asm_m, sizeof(asm_m), "LDA $%02X,X", read(pc + 1)); break;
-		case 0xAD: sprintf_s(asm_m, sizeof(asm_m), "LDA $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0xBD: sprintf_s(asm_m, sizeof(asm_m), "LDA $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
-		case 0xB9: sprintf_s(asm_m, sizeof(asm_m), "LDA $%02X%02X,Y", read(pc + 2), read(pc + 1)); break;
-		case 0xA1: sprintf_s(asm_m, sizeof(asm_m), "LDA ($%02X,X)", read(pc + 1)); break;
-		case 0xB1: sprintf_s(asm_m, sizeof(asm_m), "LDA ($%02X),Y", read(pc + 1)); break;
+		case 0xA9: sprintf_s(asm_m, sizeof(asm_m), "LDA #$%02X", Read(pc + 1)); break;
+		case 0xA5: sprintf_s(asm_m, sizeof(asm_m), "LDA $%02X", Read(pc + 1)); break;
+		case 0xB5: sprintf_s(asm_m, sizeof(asm_m), "LDA $%02X,X", Read(pc + 1)); break;
+		case 0xAD: sprintf_s(asm_m, sizeof(asm_m), "LDA $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0xBD: sprintf_s(asm_m, sizeof(asm_m), "LDA $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
+		case 0xB9: sprintf_s(asm_m, sizeof(asm_m), "LDA $%02X%02X,Y", Read(pc + 2), Read(pc + 1)); break;
+		case 0xA1: sprintf_s(asm_m, sizeof(asm_m), "LDA ($%02X,X)", Read(pc + 1)); break;
+		case 0xB1: sprintf_s(asm_m, sizeof(asm_m), "LDA ($%02X),Y", Read(pc + 1)); break;
 
 		/* LDX */
-		case 0xA2: sprintf_s(asm_m, sizeof(asm_m), "LDX #$%02X", read(pc + 1)); break;
-		case 0xA6: sprintf_s(asm_m, sizeof(asm_m), "LDX $%02X", read(pc + 1)); break;
-		case 0xB6: sprintf_s(asm_m, sizeof(asm_m), "LDX $%02X,Y", read(pc + 1)); break;
-		case 0xAE: sprintf_s(asm_m, sizeof(asm_m), "LDX $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0xBE: sprintf_s(asm_m, sizeof(asm_m), "LDX $%02X%02X,Y", read(pc + 2), read(pc + 1)); break;
+		case 0xA2: sprintf_s(asm_m, sizeof(asm_m), "LDX #$%02X", Read(pc + 1)); break;
+		case 0xA6: sprintf_s(asm_m, sizeof(asm_m), "LDX $%02X", Read(pc + 1)); break;
+		case 0xB6: sprintf_s(asm_m, sizeof(asm_m), "LDX $%02X,Y", Read(pc + 1)); break;
+		case 0xAE: sprintf_s(asm_m, sizeof(asm_m), "LDX $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0xBE: sprintf_s(asm_m, sizeof(asm_m), "LDX $%02X%02X,Y", Read(pc + 2), Read(pc + 1)); break;
 
 		/* LDY */
-		case 0xA0: sprintf_s(asm_m, sizeof(asm_m), "LDY #$%02X", read(pc + 1)); break;
-		case 0xA4: sprintf_s(asm_m, sizeof(asm_m), "LDY $%02X", read(pc + 1)); break;
-		case 0xB4: sprintf_s(asm_m, sizeof(asm_m), "LDY $%02X,X", read(pc + 1)); break;
-		case 0xAC: sprintf_s(asm_m, sizeof(asm_m), "LDY $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0xBC: sprintf_s(asm_m, sizeof(asm_m), "LDY $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
+		case 0xA0: sprintf_s(asm_m, sizeof(asm_m), "LDY #$%02X", Read(pc + 1)); break;
+		case 0xA4: sprintf_s(asm_m, sizeof(asm_m), "LDY $%02X", Read(pc + 1)); break;
+		case 0xB4: sprintf_s(asm_m, sizeof(asm_m), "LDY $%02X,X", Read(pc + 1)); break;
+		case 0xAC: sprintf_s(asm_m, sizeof(asm_m), "LDY $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0xBC: sprintf_s(asm_m, sizeof(asm_m), "LDY $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
 
 		/* LSR */
 		case 0x4A: sprintf_s(asm_m, sizeof(asm_m), "LSR A"); break;
-		case 0x46: sprintf_s(asm_m, sizeof(asm_m), "LSR $%02X", read(pc + 1)); break;
-		case 0x56: sprintf_s(asm_m, sizeof(asm_m), "LSR $%02X,X", read(pc + 1)); break;
-		case 0x4E: sprintf_s(asm_m, sizeof(asm_m), "LSR $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0x5E: sprintf_s(asm_m, sizeof(asm_m), "LSR $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
+		case 0x46: sprintf_s(asm_m, sizeof(asm_m), "LSR $%02X", Read(pc + 1)); break;
+		case 0x56: sprintf_s(asm_m, sizeof(asm_m), "LSR $%02X,X", Read(pc + 1)); break;
+		case 0x4E: sprintf_s(asm_m, sizeof(asm_m), "LSR $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x5E: sprintf_s(asm_m, sizeof(asm_m), "LSR $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
 
 		/* NOP */
 		case 0xEA: sprintf_s(asm_m, sizeof(asm_m), "NOP"); break;
 
 		/* ORA */
-		case 0x09: sprintf_s(asm_m, sizeof(asm_m), "ORA #$%02X", read(pc + 1)); break;
-		case 0x05: sprintf_s(asm_m, sizeof(asm_m), "ORA $%02X", read(pc + 1)); break;
-		case 0x15: sprintf_s(asm_m, sizeof(asm_m), "ORA $%02X,X", read(pc + 1)); break;
-		case 0x0D: sprintf_s(asm_m, sizeof(asm_m), "ORA $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0x1D: sprintf_s(asm_m, sizeof(asm_m), "ORA $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
-		case 0x19: sprintf_s(asm_m, sizeof(asm_m), "ORA $%02X%02X,Y", read(pc + 2), read(pc + 1)); break;
-		case 0x01: sprintf_s(asm_m, sizeof(asm_m), "ORA ($%02X,X)", read(pc + 1)); break;
-		case 0x11: sprintf_s(asm_m, sizeof(asm_m), "ORA ($%02X),Y", read(pc + 1)); break;
+		case 0x09: sprintf_s(asm_m, sizeof(asm_m), "ORA #$%02X", Read(pc + 1)); break;
+		case 0x05: sprintf_s(asm_m, sizeof(asm_m), "ORA $%02X", Read(pc + 1)); break;
+		case 0x15: sprintf_s(asm_m, sizeof(asm_m), "ORA $%02X,X", Read(pc + 1)); break;
+		case 0x0D: sprintf_s(asm_m, sizeof(asm_m), "ORA $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x1D: sprintf_s(asm_m, sizeof(asm_m), "ORA $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x19: sprintf_s(asm_m, sizeof(asm_m), "ORA $%02X%02X,Y", Read(pc + 2), Read(pc + 1)); break;
+		case 0x01: sprintf_s(asm_m, sizeof(asm_m), "ORA ($%02X,X)", Read(pc + 1)); break;
+		case 0x11: sprintf_s(asm_m, sizeof(asm_m), "ORA ($%02X),Y", Read(pc + 1)); break;
 
 		/* PHA */
 		case 0x48: sprintf_s(asm_m, sizeof(asm_m), "PHA"); break;
 
 		/* PHP */
 		case 0x08: sprintf_s(asm_m, sizeof(asm_m), "PHP"); break;
-		
+
 		/* PLA */
 		case 0x68: sprintf_s(asm_m, sizeof(asm_m), "PLA"); break;
-		
+
 		/* PLP */
 		case 0x28: sprintf_s(asm_m, sizeof(asm_m), "PLP"); break;
 
 		/* ROL */
 		case 0x2A: sprintf_s(asm_m, sizeof(asm_m), "ROL A"); break;
-		case 0x26: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X", read(pc + 1)); break;
-		case 0x36: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X,X", read(pc + 1)); break;
-		case 0x2E: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0x3E: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
+		case 0x26: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X", Read(pc + 1)); break;
+		case 0x36: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X,X", Read(pc + 1)); break;
+		case 0x2E: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x3E: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
 
 		/* ROR */
 		case 0x6A: sprintf_s(asm_m, sizeof(asm_m), "ROL A"); break;
-		case 0x66: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X", read(pc + 1)); break;
-		case 0x76: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X,X", read(pc + 1)); break;
-		case 0x6E: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0x7E: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
+		case 0x66: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X", Read(pc + 1)); break;
+		case 0x76: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X,X", Read(pc + 1)); break;
+		case 0x6E: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x7E: sprintf_s(asm_m, sizeof(asm_m), "ROL $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
 
 		/* RTI */
 		case 0x40: sprintf_s(asm_m, sizeof(asm_m), "RTI"); break;
@@ -361,14 +360,14 @@ int dissassemble(pP6502 p)
 		case 0x60: sprintf_s(asm_m, sizeof(asm_m), "RTS"); break;
 
 		/* SBC */
-		case 0xE9: sprintf_s(asm_m, sizeof(asm_m), "SBC #$%02X", read(pc + 1)); break;
-		case 0xE5: sprintf_s(asm_m, sizeof(asm_m), "SBC $%02X", read(pc + 1)); break;
-		case 0xF5: sprintf_s(asm_m, sizeof(asm_m), "SBC $%02X,X", read(pc + 1)); break;
-		case 0xED: sprintf_s(asm_m, sizeof(asm_m), "SBC $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0xFD: sprintf_s(asm_m, sizeof(asm_m), "SBC $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
-		case 0xF9: sprintf_s(asm_m, sizeof(asm_m), "SBC $%02X%02X,Y", read(pc + 2), read(pc + 1)); break;
-		case 0xE1: sprintf_s(asm_m, sizeof(asm_m), "SBC ($%02X,X)", read(pc + 1)); break;
-		case 0xF1: sprintf_s(asm_m, sizeof(asm_m), "SBC ($%02X),Y", read(pc + 1)); break;
+		case 0xE9: sprintf_s(asm_m, sizeof(asm_m), "SBC #$%02X", Read(pc + 1)); break;
+		case 0xE5: sprintf_s(asm_m, sizeof(asm_m), "SBC $%02X", Read(pc + 1)); break;
+		case 0xF5: sprintf_s(asm_m, sizeof(asm_m), "SBC $%02X,X", Read(pc + 1)); break;
+		case 0xED: sprintf_s(asm_m, sizeof(asm_m), "SBC $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0xFD: sprintf_s(asm_m, sizeof(asm_m), "SBC $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
+		case 0xF9: sprintf_s(asm_m, sizeof(asm_m), "SBC $%02X%02X,Y", Read(pc + 2), Read(pc + 1)); break;
+		case 0xE1: sprintf_s(asm_m, sizeof(asm_m), "SBC ($%02X,X)", Read(pc + 1)); break;
+		case 0xF1: sprintf_s(asm_m, sizeof(asm_m), "SBC ($%02X),Y", Read(pc + 1)); break;
 
 		/* SEC */
 		case 0x38: sprintf_s(asm_m, sizeof(asm_m), "SEC"); break;
@@ -380,23 +379,23 @@ int dissassemble(pP6502 p)
 		case 0x78: sprintf_s(asm_m, sizeof(asm_m), "SEI"); break;
 
 		/* STA */
-		case 0x85: sprintf_s(asm_m, sizeof(asm_m), "STA $%02X", read(pc + 1)); break;
-		case 0x95: sprintf_s(asm_m, sizeof(asm_m), "STA $%02X,X", read(pc + 1)); break;
-		case 0x8D: sprintf_s(asm_m, sizeof(asm_m), "STA $%02X%02X", read(pc + 2), read(pc + 1)); break;
-		case 0x9D: sprintf_s(asm_m, sizeof(asm_m), "STA $%02X%02X,X", read(pc + 2), read(pc + 1)); break;
-		case 0x99: sprintf_s(asm_m, sizeof(asm_m), "STA $%02X%02X,Y", read(pc + 2), read(pc + 1)); break;
-		case 0x81: sprintf_s(asm_m, sizeof(asm_m), "STA ($%02X,X)", read(pc + 1)); break;
-		case 0x91: sprintf_s(asm_m, sizeof(asm_m), "STA ($%02X),Y", read(pc + 1)); break;
+		case 0x85: sprintf_s(asm_m, sizeof(asm_m), "STA $%02X", Read(pc + 1)); break;
+		case 0x95: sprintf_s(asm_m, sizeof(asm_m), "STA $%02X,X", Read(pc + 1)); break;
+		case 0x8D: sprintf_s(asm_m, sizeof(asm_m), "STA $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x9D: sprintf_s(asm_m, sizeof(asm_m), "STA $%02X%02X,X", Read(pc + 2), Read(pc + 1)); break;
+		case 0x99: sprintf_s(asm_m, sizeof(asm_m), "STA $%02X%02X,Y", Read(pc + 2), Read(pc + 1)); break;
+		case 0x81: sprintf_s(asm_m, sizeof(asm_m), "STA ($%02X,X)", Read(pc + 1)); break;
+		case 0x91: sprintf_s(asm_m, sizeof(asm_m), "STA ($%02X),Y", Read(pc + 1)); break;
 
 		/* STX */
-		case 0x86: sprintf_s(asm_m, sizeof(asm_m), "STX $%02X", read(pc + 1)); break;
-		case 0x96: sprintf_s(asm_m, sizeof(asm_m), "STX $%02X,Y", read(pc + 1)); break;
-		case 0x8E: sprintf_s(asm_m, sizeof(asm_m), "STX $%02X%02X", read(pc + 2), read(pc + 1)); break;
-	
+		case 0x86: sprintf_s(asm_m, sizeof(asm_m), "STX $%02X", Read(pc + 1)); break;
+		case 0x96: sprintf_s(asm_m, sizeof(asm_m), "STX $%02X,Y", Read(pc + 1)); break;
+		case 0x8E: sprintf_s(asm_m, sizeof(asm_m), "STX $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
+
 		/* STY */
-		case 0x84: sprintf_s(asm_m, sizeof(asm_m), "STY $%02X", read(pc + 1)); break;
-		case 0x94: sprintf_s(asm_m, sizeof(asm_m), "STY $%02X,X", read(pc + 1)); break;
-		case 0x8C: sprintf_s(asm_m, sizeof(asm_m), "STY $%02X%02X", read(pc + 2), read(pc + 1)); break;
+		case 0x84: sprintf_s(asm_m, sizeof(asm_m), "STY $%02X", Read(pc + 1)); break;
+		case 0x94: sprintf_s(asm_m, sizeof(asm_m), "STY $%02X,X", Read(pc + 1)); break;
+		case 0x8C: sprintf_s(asm_m, sizeof(asm_m), "STY $%02X%02X", Read(pc + 2), Read(pc + 1)); break;
 
 		/* TAX */
 		case 0xAA: sprintf_s(asm_m, sizeof(asm_m), "TAX"); break;
@@ -423,7 +422,7 @@ int dissassemble(pP6502 p)
 	return op_size[instruction];
 }
 
-void init_test_rom(NesHeader* hdr, uint8_t* rom, uint8_t* chr_rom)
+void InitTestROM(NesHeader* hdr, uint8_t* rom, uint8_t* chr_rom)
 {
 	memset(hdr, 0, sizeof(NesHeader));
 
@@ -452,7 +451,7 @@ void init_test_rom(NesHeader* hdr, uint8_t* rom, uint8_t* chr_rom)
 	image_path = "Embedded test ROM image!";
 }
 
-int dump_test_rom(const char* path)
+int DumpTestROM(const char* path)
 {
 	int i;
 	int blank_space;
@@ -522,12 +521,18 @@ int dump_test_rom(const char* path)
 	return 1;
 }
 
-static void log_message(const char* msg, const char* str, va_list args)
+static void LogMessage(const char* msg, const char* str, va_list args)
 {
 #ifdef DEBUG_LOGGING
+#if defined _WIN32
+	FILE* f;
+	fopen_s(&f, "log.txt", "a");
+#else
 	FILE* f = fopen("log.txt", "a");
+#endif
 	if (!f)
 		return;
+
 	fprintf(f, "%s : ", msg);
 	vfprintf(f, str, args);
 	fprintf(f, "\n");
@@ -537,22 +542,22 @@ static void log_message(const char* msg, const char* str, va_list args)
 #endif
 }
 
-void log_info(const char* str, ...)
+void LogInfo(const char* str, ...)
 {
 	LOG_MESSAGE("INFO   ");
 }
 
-void log_warning(const char* str, ...)
+void LogWarning(const char* str, ...)
 {
 	LOG_MESSAGE("WARNING");
 }
 
-void log_error(const char* str, ...)
+void LogError(const char* str, ...)
 {
 	LOG_MESSAGE("ERROR  ");
 }
 
-void debug_message(const char* str, ...)
+void DebugMessage(const char* str, ...)
 {
 #if defined DEBUG_MODE
 	va_list args;
