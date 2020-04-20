@@ -27,9 +27,11 @@
 #include "debuger.h"
 #include "mapper.h"
 
-#define SNAPSHOT_WIDTH		256
-#define SNAPSHOT_HEIGHT		240
-#define SNAPSHOT_SIZE		(SNAPSHOT_WIDTH * SNAPSHOT_HEIGHT)
+#define SNAPSHOT_WIDTH			256
+#define SNAPSHOT_HEIGHT			240
+#define SNAPSHOT_SIZE			(SNAPSHOT_WIDTH * SNAPSHOT_HEIGHT * 3)
+#define SNAPSHOT_SCALE			4
+#define SNAPSHOT_BITMAP_SIZE	(SNAPSHOT_SIZE / (SNAPSHOT_SCALE * SNAPSHOT_SCALE) + sizeof(BitmapHdr))
 
 char slot[NUM_OF_SLOTS][SLOT_PATH_SIZE];
 char bmps[NUM_OF_SLOTS][SLOT_PATH_SIZE];
@@ -46,6 +48,9 @@ const StateVersion state_version =
 const ChunkTag state_tag		= { {{'S', 'T', 'A', 'T'}}, 0 };
 const ChunkTag version_tag		= { {{'V', 'E', 'R', ' '}}, 4 };
 const ChunkTag comment_tag		= { {{'C', 'M', 'N', 'T'}}, 0 };
+
+/// Snapshot tag
+const ChunkTag snap_tag         = { {{'S', 'N', 'A', 'P'}}, SNAPSHOT_BITMAP_SIZE };
 
 /// CPU state
 const ChunkTag cpu_tag			= { {{'C', 'P', 'U', ' '}}, sizeof(P6502) };
@@ -70,6 +75,67 @@ const ChunkTag emu_tag			= { {{'E', 'M', 'U', ' '}}, 0 };
 const ChunkTag path_tag			= { {{'P', 'A', 'T', 'H'}}, 0 };
 const ChunkTag nes_hdr_tag		= { {{'N', 'E', 'S', 'H'}}, sizeof(NesHeader) };
 const ChunkTag mirroring_tag	= { {{'M', 'R', 'O', 'R'}}, 1 };
+
+static int SaveSnapshot(FILE* f, int scale)
+{
+#if defined _WIN32 || defined __linux__
+	int x, y;
+	BitmapHdr bmp;
+
+	// Initialize file header.
+	memset(&bmp, 0, sizeof(BitmapHdr));
+	bmp.sig = 0x4D42;
+	bmp.file_size = SNAPSHOT_SIZE / (scale * scale) + sizeof(BitmapHdr);
+	bmp.data_offset = sizeof(BitmapHdr);
+	// Initialize bitmap info header.
+	bmp.info_size = 40;
+	bmp.width = SNAPSHOT_WIDTH / scale;
+	bmp.height = SNAPSHOT_HEIGHT / scale;
+	bmp.planes = 1;
+	bmp.bit_count = 24;
+	// Write header.
+	fwrite(&bmp, sizeof(BitmapHdr), 1, f);
+	// Write pixels.
+	for (y = SNAPSHOT_HEIGHT / scale - 1; y >= 0; --y) {
+		for (x = 0; x < SNAPSHOT_WIDTH / scale; ++x) {
+			int idx = SNAPSHOT_WIDTH * y * scale + x * scale;
+			uint32_t color = ((uint32_t*)(surface->pixels))[idx];
+			fwrite(&color, 1, 1, f);		// Write red component.
+			color >>= 8;
+			fwrite(&color, 1, 1, f);		// Write green component.
+			color >>= 8;
+			fwrite(&color, 1, 1, f);		// Write blue component.
+		}
+	}
+#endif
+	return 1;
+}
+
+/**
+* @param path output path of bitmap file to save.
+* @param scale amount of times that image smaller than original resolution. It should be 2's multiplies.
+*/
+static int SaveSnapshotToFile(const char* path, int scale)
+{
+#if defined _WIN32 || defined __linux__
+	FILE* f;
+	int res;
+
+#if _WIN32
+	fopen_s(&f, path, "wb");
+#else
+	f = fopen(path, "wb");
+#endif
+	if (!f)
+		return 0;
+
+	res = SaveSnapshot(f, scale);
+	fclose(f);
+	return res;
+#else
+	return 1;
+#endif
+}
 
 int State_Init(const char* path)
 {
@@ -129,17 +195,15 @@ int State_Load(const char* path)
 			case STATE_VER_TAG_ID:
 				if (fread(&ver, sizeof(StateVersion), 1, s) != 1)
 					return 0;
+
 				if (ver.rev != STATE_VERSION_REV
 						|| ver.maj != STATE_VERSION_MAJ
 						|| ver.min != STATE_VERSION_MIN
 						|| ver.pth != STATE_VERSION_PTH) {
 					DebugMessage("State version is not compatible!");
-					DebugMessage("   App ver:%u.%u.%u.%u      state ver:%u.%u.%u.%u"
-						, STATE_VERSION_REV
-						, STATE_VERSION_MAJ
-						, STATE_VERSION_MIN
-						, STATE_VERSION_PTH
-						, ver.rev, ver.maj, ver.min, ver.pth);
+					DebugMessage("   App ver:%u.%u.%u.%u      state ver:%u.%u.%u.%u",
+						STATE_VERSION_REV, STATE_VERSION_MAJ, STATE_VERSION_MIN, STATE_VERSION_PTH,
+						ver.rev, ver.maj, ver.min, ver.pth);
 					return 0;
 				}
 				break;
@@ -199,6 +263,7 @@ int State_Load(const char* path)
 				tag_size = 0;
 				break;				// Continue reading. This is a container tag.
 
+			case STATE_SNAPSHOT_TAG_ID:
 			case STATE_NESH_TAG_ID:
 			case STATE_NUM_TAG_ID:
 			case STATE_MROR_TAG_ID:
@@ -207,11 +272,9 @@ int State_Load(const char* path)
 				break;				// Skip silently unused tags.
 
 			default:
-				DebugMessage("Unknown tag!     id: 0x%08x     name: '%c%c%c%c'", cr_tag.Sig.id
-					, cr_tag.Sig.name[0]
-					, cr_tag.Sig.name[1]
-					, cr_tag.Sig.name[2]
-					, cr_tag.Sig.name[3]);
+				DebugMessage("Unknown tag!     id: 0x%08x     name: '%c%c%c%c'    len: %d",
+					cr_tag.Sig.id, cr_tag.Sig.name[0], cr_tag.Sig.name[1], cr_tag.Sig.name[2],
+					cr_tag.Sig.name[3], cr_tag.len);
 				fseek(s, tag_size, SEEK_CUR);
 				break;
 		}
@@ -248,21 +311,25 @@ int State_Save(const char* path)
 	// Info tags
 	state_size  = State_WriteChunkTag(s, &state_tag, 0);
 	state_size += State_WriteChunkTag(s, &version_tag, &state_version);
-	tmp_comment_tag = comment_tag;
 
 	// Add your comments here.
+	tmp_comment_tag = comment_tag;
 	comment =
 		"\tThis is a test comment.\n"
 		"\tMy name is Vahid Heidari (DeltaCode).\n"
-		"\tThis is my file format for saveing and loading state of NES games.\n"
+		"\tThis is my file format for saving and loading state of NES games.\n"
 		"\tThis is my multi-platform NES (Nintendo Entertainment System) emulator.\n"
 		"\tYou can play it in Windows, Linux, or even STM32 ARM Cortex-M3 platfroms!\n"
 		"\tFill free to enjoy playing with my emulator. :)\n"
-		"\tYou can use comments for archaving your saved states, or adding every "
-				"thing you want here.";
-
+		"\tYou can use comments for archaving your saved states, or adding every\n"
+		"\tthing you want here.\n"
+		"\tPlease check out source codes at https://github.com/VahidHeidari/NES_DEV";
 	tmp_comment_tag.len = strlen(comment);
 	state_size += State_WriteChunkTag(s, &tmp_comment_tag, comment);
+
+	// Small snapshot
+	state_size += State_WriteChunkTag(s, &snap_tag, 0);
+	state_size += SaveSnapshot(s, SNAPSHOT_SCALE) * SNAPSHOT_BITMAP_SIZE;
 
 	// CPU tags
 	state_size += State_WriteChunkTag(s, &cpu_tag, &p);
@@ -311,52 +378,6 @@ int State_Save(const char* path)
 	return 1;
 }
 
-static int SaveSnapshot(const char* path)
-{
-#if defined _WIN32 || defined __linux__
-	FILE* f;
-	int x, y;
-	BitmapHdr bmp;
-
-#if _WIN32
-	fopen_s(&f, path, "wb");
-#else
-	f = fopen(path, "wb");
-#endif
-	if (!f)
-		return 0;
-
-	// Initialize file header.
-	memset(&bmp, 0, sizeof(BitmapHdr));
-	bmp.sig = 0x4D42;
-	bmp.file_size = sizeof(BitmapHdr) + SNAPSHOT_SIZE;
-	bmp.data_offset = sizeof(BitmapHdr);
-	// Initialize bitmap info header.
-	bmp.info_size = 40;
-	bmp.width = SNAPSHOT_WIDTH;
-	bmp.height = SNAPSHOT_HEIGHT;
-	bmp.planes = 1;
-	bmp.bit_count = 24;
-	// Write header.
-	fwrite(&bmp, sizeof(BitmapHdr), 1, f);
-	// Write pixels.
-	for (y = SNAPSHOT_HEIGHT - 1; y >= 0; --y) {
-		for (x = 0; x < SNAPSHOT_WIDTH; ++x) {
-			int idx = SNAPSHOT_WIDTH * y + x;
-			uint32_t color = ((uint32_t*)(surface->pixels))[idx];
-			fwrite(&color, 1, 1, f);		// Write red component.
-			color >>= 8;
-			fwrite(&color, 1, 1, f);		// Write green component.
-			color >>= 8;
-			fwrite(&color, 1, 1, f);		// Write blue component.
-		}
-	}
-	fclose(f);
-	DebugMessage("Snapshot saved to -> '%s'", path);
-#endif
-	return 1;
-}
-
 int State_SaveSlot(int i)
 {
 	if (i > NUM_OF_SLOTS || i < 0) {
@@ -369,10 +390,11 @@ int State_SaveSlot(int i)
 		return 0;
 	}
 
-	if (SaveSnapshot(&(bmps[i][0])) != 1) {
+	if (SaveSnapshotToFile(&(bmps[i][0]), 1) != 1) {
 		DebugMessage("Could not save snapshot to slot #%d! Bitmap save error.", i);
 		return 0;
-	}
+	} else
+		DebugMessage("Snapshot saved to -> '%s'", bmps[i]);
 
 	return 1;
 }

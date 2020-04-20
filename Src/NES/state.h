@@ -41,6 +41,9 @@ extern "C" {
 #define STATE_VER_TAG_ID		0x20524556
 #define STATE_CMNT_TAG_ID		0x544e4d43
 
+/// Snapshot tag id
+#define STATE_SNAPSHOT_TAG_ID	0x50414e53
+
 /// CPU tag id
 #define STATE_CPU_TAG_ID		0x20555043
 #define STATE_APU_TAG_ID		0x20555041
